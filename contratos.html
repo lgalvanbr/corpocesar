@@ -26,9 +26,13 @@ tr:hover td{background:var(--subtle)}
 </head>
 <body>
 <header class="top">
+  <svg class="hero-mark" viewBox="0 0 200 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M100 8C60 70 30 108 30 148a70 70 0 00140 0c0-40-30-78-70-140z" stroke="#3f6f9c" stroke-width="7"/>
+    <path d="M62 140c8-34 34-52 62-46-20 4-36 18-42 40-18 10-20 20-20 20s-4-10 0-14z" fill="#a4bf4d"/>
+  </svg>
   <div class="wrap masthead">
     <div>
-      <div class="kicker"><a class="back" href="index.html">← Corpocesar en la mira</a></div>
+      <div class="kicker"><span class="dot"></span><a class="back" href="index.html">← Corpocesar en la mira</a></div>
       <h1 class="tit">Los 531 contratos en ejecución</h1>
       <p class="dek">Todo lo que Corpocesar tiene contratado y activo hoy, directo de SECOP II. Busque por contratista u objeto, filtre por categoría, ordene por valor.</p>
     </div>
@@ -44,7 +48,7 @@ tr:hover td{background:var(--subtle)}
   <div class="tbl-wrap">
     <table>
       <thead><tr>
-        <th data-k="1">Firma</th><th data-k="3">Contratista</th><th data-k="4">Categoría</th><th data-k="2" style="text-align:right">Valor</th><th data-k="5">Objeto</th>
+        <th data-k="1">Firma</th><th data-k="3">Contratista</th><th data-k="4">Categoría</th><th data-k="2" style="text-align:right">Valor</th><th data-k="6">Municipio (del objeto)</th><th data-k="7" style="text-align:right">Bosque perdido cerca, 2022-24</th><th data-k="5">Objeto</th>
       </tr></thead>
       <tbody id="filas"></tbody>
     </table>
@@ -105,7 +109,8 @@ function render(){
   });
   document.getElementById("count").textContent = fmt(rows.length) + " contratos · $" + fmt(rows.reduce(function(a,r){return a+r[2];},0)) + " millones";
   document.getElementById("filas").innerHTML = rows.map(function(r){
-    return "<tr><td>"+esc(r[1])+"</td><td>"+esc(r[3])+"</td><td><span class='pill'>"+esc(CAT[r[4]]||r[4])+"</span></td><td class='num'>$"+fmt(r[2])+" M</td><td>"+esc(r[5])+"</td></tr>";
+    var bosque = r[7]>=0 ? fmt(r[7])+" ha" : "—";
+    return "<tr><td>"+esc(r[1])+"</td><td>"+esc(r[3])+"</td><td><span class='pill'>"+esc(CAT[r[4]]||r[4])+"</span></td><td class='num'>$"+fmt(r[2])+" M</td><td>"+esc(r[6]||"—")+"</td><td class='num'>"+bosque+"</td><td>"+esc(r[5])+"</td></tr>";
   }).join("");
 }
 </script>

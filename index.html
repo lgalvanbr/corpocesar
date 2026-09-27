@@ -36,32 +36,51 @@ details[open] .chev{transform:rotate(180deg)}
 .mapbar{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:var(--subtle);border-bottom:1px solid var(--border);font-size:11.5px;color:var(--ink2)}
 .mapbar a{font-weight:600;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--ink2)}
 iframe.map{width:100%;height:500px;border:0;display:block}
+.map-slot{min-height:500px}
+.map-ph{height:500px;display:flex;align-items:center;justify-content:center;color:var(--ink2);font-size:13px;background:repeating-linear-gradient(135deg,var(--subtle),var(--subtle) 10px,var(--panel) 10px,var(--panel) 20px)}
 .caveat{font-size:12.5px;color:var(--ink2);font-style:italic;margin-top:14px}
 .interv{font-size:12px;color:var(--ink2);margin-top:10px}
+details.card{transition:box-shadow .2s,transform .2s}
+details.card:hover{box-shadow:0 6px 20px -8px rgba(19,36,32,.18)}
+summary{transition:background .15s}
+summary:hover{background:var(--subtle)}
+.stats.stats5{grid-template-columns:repeat(5,1fr)}
+@media(max-width:900px){.stats.stats5{grid-template-columns:repeat(2,1fr)}}
+.pill-link{display:inline-flex;align-items:center;gap:5px;font:600 12.5px var(--sans);color:#fff;background:var(--agua-ink);padding:6px 14px;border-radius:999px;text-decoration:none;transition:background .15s,transform .15s}
+.pill-link:hover{background:var(--bosque-ink);transform:translateY(-1px)}
 </style>
 </head>
 <body>
-<header class="top">
+<header class="top" id="hdr">
+  <svg class="hero-mark" viewBox="0 0 200 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M100 8C60 70 30 108 30 148a70 70 0 00140 0c0-40-30-78-70-140z" stroke="#3f6f9c" stroke-width="7"/>
+    <path d="M62 140c8-34 34-52 62-46-20 4-36 18-42 40-18 10-20 20-20 20s-4-10 0-14z" fill="#a4bf4d"/>
+  </svg>
   <div class="wrap masthead">
     <div>
-      <div class="kicker">Contratación pública · vigilancia ciudadana</div>
+      <div class="kicker"><span class="dot"></span>Contratación pública · vigilancia ciudadana</div>
       <h1 class="tit">Corpocesar en la mira</h1>
-      <p class="dek">Ocho obras de la Corporación Autónoma Regional del Cesar, hoy en ejecución, leídas contra nuestra propia imagen de satélite, un modelo de zonas inundables y un modelo de terreno en 3D — para saber si la plata está cayendo donde el problema es más grande.</p>
+      <p class="dek">Ocho obras de la Corporación Autónoma Regional del Cesar, hoy en ejecución, leídas contra nuestra propia imagen de satélite, un modelo de zonas inundables validado con el IDEAM y un modelo de terreno en 3D — para saber si la plata está cayendo donde el problema es más grande.</p>
     </div>
-    <div class="meta">NIT 892.301.483<br>Corte: 27 sep. 2026<br><a href="contratos.html" style="color:var(--agua-ink);font-weight:600">Ver los 531 contratos activos →</a></div>
+    <div class="meta">NIT 892.301.483<br>Corte: 27 sep. 2026<br><a class="pill-link" href="contratos.html" style="margin-top:8px">Ver los 531 contratos activos →</a></div>
   </div>
 </header>
 
 <main class="wrap">
-  <div class="stats">
-    <div class="stat"><b>$392,4 mm</b><span>contratados por Corpocesar desde 2021</span></div>
-    <div class="stat"><b>531</b><span>contratos en ejecución hoy, por $128,5 mm — <a href="contratos.html" style="color:var(--agua-ink)">verlos todos</a></span></div>
-    <div class="stat"><b>8</b><span>obras con mapa propio en esta lectura</span></div>
-    <div class="stat"><b>162</b><span>contratos activos sin póliza vigente registrada</span></div>
+  <div class="stats stats5 reveal">
+    <div class="stat"><b data-count="392.4" data-decimals="1" data-suffix=" mm">$0 mm</b><span>contratados por Corpocesar desde 2021</span></div>
+    <div class="stat"><b data-count="531">0</b><span>contratos en ejecución hoy, por $128,5 mm — <a href="contratos.html" style="color:var(--agua-ink)">verlos todos</a></span></div>
+    <div class="stat"><b data-count="8">0</b><span>obras con mapa propio en esta lectura</span></div>
+    <div class="stat"><b data-count="162">0</b><span>contratos activos sin póliza vigente registrada</span></div>
+    <div class="stat"><b data-count="1881" data-suffix=" ha">0</b><span>inundadas de verdad en 2010-2011 y 2020-2022, según el IDEAM (Valledupar)</span></div>
   </div>
 
-  <p class="lead">Elegimos las obras más grandes y más ligadas a un problema físico medible: inundación en Valledupar, Chiriguaná y Curumaní; deforestación y minería en Becerril, La Jagua de Ibirico, Pueblo Bello y La Paz. A cada una le pusimos encima pérdida de bosque (Hansen), huella de minería a cielo abierto (Sentinel-2), frecuencia de inundación por radar (Sentinel-1) y un modelo propio de altura sobre el drenaje (HAND) calculado sobre el DEM de Copernicus, con relieve en 3D. Abra cada contrato para ver el objeto, el hallazgo y el mapa.</p>
-  <p class="lead">Según el propio <a href="https://www.corpocesar.gov.co/Plan-de-accion-2024-2027.html" target="_blank" rel="noreferrer">Plan de Acción Cuatrienal 2024-2027</a> de Corpocesar ("Gobernanza y Gobernabilidad en la Gestión Ambiental del Cesar", aprobado por Acuerdo 003 del 17 de mayo de 2024 bajo la dirección general de Adriana Margarita García Arévalo), la Serranía del Perijá y la margen derecha del río Guatapurí son dos de sus proyectos insignia — las mismas dos obras que esta lectura escogió de forma independiente, sin conocer antes ese plan. A mitad de 2025, la entidad reportó a su Junta Directiva más del 70% de cumplimiento de sus metas.</p>
+  <p class="lead reveal">Elegimos las obras más grandes y más ligadas a un problema físico medible: inundación en Valledupar, Chiriguaná y Curumaní; deforestación y minería en Becerril, La Jagua de Ibirico, Pueblo Bello y La Paz. A cada una le pusimos encima pérdida de bosque (Hansen), huella de minería a cielo abierto (Sentinel-2), frecuencia de inundación por radar (Sentinel-1) y un modelo propio de altura sobre el drenaje (HAND) calculado sobre el DEM de Copernicus, con relieve en 3D. En Valledupar cruzamos ese modelo contra las manchas de inundación real que el IDEAM mapeó en las crecientes de La Niña 2010-2011 y 2020-2022: se ven juntas en el mismo mapa. Abra cada contrato para ver el objeto, el hallazgo y el mapa.</p>
+  <p class="lead reveal">Según el propio <a href="https://www.corpocesar.gov.co/Plan-de-accion-2024-2027.html" target="_blank" rel="noreferrer">Plan de Acción Cuatrienal 2024-2027</a> de Corpocesar ("Gobernanza y Gobernabilidad en la Gestión Ambiental del Cesar", aprobado por Acuerdo 003 del 17 de mayo de 2024 bajo la dirección general de Adriana Margarita García Arévalo), la Serranía del Perijá y la margen derecha del río Guatapurí son dos de sus proyectos insignia — las mismas dos obras que esta lectura escogió de forma independiente, sin conocer antes ese plan. A mitad de 2025, la entidad reportó a su Junta Directiva más del 70% de cumplimiento de sus metas.</p>
+
+  <div class="callout reveal" style="max-width:66ch;margin-top:24px">
+    <b>Lo que salió de cruzar todo:</b> extendimos el modelo HAND a los 24 municipios de Cesar y leímos, con un modelo de lenguaje verificado contra el propio texto, los 236 contratos activos que antes quedaban "sin clasificar". El caso que más llama la atención es <b>Chimichagua</b>: 1.695 ha de bosque perdidas entre 2022 y 2024 (el promedio más alto de los municipios con contrato activo) frente a apenas $110 M en contratación ambiental vigente — la relación más desigual entre daño reciente e inversión de todo el departamento. Está en la <a href="contratos.html">lista completa</a>, ordenable por municipio.
+  </div>
 
   <div class="list" id="lista"></div>
 </main>
@@ -148,7 +167,8 @@ function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){retur
 var host = document.getElementById("lista");
 OBRAS.forEach(function(o, i){
   var d = document.createElement("details");
-  d.className = "card";
+  d.className = "card reveal";
+  d.style.transitionDelay = (i*0.06)+"s";
   if(i===0) d.open = true;
   d.innerHTML =
     '<summary><span class="tag '+o.tipo+'">'+(o.tipo==="agua"?"Inundación":"Restauración")+'</span>'
@@ -158,12 +178,49 @@ OBRAS.forEach(function(o, i){
     +'<p class="objeto"><b>Objeto ('+esc(o.contrato)+'):</b> '+esc(o.objeto)+'</p>'
     +'<div class="callout"><b>Lo que llama la atención: </b>'+esc(o.hallazgo)+'</div>'
     +'<span class="label">Nuestra solución</span><ul class="sol">'+o.analisis.map(function(t){return "<li>"+esc(t)+"</li>";}).join("")+'</ul>'
-    +'<div class="mapbox"><div class="mapbar"><span>Nuestro mapa de esta zona</span><a href="'+o.iframe+'" target="_blank" rel="noreferrer">Pantalla completa ↗</a></div><iframe class="map" src="'+o.iframe+'" loading="lazy" title="'+esc(o.nombre)+'"></iframe></div>'
+    +'<div class="mapbox"><div class="mapbar"><span>Nuestro mapa de esta zona</span><a href="'+o.iframe+'" target="_blank" rel="noreferrer">Pantalla completa ↗</a></div><div class="map-slot" data-src="'+o.iframe+'" data-title="'+esc(o.nombre)+'"><div class="map-ph">Se carga el mapa al abrir esta obra…</div></div></div>'
     +(o.interventoria?'<p class="interv">Interventoría: '+esc(o.interventoria)+'.</p>':'')
     +'<p class="caveat">'+esc(o.caveat)+'</p>'
     +'</div>';
   host.appendChild(d);
+  d.addEventListener("toggle", function(){
+    if(d.open){
+      var slot = d.querySelector(".map-slot");
+      if(slot && !slot.querySelector("iframe")){
+        var f = document.createElement("iframe"); f.className = "map"; f.loading = "lazy"; f.title = slot.dataset.title; f.src = slot.dataset.src;
+        slot.innerHTML = ""; slot.appendChild(f);
+      }
+    }
+  });
+  if(i===0) d.dispatchEvent(new Event("toggle"));
 });
+
+/* revelado al hacer scroll */
+var toReveal = document.querySelectorAll(".reveal");
+if("IntersectionObserver" in window){
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, {threshold:.08, rootMargin:"0px 0px -40px 0px"});
+  toReveal.forEach(function(el){ io.observe(el); });
+} else { toReveal.forEach(function(el){ el.classList.add("in"); }); }
+
+/* contadores animados en las cifras del encabezado */
+var reduced = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+document.querySelectorAll("[data-count]").forEach(function(el){
+  var target = parseFloat(el.dataset.count), suf = el.dataset.suffix||"", isMoney = el.textContent.trim().charAt(0)==="$", dec = +(el.dataset.decimals||0);
+  function paint(v){ var n = v.toLocaleString("es-CO",{minimumFractionDigits:dec,maximumFractionDigits:dec}); el.textContent = (isMoney?"$":"")+n+suf; }
+  if(reduced){ paint(target); return; }
+  var t0 = null, dur = 900;
+  function step(ts){ if(!t0) t0 = ts; var p = Math.min(1,(ts-t0)/dur); paint(target*(1-Math.pow(1-p,3))); if(p<1) requestAnimationFrame(step); }
+  var seen = false;
+  if("IntersectionObserver" in window){
+    new IntersectionObserver(function(entries,obs){ entries.forEach(function(e){ if(e.isIntersecting && !seen){ seen=true; requestAnimationFrame(step); obs.disconnect(); } }); }).observe(el);
+  } else { requestAnimationFrame(step); }
+});
+
+/* encabezado que se encoge al bajar */
+var hdr = document.getElementById("hdr");
+window.addEventListener("scroll", function(){ hdr.classList.toggle("shrink", window.scrollY > 80); }, {passive:true});
 </script>
 </body>
 </html>
