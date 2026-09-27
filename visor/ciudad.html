@@ -19,11 +19,12 @@ aside .card{padding:14px 16px;margin-bottom:12px} aside h3{font-size:14.5px;marg
 #info{font-size:13px;color:var(--fg2)} #info table{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px} #info td{padding:3px 0;border-bottom:1px solid var(--border);vertical-align:top} #info td:first-child{color:var(--fg2);width:46%}
 .hechos{max-height:300px;overflow:auto;font-size:12.5px;display:grid;gap:8px} .hechos a{color:#000;text-decoration-color:var(--yellow)} .hechos small{color:var(--fg2)}
 .bar{display:flex;gap:8px;align-items:center;margin-bottom:8px;font-size:12.5px}
+.bar3d{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:12.5px;color:var(--fg2);padding:0 2px 8px} .bar3d label{display:inline-flex;gap:6px;align-items:center;cursor:pointer} .bar3d input{accent-color:var(--yellow)}
 </style>
 </head>
 <body>
 <div class="grid">
-  <div><div id="map"></div></div>
+  <div><div class="bar3d"><label><input type="checkbox" id="terreno"> Relieve 3D</label><label><input type="checkbox" id="inclinar"> Inclinar</label></div><div id="map"></div></div>
   <aside>
     <div class="card"><h3 id="ttl">Ciudad</h3><div class="kpis" id="kpis"></div></div>
     <div class="card"><h3>Capas</h3><div id="layers"></div><div id="leg"></div></div>

@@ -8,9 +8,13 @@ var MUNS=["20178","20228"]; // Chiriguana, Curumani
 var HC={muy_alta:["#08519c",.55,"Muy alta (HAND < 1 m)"],alta:["#4292c6",.4,"Alta (1-2 m)"],moderada:["#9ecae1",.3,"Moderada (2-3 m)"]};
 var DTIPOS={perdida_bosque:["Pérdida de cobertura arbórea 2001-2024","#d1495b"],suelo_alterado_mineria:["Suelo alterado por minería (huella 2017-2025)","#8a5a2b"]};
 
-var map=new maplibregl.Map({container:"map",style:"https://tiles.openfreemap.org/styles/liberty",center:[-73.52,9.33],zoom:10.6,maxPitch:70});
+var map=new maplibregl.Map({container:"map",style:"https://tiles.openfreemap.org/styles/liberty",center:[-73.52,9.33],zoom:10.6,pitch:0,maxPitch:75});
 map.addControl(new maplibregl.NavigationControl({visualizePitch:true}),"top-left");
 map.addControl(new maplibregl.ScaleControl({unit:"metric"}),"bottom-left");
+function terrenoListo(){if(map.getSource("terreno"))return;map.addSource("terreno",{type:"raster-dem",tiles:["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"],tileSize:256,encoding:"terrarium",maxzoom:14,attribution:"Elevación: Mapzen/AWS Terrain Tiles"});
+  if(typeof map.setSky==="function"){try{map.setSky({"sky-color":"#cfe8ff","sky-horizon-blend":.5,"horizon-color":"#fff","horizon-fog-blend":.5,"fog-color":"#e8ecef","fog-ground-blend":.3});}catch(e){}}}
+document.getElementById("terreno").addEventListener("change",function(e){terrenoListo();map.setTerrain(e.target.checked?{source:"terreno",exaggeration:1.6}:null);if(e.target.checked&&map.getPitch()<30)map.easeTo({pitch:58});});
+document.getElementById("inclinar").addEventListener("change",function(e){map.easeTo({pitch:e.target.checked?58:0,duration:700});});
 
 Promise.all([J("/api/geo/municipios?depto=20&tol=0.0015"), J("/api/dano/resumen?depto=20")]).then(function(v){init(v[0], v[1]);}).catch(function(e){document.getElementById("info").textContent="No se pudo leer la base ("+e.message+").";});
 
@@ -36,11 +40,12 @@ function init(munGeo, resumen){
 
     Object.keys(HC).forEach(function(cl){var id="hd_"+cl;
       map.addSource(id,{type:"vector",tiles:[API+"/tiles/capa/hand_anime/"+cl+"/{z}/{x}/{y}.pbf"],minzoom:0,maxzoom:14});
-      map.addLayer({id:id,type:"fill",source:id,"source-layer":"capa",layout:{visibility:cl==="muy_alta"?"visible":"none"},paint:{"fill-color":HC[cl][0],"fill-opacity":HC[cl][1]}},lbl);
-      LAY.push({label:HC[cl][2],sw:HC[cl][0],ids:[id],on:cl==="muy_alta"}); fila(LAY[LAY.length-1]);});
+      map.addLayer({id:id,type:"fill",source:id,"source-layer":"capa",layout:{visibility:"visible"},paint:{"fill-color":HC[cl][0],"fill-opacity":HC[cl][1]}},lbl);
+      LAY.push({label:HC[cl][2],sw:HC[cl][0],ids:[id],on:true}); fila(LAY[LAY.length-1]);});
     map.addSource("hd_c",{type:"vector",tiles:[API+"/tiles/capa/hand_anime/cauce_modelado/{z}/{x}/{y}.pbf"],minzoom:0,maxzoom:14});
-    map.addLayer({id:"hd_c",type:"line",source:"hd_c","source-layer":"capa",layout:{visibility:"visible"},paint:{"line-color":"#08519c","line-width":1.3}},lbl);
-    LAY.push({label:"Cauces modelados desde el DEM (no es la línea oficial del río)",sw:"#08519c",ids:["hd_c"],on:true}); fila(LAY[LAY.length-1]);
+    map.addLayer({id:"hd_c",type:"line",source:"hd_c","source-layer":"capa",layout:{visibility:"visible"},paint:{"line-color":"#08306b","line-width":1.8,"line-dasharray":[2,1]}},lbl);
+    LAY.push({label:"Cauces modelados desde el DEM (no es la línea oficial del río)",sw:"#08306b",ids:["hd_c"],on:true}); fila(LAY[LAY.length-1]);
+    if(P.get("terreno")==="1"){terrenoListo();document.getElementById("terreno").checked=true;document.getElementById("inclinar").checked=true;map.setTerrain({source:"terreno",exaggeration:1.6});map.jumpTo({pitch:+(P.get("pitch")||55)});}
 
     map.addSource("dano",{type:"vector",tiles:[API+"/tiles/dano/{z}/{x}/{y}.pbf?depto=20"],minzoom:0,maxzoom:14});
     var col=["match",["get","tipo"]];Object.keys(DTIPOS).forEach(function(t){col.push(t,DTIPOS[t][1]);});col.push("#888");

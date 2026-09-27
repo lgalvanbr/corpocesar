@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contratos en ejecución · Corpocesar en la mira</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+<style>
+main.wrap{padding:32px 20px 80px}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:22px 0 6px}
+.bar input,.bar select{font:14px var(--sans);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;background:var(--panel);color:var(--ink)}
+.bar input{flex:1;min-width:220px}
+.count{font:500 12.5px var(--mono);color:var(--ink2);margin:10px 0 14px}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);background:var(--panel)}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:900px}
+th{text-align:left;font:600 10.5px var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);padding:10px 12px;border-bottom:2px solid var(--ink);cursor:pointer;white-space:nowrap;background:var(--subtle)}
+th:hover{color:var(--ink)}
+td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-family:var(--mono)}
+tr:hover td{background:var(--subtle)}
+.pill{font:600 10px var(--mono);text-transform:uppercase;padding:2px 7px;border:1px solid var(--border2);border-radius:999px;white-space:nowrap;color:var(--ink2)}
+.back{font:500 13px var(--sans);color:var(--ink2);text-decoration:none}
+.back:hover{color:var(--ink)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap masthead">
+    <div>
+      <div class="kicker"><a class="back" href="index.html">← Corpocesar en la mira</a></div>
+      <h1 class="tit">Los 531 contratos en ejecución</h1>
+      <p class="dek">Todo lo que Corpocesar tiene contratado y activo hoy, directo de SECOP II. Busque por contratista u objeto, filtre por categoría, ordene por valor.</p>
+    </div>
+    <div class="meta">NIT 892.301.483<br>Corte: 27 sep. 2026</div>
+  </div>
+</header>
+<main class="wrap">
+  <div class="bar">
+    <input id="q" type="search" placeholder="Buscar por contratista u objeto…" aria-label="Buscar">
+    <select id="cat" aria-label="Categoría"></select>
+  </div>
+  <div class="count" id="count"></div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th data-k="1">Firma</th><th data-k="3">Contratista</th><th data-k="4">Categoría</th><th data-k="2" style="text-align:right">Valor</th><th data-k="5">Objeto</th>
+      </tr></thead>
+      <tbody id="filas"></tbody>
+    </table>
+  </div>
+</main>
+<footer>
+  <div class="wrap">
+    <p>Fuente: SECOP II (datos.gov.co), conjunto de datos jbjy-vk9h, filtrado por el NIT de Corpocesar. "En ejecución" es el estado que reporta la propia entidad en SECOP; no verificamos el avance físico de cada obra.</p>
+    <p class="credit">Investigación independiente del Laboratorio SinergIA, Ingeniería Civil y Ambiental, Universidad de los Andes.</p>
+  </div>
+</footer>
+<script>
+var CAT = {
+  reforestacion_restauracion:"Reforestación y restauración", control_erosion_inundacion_fluvial:"Control de erosión e inundación",
+  otros_sin_clasificar:"Sin clasificar", monitoreo_redes_ambientales:"Monitoreo de redes ambientales",
+  gestion_riesgo_cambio_climatico:"Gestión del riesgo y cambio climático", apoyo_gestion_administrativa:"Apoyo a la gestión",
+  planes_ordenacion_estudios_riesgo:"Planes de ordenación y estudios", consultoria_juridica_administrativa:"Consultoría jurídica",
+  calidad_agua_recurso_hidrico:"Calidad del agua", fauna_flora_biodiversidad:"Fauna, flora y biodiversidad",
+  educacion_participacion_ambiental:"Educación ambiental", tic_sistemas_informacion:"TIC y sistemas",
+  comunicaciones_eventos:"Comunicaciones y eventos", obras_civiles_infraestructura:"Obras civiles",
+  servicios_publicos_arrendamiento:"Servicios públicos y arriendo", licenciamiento_control_seguimiento:"Licenciamiento y control",
+  interventoria_supervision:"Interventoría", vehiculos_maquinaria_combustible:"Vehículos y maquinaria"
+};
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function fmt(v){return Math.round(v).toLocaleString("es-CO");}
+var DATA=[], SORT={k:2,dir:-1};
+fetch("contratos_ejecucion.json").then(function(r){return r.json();}).then(function(d){
+  DATA = d;
+  var cats = Array.from(new Set(d.map(function(r){return r[4];}))).sort(function(a,b){return (CAT[a]||a).localeCompare(CAT[b]||b);});
+  var sel = document.getElementById("cat");
+  sel.innerHTML = '<option value="">Todas las categorías</option>' + cats.map(function(c){return '<option value="'+c+'">'+esc(CAT[c]||c)+'</option>';}).join("");
+  render();
+}).catch(function(e){document.getElementById("count").textContent = "No se pudo cargar la lista: " + e.message;});
+
+document.getElementById("q").addEventListener("input", render);
+document.getElementById("cat").addEventListener("change", render);
+document.querySelectorAll("th[data-k]").forEach(function(th){
+  th.addEventListener("click", function(){
+    var k = +th.dataset.k;
+    SORT.dir = (SORT.k === k) ? -SORT.dir : (k===2?-1:1);
+    SORT.k = k;
+    render();
+  });
+});
+
+function render(){
+  var q = document.getElementById("q").value.toLowerCase();
+  var cat = document.getElementById("cat").value;
+  var rows = DATA.filter(function(r){
+    if(cat && r[4] !== cat) return false;
+    if(q && r[3].toLowerCase().indexOf(q)<0 && r[5].toLowerCase().indexOf(q)<0) return false;
+    return true;
+  });
+  rows.sort(function(a,b){
+    var x=a[SORT.k], y=b[SORT.k];
+    if(typeof x === "string"){x=x.toLowerCase();y=y.toLowerCase();}
+    return x<y?-SORT.dir:x>y?SORT.dir:0;
+  });
+  document.getElementById("count").textContent = fmt(rows.length) + " contratos · $" + fmt(rows.reduce(function(a,r){return a+r[2];},0)) + " millones";
+  document.getElementById("filas").innerHTML = rows.map(function(r){
+    return "<tr><td>"+esc(r[1])+"</td><td>"+esc(r[3])+"</td><td><span class='pill'>"+esc(CAT[r[4]]||r[4])+"</span></td><td class='num'>$"+fmt(r[2])+" M</td><td>"+esc(r[5])+"</td></tr>";
+  }).join("");
+}
+</script>
+</body>
+</html>

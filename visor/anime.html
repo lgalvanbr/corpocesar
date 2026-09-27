@@ -17,16 +17,17 @@ aside .card{padding:14px 16px;margin-bottom:12px} aside h3{font-size:14.5px;marg
 .nota{font-size:11.5px;color:var(--fg2);line-height:1.4} #info{font-size:13px;color:var(--fg2)}
 table{width:100%;border-collapse:collapse;font-size:12.5px} td{padding:4px 0;border-bottom:1px solid var(--border)} td:first-child{color:var(--fg2);width:46%}
 .maplibregl-popup-content{font:13px/1.45 var(--sans);border-radius:12px;padding:10px 12px}
+.bar3d{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:12.5px;color:var(--fg2);padding:0 2px 8px} .bar3d label{display:inline-flex;gap:6px;align-items:center;cursor:pointer} .bar3d input{accent-color:var(--yellow)}
 </style>
 </head>
 <body>
 <div class="grid">
-  <div><div id="map"></div></div>
+  <div><div class="bar3d"><label><input type="checkbox" id="terreno"> Relieve 3D</label><label><input type="checkbox" id="inclinar"> Inclinar</label></div><div id="map"></div></div>
   <aside>
     <div class="card"><h3 id="ttl">Corriente Anime · Chiriguaná y Curumaní</h3><div class="kpis" id="kpis"></div></div>
     <div class="card"><h3>Capas</h3><div id="layers"></div></div>
     <div class="card"><h3 id="infoT">Detalle</h3><div id="info">Pulse un polígono para ver sus datos.</div></div>
-    <div class="card nota"><b>Método:</b> zonas inundables por altura sobre el drenaje más cercano (HAND), calculadas con el DEM Copernicus de 30 m y flujo D8, sin calibrar con caudal ni con un evento real: es un modelo topográfico de dónde el agua tendería a acumularse, no una crecida específica. La pérdida de bosque y la huella minera son las mismas capas del <a href="/infraestructura-visible-2/dano">visor de daño ambiental</a>, aquí recortadas a Chiriguaná y Curumaní. Ninguna de las dos ciudades tiene el radar de inundación por satélite que sí tienen las seis ciudades del piloto.</div>
+    <div class="card nota"><b>Método:</b> zonas inundables por altura sobre el drenaje más cercano (HAND), calculadas con el DEM Copernicus de 30 m y flujo D8, sin calibrar con caudal ni con un evento real: es un modelo topográfico de dónde el agua tendería a acumularse, no una crecida específica. La pérdida de bosque y la huella minera son las mismas capas del <a href="dano.html?depto=20">visor de daño ambiental</a>, aquí recortadas a Chiriguaná y Curumaní. Ninguna de las dos ciudades tiene el radar de inundación por satélite que sí tienen las seis ciudades del piloto.</div>
   </aside>
 </div>
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>

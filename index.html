@@ -6,40 +6,18 @@
 <meta name="description" content="Ocho contratos de Corpocesar en ejecución, con imágenes satelitales, polígonos de daño ambiental y un modelo propio de zonas inundables.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
 <style>
-:root{
-  --bg:#f6f4ef; --panel:#fffefb; --subtle:#efece3; --border:#ddd8c9; --border2:#c9c2ac;
-  --ink:#1c2b28; --ink2:#5b6560; --accent:#a3491c; --accent-ink:#7a350f;
-  --agua:#2a5f7a; --bosque:#2f6d4f; --alerta:#a3491c;
-  --serif:"Source Serif 4",Georgia,serif; --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
-  color-scheme:light;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 15.5px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
-a{color:inherit}
-h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0}
-.wrap{max-width:920px;margin:0 auto;padding:0 20px}
-header.top{border-bottom:3px solid var(--ink);padding:34px 0 22px;background:var(--panel)}
-.masthead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
-.kicker{font:600 11.5px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--accent-ink)}
-h1.tit{font-size:clamp(30px,4.6vw,44px);line-height:1.05;margin-top:8px;text-wrap:balance}
-.dek{font-size:16.5px;color:var(--ink2);max-width:60ch;margin-top:12px;line-height:1.55}
-.meta{font:500 12.5px var(--mono);color:var(--ink2);text-align:right}
 main{padding:32px 0 80px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin:28px 0 36px}
-.stat{background:var(--panel);padding:16px 18px}
-.stat b{display:block;font-family:var(--serif);font-size:25px;font-weight:600}
-.stat span{font-size:11.5px;color:var(--ink2);line-height:1.35;display:block;margin-top:3px}
-@media(max-width:700px){.stats{grid-template-columns:1fr 1fr}}
 .lead{font-size:15px;color:var(--ink2);max-width:66ch;line-height:1.65;margin-bottom:8px}
+.lead a{color:var(--agua-ink);text-decoration:underline}
 .list{display:flex;flex-direction:column;gap:14px;margin-top:28px}
 details.card{background:var(--panel);border:1px solid var(--border);overflow:hidden}
 details.card[open]{border-color:var(--border2)}
 summary{list-style:none;cursor:pointer;padding:18px 22px;display:flex;gap:14px;align-items:flex-start}
 summary::-webkit-details-marker{display:none}
 .tag{font:600 10.5px var(--mono);text-transform:uppercase;letter-spacing:.06em;padding:3px 8px;border:1px solid currentColor;flex:none;margin-top:3px}
-.tag.agua{color:var(--agua)} .tag.bosque{color:var(--bosque)}
+.tag.agua{color:var(--agua-ink)} .tag.bosque{color:var(--bosque-ink)}
 .sh1{flex:1;min-width:0}
 .sh1 h3{font-size:18px;line-height:1.3}
 .sh-meta{font-size:13px;color:var(--ink2);margin-top:5px}
@@ -48,8 +26,8 @@ details[open] .chev{transform:rotate(180deg)}
 .body{padding:0 22px 24px;border-top:1px solid var(--border)}
 .objeto{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:18px}
 .objeto b{color:var(--ink);font-weight:600}
-.callout{font-size:14px;line-height:1.6;margin:16px 0;padding:13px 16px;border-left:3px solid var(--accent);background:var(--subtle)}
-.callout b{color:var(--accent-ink)}
+.callout{font-size:14px;line-height:1.6;margin:16px 0;padding:13px 16px;border-left:3px solid var(--lima);background:var(--subtle)}
+.callout b{color:var(--bosque-ink)}
 .label{font:600 10.5px var(--mono);text-transform:uppercase;letter-spacing:.07em;color:var(--ink2);display:block;margin:20px 0 8px}
 .sol{margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
 .sol li{font-size:14.5px;line-height:1.6;padding-left:16px;position:relative;color:var(--ink)}
@@ -60,10 +38,6 @@ details[open] .chev{transform:rotate(180deg)}
 iframe.map{width:100%;height:500px;border:0;display:block}
 .caveat{font-size:12.5px;color:var(--ink2);font-style:italic;margin-top:14px}
 .interv{font-size:12px;color:var(--ink2);margin-top:10px}
-footer{border-top:3px solid var(--ink);background:var(--panel);padding:26px 0 40px;margin-top:52px}
-footer p{font-size:12.5px;color:var(--ink2);line-height:1.7;max-width:80ch}
-footer .credit{margin-top:14px;font:500 12px var(--sans);color:var(--ink2)}
-footer a{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -72,21 +46,22 @@ footer a{text-decoration:underline}
     <div>
       <div class="kicker">Contratación pública · vigilancia ciudadana</div>
       <h1 class="tit">Corpocesar en la mira</h1>
-      <p class="dek">Ocho obras de la Corporación Autónoma Regional del Cesar, hoy en ejecución, leídas contra nuestra propia imagen de satélite y un modelo de zonas inundables — para saber si la plata está cayendo donde el problema es más grande.</p>
+      <p class="dek">Ocho obras de la Corporación Autónoma Regional del Cesar, hoy en ejecución, leídas contra nuestra propia imagen de satélite, un modelo de zonas inundables y un modelo de terreno en 3D — para saber si la plata está cayendo donde el problema es más grande.</p>
     </div>
-    <div class="meta">NIT 892.301.483<br>Corte: 27 sep. 2026</div>
+    <div class="meta">NIT 892.301.483<br>Corte: 27 sep. 2026<br><a href="contratos.html" style="color:var(--agua-ink);font-weight:600">Ver los 531 contratos activos →</a></div>
   </div>
 </header>
 
 <main class="wrap">
   <div class="stats">
     <div class="stat"><b>$392,4 mm</b><span>contratados por Corpocesar desde 2021</span></div>
-    <div class="stat"><b>531</b><span>contratos en ejecución hoy</span></div>
+    <div class="stat"><b>531</b><span>contratos en ejecución hoy, por $128,5 mm — <a href="contratos.html" style="color:var(--agua-ink)">verlos todos</a></span></div>
     <div class="stat"><b>8</b><span>obras con mapa propio en esta lectura</span></div>
     <div class="stat"><b>162</b><span>contratos activos sin póliza vigente registrada</span></div>
   </div>
 
-  <p class="lead">Elegimos las obras más grandes y más ligadas a un problema físico medible: inundación en Valledupar, Chiriguaná y Curumaní; deforestación y minería en Becerril, La Jagua de Ibirico, Pueblo Bello y La Paz. A cada una le pusimos encima pérdida de bosque (Hansen), huella de minería a cielo abierto (Sentinel-2), frecuencia de inundación por radar (Sentinel-1) y un modelo propio de altura sobre el drenaje (HAND) calculado sobre el DEM de Copernicus. Abra cada contrato para ver el objeto, el hallazgo y el mapa.</p>
+  <p class="lead">Elegimos las obras más grandes y más ligadas a un problema físico medible: inundación en Valledupar, Chiriguaná y Curumaní; deforestación y minería en Becerril, La Jagua de Ibirico, Pueblo Bello y La Paz. A cada una le pusimos encima pérdida de bosque (Hansen), huella de minería a cielo abierto (Sentinel-2), frecuencia de inundación por radar (Sentinel-1) y un modelo propio de altura sobre el drenaje (HAND) calculado sobre el DEM de Copernicus, con relieve en 3D. Abra cada contrato para ver el objeto, el hallazgo y el mapa.</p>
+  <p class="lead">Según el propio <a href="https://www.corpocesar.gov.co/Plan-de-accion-2024-2027.html" target="_blank" rel="noreferrer">Plan de Acción Cuatrienal 2024-2027</a> de Corpocesar ("Gobernanza y Gobernabilidad en la Gestión Ambiental del Cesar", aprobado por Acuerdo 003 del 17 de mayo de 2024 bajo la dirección general de Adriana Margarita García Arévalo), la Serranía del Perijá y la margen derecha del río Guatapurí son dos de sus proyectos insignia — las mismas dos obras que esta lectura escogió de forma independiente, sin conocer antes ese plan. A mitad de 2025, la entidad reportó a su Junta Directiva más del 70% de cumplimiento de sus metas.</p>
 
   <div class="list" id="lista"></div>
 </main>
@@ -108,7 +83,7 @@ var OBRAS = [
    "Lo que aportamos: la capa de frecuencia deja ver qué tramo de la margen se moja más veces en dos años de escenas, para concentrar la obra ahí en vez de repartirla parejo a lo largo del río.",
    "Además modelamos la cuenca: con el DEM Copernicus de 30 m calculamos flujo D8 y la altura de cada punto sobre el cauce modelado más cercano (HAND). Actívela como 'Zonas inundables por topografía'. En los 515 km² alrededor de Valledupar, 127 km² quedan a menos de 3 m sobre un cauce modelado (82 km² a menos de 1 m), y ese cauce pasa a 2,4 km del centro de la ciudad — coherente con el recorrido real del Guatapurí."],
  caveat:"El HAND es topografía pura: dice qué tan bajo está cada punto respecto al drenaje, no cuánta agua trae el río ni cada cuánto se desborda. La ventana de radar (2024-2026) no incluye la creciente que motivó este contrato.",
- iframe:"visor/ciudad.html?c=valledupar&zoom=12.3"},
+ iframe:"visor/ciudad.html?c=valledupar&zoom=12.3&terreno=1&pitch=55"},
 
 {tipo:"agua",nombre:"Control de inundación · caño El Arroyito, corregimiento de Guacoche",lugar:"Valledupar, Cesar",contrato:"CO1.PCCNTR.8341669",contratista:"UTGA 2025",interventoria:"BROKA S.A.S. ($504 M)",valor:"$5.924 M",firma:"octubre de 2025 · en ejecución",
  objeto:"Construcción de obras hidráulicas para el control de la inundación sobre el caño El Arroyito, en el corregimiento de Guacoche, jurisdicción del municipio de Valledupar.",
@@ -116,7 +91,7 @@ var OBRAS = [
  analisis:["Usamos la misma capa de frecuencia de inundación de Valledupar, centrada esta vez sobre Guacoche en lugar del casco urbano.",
    "OpenStreetMap no tiene El Arroyito trazado como vía de agua. El modelo HAND lo resuelve distinto: calcula desde el propio DEM dónde se concentraría el flujo — ese es el cauce modelado que aparece al activar 'Zonas inundables por topografía', junto con las tres bandas de altura sobre ese cauce."],
  caveat:"El cauce que traza el modelo es una estimación desde la topografía, no el trazado oficial de El Arroyito; en terreno muy plano el D8 puede desviarse del canal real.",
- iframe:"visor/ciudad.html?c=valledupar&zoom=12.3"},
+ iframe:"visor/ciudad.html?c=valledupar&zoom=12.3&terreno=1&pitch=55"},
 
 {tipo:"bosque",nombre:"Restauración ecológica · resguardo indígena Sokorpa, cuenca del río Calenturitas",lugar:"Becerril, Cesar",contrato:"CO1.PCCNTR.8745141",contratista:"Consorcio Restauración Sokorpa",interventoria:"Consorcio Inter Sokorpa ($847 M)",valor:"$8.652 M",firma:"enero de 2026 · en ejecución",
  objeto:"Desarrollo de acciones para la restauración ecológica de áreas de especial importancia ecológica de la cuenca hidrográfica del río Calenturitas, jurisdicción del resguardo indígena Sokorpa, municipio de Becerril.",
@@ -150,7 +125,7 @@ var OBRAS = [
    "Bajamos el DEM Copernicus de la corriente Anime y corrimos el mismo modelo HAND que en Valledupar: en un corredor de 772 km² entre los dos municipios, 287 km² quedan a menos de 3 m sobre algún cauce modelado (207 km² a menos de 1 m). El modelo traza su propio cauce desde la topografía, sin necesitar que el Anime esté digitalizado en OpenStreetMap.",
    "El mapa cruza esa capa con la pérdida de bosque de ambos municipios: donde coinciden HAND bajo y bosque perdido recientemente es el primer lugar donde miraríamos si hay una fase IV."],
  caveat:"El corredor de 772 km² es una caja amplia entre los dos municipios, no la cuenca hidrográfica exacta del Anime. El HAND es topografía, no medición de caudal ni de la causa de la erosión.",
- iframe:"visor/anime.html"},
+ iframe:"visor/anime.html?terreno=1&pitch=52"},
 
 {tipo:"bosque",nombre:"Reducir la presión sobre el bosque y mitigar el cambio climático",lugar:"La Paz, Cesar",contrato:"CO1.PCCNTR.9159652",contratista:"Consorcio Barak",interventoria:"Consorcio Thermocontrol ($146 M)",valor:"$851 M",firma:"febrero de 2026 · en ejecución",
  objeto:"Implementación de estrategias para disminuir la presión sobre el recurso forestal e implementación de medidas para la mitigación del cambio climático en zonas rurales del municipio de La Paz.",

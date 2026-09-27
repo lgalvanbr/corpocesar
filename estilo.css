@@ -1,0 +1,33 @@
+/* Identidad de Corpocesar en la mira, tomada del logo oficial de Corpocesar (agua #5186BB, hoja #85AF51/#A4BF4D) */
+:root{
+  --bg:#f4f7f6; --panel:#ffffff; --subtle:#eaf1ee; --border:#d7e3de; --border2:#b9ccc4;
+  --ink:#132420; --ink2:#5c6d67;
+  --agua:#3f6f9c; --agua-ink:#2c5171; --bosque:#5c8a3a; --bosque-ink:#456a2b; --lima:#a4bf4d;
+  --serif:"Source Serif 4",Georgia,serif; --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15.5px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;margin:0}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+header.top{border-bottom:4px solid var(--agua);background:linear-gradient(180deg,var(--panel),var(--panel) 88%,var(--subtle));padding:30px 0 22px;position:relative}
+header.top::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:4px;background:var(--bosque)}
+.masthead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.kicker{font:600 11.5px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--agua-ink)}
+h1.tit{font-size:clamp(28px,4.2vw,42px);line-height:1.06;margin-top:8px;text-wrap:balance;color:var(--ink)}
+h1.tit b, h1.tit .verde{color:var(--bosque-ink)}
+.dek{font-size:16px;color:var(--ink2);max-width:62ch;margin-top:12px;line-height:1.55}
+.meta{font:500 12.5px var(--mono);color:var(--ink2);text-align:right}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin:28px 0 36px}
+.stat{background:var(--panel);padding:16px 18px;border-top:3px solid var(--agua)}
+.stat:nth-child(even){border-top-color:var(--bosque)}
+.stat b{display:block;font-family:var(--serif);font-size:24px;font-weight:600;color:var(--ink)}
+.stat span{font-size:11.5px;color:var(--ink2);line-height:1.35;display:block;margin-top:3px}
+@media(max-width:700px){.stats{grid-template-columns:1fr 1fr}}
+footer{border-top:4px solid var(--bosque);background:var(--panel);padding:26px 0 40px;margin-top:52px}
+footer p{font-size:12.5px;color:var(--ink2);line-height:1.7;max-width:80ch;margin:0 0 8px}
+footer .credit{margin-top:14px;font:500 12px var(--sans);color:var(--ink2)}
+footer a{text-decoration:underline}
+:focus-visible{outline:2px solid var(--agua);outline-offset:2px}
