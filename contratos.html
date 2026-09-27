@@ -4,24 +4,26 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Contratos en ejecución · Corpocesar en la mira</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="estilo.css">
 <style>
-main.wrap{padding:32px 20px 80px}
-.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:22px 0 6px}
-.bar input,.bar select{font:14px var(--sans);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;background:var(--panel);color:var(--ink)}
+main.wrap{padding:36px 20px 80px}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:24px 0 8px}
+.bar input,.bar select{font:13.5px var(--sans);border:1px solid var(--border);border-radius:6px;padding:9px 12px;background:var(--surface);color:var(--ink);transition:border-color .15s}
+.bar input:focus,.bar select:focus{border-color:var(--agua)}
 .bar input{flex:1;min-width:220px}
-.count{font:500 12.5px var(--mono);color:var(--ink2);margin:10px 0 14px}
-.tbl-wrap{overflow-x:auto;border:1px solid var(--border);background:var(--panel)}
-table{width:100%;border-collapse:collapse;font-size:13px;min-width:900px}
-th{text-align:left;font:600 10.5px var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);padding:10px 12px;border-bottom:2px solid var(--ink);cursor:pointer;white-space:nowrap;background:var(--subtle)}
-th:hover{color:var(--ink)}
-td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
-td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-family:var(--mono)}
-tr:hover td{background:var(--subtle)}
-.pill{font:600 10px var(--mono);text-transform:uppercase;padding:2px 7px;border:1px solid var(--border2);border-radius:999px;white-space:nowrap;color:var(--ink2)}
-.back{font:500 13px var(--sans);color:var(--ink2);text-decoration:none}
-.back:hover{color:var(--ink)}
+.bar input::placeholder{color:var(--ink3)}
+.count{font:500 11.5px var(--mono);color:var(--ink3);margin:12px 0 16px;letter-spacing:.02em;text-transform:uppercase}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);background:var(--surface);border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:900px;font-family:var(--sans)}
+th{text-align:left;font:600 10px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);padding:11px 12px;border-bottom:1px solid var(--border);cursor:pointer;white-space:nowrap;background:var(--surface-2);transition:color .15s}
+th:hover{color:var(--agua-ink)}
+td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--ink2)}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-family:var(--mono);color:var(--ink)}
+tr:hover td{background:var(--surface-hover)}
+.pill{font:600 9.5px var(--mono);text-transform:uppercase;letter-spacing:.02em;padding:3px 8px;border:1px solid var(--border-strong);border-radius:4px;white-space:nowrap;color:var(--agua-ink)}
+.back{font:500 12.5px var(--mono);color:var(--ink3);text-decoration:none;letter-spacing:.02em}
+.back:hover{color:var(--agua-ink)}
 </style>
 </head>
 <body>

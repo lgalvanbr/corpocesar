@@ -8,6 +8,14 @@ var ACT={},YR=2024,MUN={},RES=[],timer=null,ESTADO={suelo_alterado_mineria:true}
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
 function J(u){return fetch(API+u).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();});}
 var map=new maplibregl.Map({container:"map",style:"https://tiles.openfreemap.org/styles/liberty",center:[-73.5,9.5],zoom:7.4,pitch:0,maxPitch:75});map.addControl(new maplibregl.NavigationControl({visualizePitch:true}),"top-left");map.addControl(new maplibregl.ScaleControl({unit:"metric"}),"bottom-left");
+(function(){var hcLat=document.getElementById("hcLat"),hcLon=document.getElementById("hcLon"),hcZoom=document.getElementById("hcZoom");
+  if(!hcLat)return;
+  map.on("mousemove",function(e){hcLat.textContent=e.lngLat.lat.toFixed(4);hcLon.textContent=e.lngLat.lng.toFixed(4);});
+  function z(){hcZoom.textContent=map.getZoom().toFixed(1);}
+  map.on("zoom",z);map.on("load",z);z();
+  var pt=document.getElementById("panelToggle"),pn=document.getElementById("panel");
+  if(pt)pt.addEventListener("click",function(){var c=pn.classList.toggle("collapsed");pt.setAttribute("aria-expanded",c?"false":"true");setTimeout(function(){map.resize();},360);});
+})();
 function terrenoListo(){if(map.getSource("terreno"))return;map.addSource("terreno",{type:"raster-dem",tiles:["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"],tileSize:256,encoding:"terrarium",maxzoom:14,attribution:"Elevación: Mapzen/AWS Terrain Tiles"});
   if(typeof map.setSky==="function"){try{map.setSky({"sky-color":"#cfe8ff","sky-horizon-blend":.5,"horizon-color":"#fff","horizon-fog-blend":.5,"fog-color":"#e8ecef","fog-ground-blend":.3});}catch(e){}}}
 document.getElementById("terreno").addEventListener("change",function(e){terrenoListo();map.setTerrain(e.target.checked?{source:"terreno",exaggeration:1.6}:null);if(e.target.checked&&map.getPitch()<30)map.easeTo({pitch:58});});

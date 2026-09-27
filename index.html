@@ -5,49 +5,46 @@
 <title>Corpocesar en la mira</title>
 <meta name="description" content="Ocho contratos de Corpocesar en ejecución, con imágenes satelitales, polígonos de daño ambiental y un modelo propio de zonas inundables.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="estilo.css">
 <style>
-main{padding:32px 0 80px}
-.lead{font-size:15px;color:var(--ink2);max-width:66ch;line-height:1.65;margin-bottom:8px}
-.lead a{color:var(--agua-ink);text-decoration:underline}
-.list{display:flex;flex-direction:column;gap:14px;margin-top:28px}
-details.card{background:var(--panel);border:1px solid var(--border);overflow:hidden}
-details.card[open]{border-color:var(--border2)}
-summary{list-style:none;cursor:pointer;padding:18px 22px;display:flex;gap:14px;align-items:flex-start}
+main{padding:36px 0 80px}
+.lead{font-size:14.5px;color:var(--ink2);max-width:68ch;line-height:1.7;margin-bottom:10px;font-family:var(--sans)}
+.lead a{color:var(--agua-ink);text-decoration:underline;text-decoration-color:var(--border-strong)}
+.list{display:flex;flex-direction:column;gap:1px;margin-top:28px;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+details.card{background:var(--surface);overflow:hidden;transition:background .2s var(--sp-smooth)}
+details.card:hover{background:var(--surface-hover)}
+details.card[open]{background:var(--surface-2)}
+summary{list-style:none;cursor:pointer;padding:18px 22px;display:flex;gap:14px;align-items:flex-start;transition:background .15s}
 summary::-webkit-details-marker{display:none}
-.tag{font:600 10.5px var(--mono);text-transform:uppercase;letter-spacing:.06em;padding:3px 8px;border:1px solid currentColor;flex:none;margin-top:3px}
+summary::before{content:"";width:3px;align-self:stretch;border-radius:2px;flex:none;background:var(--border-strong)}
+details.card[open] summary::before{background:var(--agua)}
+.tag{font:600 10px var(--mono);text-transform:uppercase;letter-spacing:.07em;padding:3px 8px;border:1px solid currentColor;border-radius:4px;flex:none;margin-top:3px}
 .tag.agua{color:var(--agua-ink)} .tag.bosque{color:var(--bosque-ink)}
 .sh1{flex:1;min-width:0}
-.sh1 h3{font-size:18px;line-height:1.3}
-.sh-meta{font-size:13px;color:var(--ink2);margin-top:5px}
-.chev{font:400 16px var(--sans);color:var(--ink2);flex:none;transition:transform .15s}
-details[open] .chev{transform:rotate(180deg)}
-.body{padding:0 22px 24px;border-top:1px solid var(--border)}
-.objeto{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:18px}
-.objeto b{color:var(--ink);font-weight:600}
-.callout{font-size:14px;line-height:1.6;margin:16px 0;padding:13px 16px;border-left:3px solid var(--lima);background:var(--subtle)}
-.callout b{color:var(--bosque-ink)}
-.label{font:600 10.5px var(--mono);text-transform:uppercase;letter-spacing:.07em;color:var(--ink2);display:block;margin:20px 0 8px}
-.sol{margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
-.sol li{font-size:14.5px;line-height:1.6;padding-left:16px;position:relative;color:var(--ink)}
-.sol li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:6px;background:var(--ink)}
-.mapbox{margin-top:20px;border:1px solid var(--border)}
-.mapbar{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:var(--subtle);border-bottom:1px solid var(--border);font-size:11.5px;color:var(--ink2)}
-.mapbar a{font-weight:600;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--ink2)}
+.sh1 h3{font-size:15.5px;line-height:1.35;font-family:var(--sans);font-weight:600;letter-spacing:0}
+.sh-meta{font:500 12px var(--mono);color:var(--ink3);margin-top:6px;letter-spacing:.01em}
+.chev{font:400 14px var(--sans);color:var(--ink3);flex:none;transition:transform .3s var(--sp-spring)}
+details[open] .chev{transform:rotate(180deg);color:var(--agua-ink)}
+.body{padding:2px 22px 24px;border-top:1px solid var(--border)}
+.objeto{font-size:13.5px;color:var(--ink2);line-height:1.65;margin-top:18px;font-family:var(--sans)}
+.objeto b{color:var(--ink);font-weight:600;font-family:var(--mono);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em}
+.callout{font-size:13.5px;line-height:1.65;margin:16px 0;padding:13px 16px;border-left:2px solid var(--bosque);background:var(--bosque-dim);border-radius:0 6px 6px 0;font-family:var(--sans)}
+.callout b{color:var(--bosque-ink);font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.label{font:600 10.5px var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);display:block;margin:20px 0 10px}
+.sol{margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
+.sol li{font-size:13.5px;line-height:1.65;padding-left:16px;position:relative;color:var(--ink2);font-family:var(--sans)}
+.sol li::before{content:"›";position:absolute;left:0;top:0;color:var(--agua);font-family:var(--mono);font-weight:700}
+.mapbox{margin-top:20px;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.mapbar{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:var(--surface-2);border-bottom:1px solid var(--border);font:500 11px var(--mono);color:var(--ink3);letter-spacing:.03em;text-transform:uppercase}
+.mapbar a{font-weight:600;color:var(--agua-ink);text-decoration:none}
+.mapbar a:hover{text-decoration:underline}
 iframe.map{width:100%;height:500px;border:0;display:block}
 .map-slot{min-height:500px}
-.map-ph{height:500px;display:flex;align-items:center;justify-content:center;color:var(--ink2);font-size:13px;background:repeating-linear-gradient(135deg,var(--subtle),var(--subtle) 10px,var(--panel) 10px,var(--panel) 20px)}
-.caveat{font-size:12.5px;color:var(--ink2);font-style:italic;margin-top:14px}
-.interv{font-size:12px;color:var(--ink2);margin-top:10px}
-details.card{transition:box-shadow .2s,transform .2s}
-details.card:hover{box-shadow:0 6px 20px -8px rgba(19,36,32,.18)}
-summary{transition:background .15s}
-summary:hover{background:var(--subtle)}
-.stats.stats5{grid-template-columns:repeat(5,1fr)}
-@media(max-width:900px){.stats.stats5{grid-template-columns:repeat(2,1fr)}}
-.pill-link{display:inline-flex;align-items:center;gap:5px;font:600 12.5px var(--sans);color:#fff;background:var(--agua-ink);padding:6px 14px;border-radius:999px;text-decoration:none;transition:background .15s,transform .15s}
-.pill-link:hover{background:var(--bosque-ink);transform:translateY(-1px)}
+.map-ph{height:500px;display:flex;align-items:center;justify-content:center;color:var(--ink3);font:12px var(--mono);background:repeating-linear-gradient(135deg,var(--surface),var(--surface) 10px,var(--surface-2) 10px,var(--surface-2) 20px)}
+.caveat{font-size:12px;color:var(--ink3);margin-top:14px;font-family:var(--sans);line-height:1.6}
+.caveat::before{content:"NOTA · ";font-family:var(--mono);letter-spacing:.04em;color:var(--ink3)}
+.interv{font-size:12px;color:var(--ink3);margin-top:10px;font-family:var(--sans)}
 </style>
 </head>
 <body>
@@ -71,7 +68,7 @@ summary:hover{background:var(--subtle)}
     <div class="stat"><b data-count="392.4" data-decimals="1" data-suffix=" mm">$0 mm</b><span>contratados por Corpocesar desde 2021</span></div>
     <div class="stat"><b data-count="531">0</b><span>contratos en ejecución hoy, por $128,5 mm — <a href="contratos.html" style="color:var(--agua-ink)">verlos todos</a></span></div>
     <div class="stat"><b data-count="8">0</b><span>obras con mapa propio en esta lectura</span></div>
-    <div class="stat"><b data-count="162">0</b><span>contratos activos sin póliza vigente registrada</span></div>
+    <div class="stat"><b data-count="162">0</b><span>contratos activos sin póliza vigente <span class="status warn" style="margin-left:4px">alerta</span></span></div>
     <div class="stat"><b data-count="1881" data-suffix=" ha">0</b><span>inundadas de verdad en 2010-2011 y 2020-2022, según el IDEAM (Valledupar)</span></div>
   </div>
 

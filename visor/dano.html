@@ -2,47 +2,57 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Daño ambiental | InfraestructuraVisible2</title>
+<title>Daño ambiental · visor | Corpocesar en la mira</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
-<link rel="stylesheet" href="sinergia.css">
-<style>
-body{padding:0} .grid{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:14px;align-items:start;padding:12px} @media(max-width:1000px){.grid{grid-template-columns:1fr}}
-#map{height:calc(100vh - 24px);min-height:540px;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
-aside .card{padding:14px 16px;margin-bottom:12px} aside h3{font-size:14.5px;margin:0 0 8px;display:flex;align-items:center;gap:8px}
-.leaf{width:22px;height:22px;border-radius:50%;background:#5c8a3a;color:#fff;display:inline-grid;place-items:center;font-size:12px}
-.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px} .kpis b{display:block;font-size:22px;font-weight:600;letter-spacing:-.02em} .kpis span{font-size:11.5px;color:var(--fg2);line-height:1.3}
-.lr{margin:6px 0;font-size:13px} .lr label{display:flex;gap:8px;align-items:center;cursor:pointer} .lr input[type=checkbox]{accent-color:#5c8a3a}
-.sw{width:12px;height:12px;border-radius:3px;display:inline-block;flex:none}
-select,input[type=range]{font:13px var(--sans);width:100%} select{border:1px solid var(--border2);border-radius:8px;padding:5px 8px;margin:4px 0 8px} input[type=range]{accent-color:#5c8a3a}
-.yr{display:flex;justify-content:space-between;font-size:12px;color:var(--fg2)} .yr b{color:#000;font-size:15px}
-svg.ch{width:100%;height:auto;display:block;overflow:visible} svg.ch text{font:10.5px var(--sans);fill:#6e6e73} .ch .grid{stroke:#e5e5e7}
-table{width:100%;border-collapse:collapse;font-size:12.5px} td{padding:4px 0;border-bottom:1px solid var(--border)} td:last-child{text-align:right;font-variant-numeric:tabular-nums}
-.nota{font-size:11.5px;color:var(--fg2);line-height:1.4} #info{font-size:13px;color:var(--fg2)}
-.maplibregl-popup-content{font:13px/1.45 var(--sans);border-radius:12px;padding:10px 12px}
-.play{background:#5c8a3a;color:#fff;border:0;border-radius:999px;padding:6px 14px;font:500 12.5px var(--sans);cursor:pointer}
-.bar3d{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:12.5px;color:var(--fg2);padding:0 2px 8px} .bar3d label{display:inline-flex;gap:6px;align-items:center;cursor:pointer} .bar3d input{accent-color:#5c8a3a}
-</style>
+<link rel="stylesheet" href="hud.css">
 </head>
 <body>
-<div class="grid">
-  <div><div class="bar3d"><label><input type="checkbox" id="terreno"> Relieve 3D</label><label><input type="checkbox" id="inclinar"> Inclinar</label></div><div id="map"></div></div>
-  <aside>
-    <div class="card"><h3><span class="leaf">✿</span><span id="ttl">Daño ambiental</span></h3><div class="kpis" id="kpis"></div></div>
-    <div class="card"><h3>Qué ver</h3>
-      <label class="nota">Tipo de daño</label><div id="tipos"></div>
-      <div class="yr"><span>Año</span><b id="yv">2024</b></div><input type="range" id="yr" min="2001" max="2024" value="2024" aria-label="Año">
-      <div class="lr"><label><input type="checkbox" id="acum" checked> Acumular hasta ese año</label></div>
-      <div style="display:flex;gap:8px;align-items:center"><button class="play" id="play">▶ Reproducir</button><span class="nota" id="rng"></span></div>
+<div class="hud">
+  <div id="map"></div>
+
+  <div class="hud-top">
+    <div class="brand">
+      <svg viewBox="0 0 200 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M100 8C60 70 30 108 30 148a70 70 0 00140 0c0-40-30-78-70-140z" stroke="#6fa8dc" stroke-width="10"/>
+        <path d="M62 140c8-34 34-52 62-46-20 4-36 18-42 40-18 10-20 20-20 20s-4-10 0-14z" fill="#8dc152"/>
+      </svg>
+      <h1 id="ttl">Daño ambiental</h1>
     </div>
-    <div class="card"><h3>Hectáreas por año</h3><svg class="ch" id="chart" viewBox="0 0 320 170" role="img" aria-label="Hectáreas por año y tipo"></svg><div class="nota" id="leg"></div></div>
-    <div class="card"><h3>Municipios con más área</h3><table id="mun"></table></div>
-    <div class="card"><h3>Prensa sobre minería ilegal</h3><div id="prensa" class="nota">Cargando…</div><div class="nota" style="margin-top:6px">Hechos con cita literal verificada en la fuente; eso no garantiza que sean correctos.</div></div>
-    <div class="card"><h3>Departamento</h3><select id="depSel" aria-label="Departamento"></select><div class="nota">Procesados: pérdida de cobertura arbórea en los 33 departamentos; minería a cielo abierto en Cesar.</div></div>
-    <div class="card"><h3 id="infoT">Detalle</h3><div id="info">Pulse un polígono para ver su año, tipo y área.</div></div>
-    <div class="card nota"><b>Método:</b> detección por satélite con reglas fijas y sin validación de campo. Los polígonos son estimaciones; la pérdida de cobertura arbórea incluye incendios, aprovechamiento y rotación de plantaciones, y las transiciones de cobertura anual pueden confundir pastos, cultivos y suelo desnudo. Los datos salen de la base del laboratorio. La huella minera de Sentinel-2 cambia de un año a otro también por la calidad de cada compuesto (número de escenas, época seca); el salto de 2022 no está verificado.</div>
+    <div class="sep"></div>
+    <div class="hud-coords"><span><b id="hcLat">—</b> lat</span><span><b id="hcLon">—</b> lon</span><span>z<b id="hcZoom">—</b></span></div>
+    <div class="hud-spacer"></div>
+    <div class="hud-toggles">
+      <label class="hud-chip"><input type="checkbox" id="terreno"> relieve 3D</label>
+      <label class="hud-chip"><input type="checkbox" id="inclinar"> inclinar</label>
+    </div>
+    <button class="hud-iconbtn" id="panelToggle" title="Mostrar/ocultar panel" aria-label="Mostrar/ocultar panel" aria-expanded="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>
+    </button>
+  </div>
+
+  <aside class="hud-panel" id="panel">
+    <div class="hud-panel-scroll">
+      <div class="hud-sec"><h3><span class="leaf">✿</span>Métricas</h3><div class="kpis" id="kpis"></div></div>
+      <div class="hud-sec"><h3>Capas · tipo de daño</h3>
+        <div id="tipos"></div>
+        <div class="yr" style="margin-top:10px"><span>Año</span><b id="yv">2024</b></div><input type="range" id="yr" min="2001" max="2024" value="2024" aria-label="Año">
+        <div class="lr"><label><input type="checkbox" id="acum" checked> Acumular hasta ese año</label></div>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:6px"><button class="play" id="play">▶ reproducir</button><span class="nota" id="rng"></span></div>
+      </div>
+      <div class="hud-sec"><h3>Hectáreas por año</h3><svg class="ch" id="chart" viewBox="0 0 320 170" role="img" aria-label="Hectáreas por año y tipo"></svg><div class="nota" id="leg" style="margin-top:6px"></div></div>
+      <div class="hud-sec"><h3>Municipios con más área</h3><table id="mun"></table></div>
+      <div class="hud-sec"><h3>Prensa sobre minería ilegal</h3><div id="prensa" class="nota">Cargando…</div><div class="nota" style="margin-top:6px">Hechos con cita literal verificada en la fuente; eso no garantiza que sean correctos.</div></div>
+      <div class="hud-sec"><h3>Departamento</h3><select id="depSel" aria-label="Departamento"></select><div class="nota">Procesados: pérdida de cobertura arbórea en los 33 departamentos; minería a cielo abierto en Cesar.</div></div>
+      <div class="hud-sec"><h3 id="infoT">Detalle</h3><div id="info">Pulse un polígono para ver su año, tipo y área.</div></div>
+    </div>
   </aside>
+
+  <details class="hud-bottom" id="bottomDrawer">
+    <summary>Método y limitaciones</summary>
+    <div class="hud-bottom-body"><b style="color:var(--ink2);font-family:var(--mono);font-size:10px;text-transform:uppercase">Método:</b> detección por satélite con reglas fijas y sin validación de campo. Los polígonos son estimaciones; la pérdida de cobertura arbórea incluye incendios, aprovechamiento y rotación de plantaciones, y las transiciones de cobertura anual pueden confundir pastos, cultivos y suelo desnudo. La huella minera de Sentinel-2 cambia de un año a otro también por la calidad de cada compuesto (número de escenas, época seca); el salto de 2022 no está verificado.</div>
+  </details>
 </div>
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script src="dano.js"></script>

@@ -10,6 +10,14 @@ function init(R,imgs,capas){
   var RS=R.resumen||{},E=R.edificios||{},pico=RS.pico||{};document.getElementById("ttl").textContent=R.nombre+" · "+R.depto;
   var ctr=[+(P.get("lon")||R.lon),+(P.get("lat")||R.lat)],z=+(P.get("zoom")||11.3);
   var map=new maplibregl.Map({container:"map",style:"https://tiles.openfreemap.org/styles/liberty",center:ctr,zoom:z,pitch:0,maxPitch:75});map.addControl(new maplibregl.NavigationControl({visualizePitch:true}),"top-left");map.addControl(new maplibregl.ScaleControl({unit:"metric"}),"bottom-left");
+  (function(){var hcLat=document.getElementById("hcLat"),hcLon=document.getElementById("hcLon"),hcZoom=document.getElementById("hcZoom");
+    if(!hcLat)return;
+    map.on("mousemove",function(e){hcLat.textContent=e.lngLat.lat.toFixed(4);hcLon.textContent=e.lngLat.lng.toFixed(4);});
+    function zz(){hcZoom.textContent=map.getZoom().toFixed(1);}
+    map.on("zoom",zz);map.on("load",zz);zz();
+    var pt=document.getElementById("panelToggle"),pn=document.getElementById("panel");
+    if(pt)pt.addEventListener("click",function(){var c=pn.classList.toggle("collapsed");pt.setAttribute("aria-expanded",c?"false":"true");setTimeout(function(){map.resize();},360);});
+  })();
   function terrenoListo(){if(map.getSource("terreno"))return;map.addSource("terreno",{type:"raster-dem",tiles:["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"],tileSize:256,encoding:"terrarium",maxzoom:14,attribution:"Elevación: Mapzen/AWS Terrain Tiles"});
     if(typeof map.setSky==="function"){try{map.setSky({"sky-color":"#cfe8ff","sky-horizon-blend":.5,"horizon-color":"#fff","horizon-fog-blend":.5,"fog-color":"#e8ecef","fog-ground-blend":.3});}catch(e){}}}
   document.getElementById("terreno").addEventListener("change",function(e){terrenoListo();map.setTerrain(e.target.checked?{source:"terreno",exaggeration:1.6}:null);if(e.target.checked&&map.getPitch()<30)map.easeTo({pitch:58});});

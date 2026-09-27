@@ -2,33 +2,48 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Corriente Anime | InfraestructuraVisible2</title>
+<title>Corriente Anime · visor | Corpocesar en la mira</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
-<link rel="stylesheet" href="sinergia.css">
-<style>
-body{padding:0} .grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:14px;align-items:start;padding:12px} @media(max-width:1000px){.grid{grid-template-columns:1fr}}
-#map{height:calc(100vh - 24px);min-height:540px;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
-aside .card{padding:14px 16px;margin-bottom:12px} aside h3{font-size:14.5px;margin:0 0 8px}
-.lr{margin:6px 0;font-size:13px} .lr label{display:flex;gap:8px;align-items:center;cursor:pointer} .lr input[type=checkbox]{accent-color:#2a78d6}
-.sw{width:12px;height:12px;border-radius:3px;display:inline-block;flex:none}
-.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px} .kpis b{display:block;font-size:20px;font-weight:600;letter-spacing:-.02em} .kpis span{font-size:11.5px;color:var(--fg2);line-height:1.3}
-.nota{font-size:11.5px;color:var(--fg2);line-height:1.4} #info{font-size:13px;color:var(--fg2)}
-table{width:100%;border-collapse:collapse;font-size:12.5px} td{padding:4px 0;border-bottom:1px solid var(--border)} td:first-child{color:var(--fg2);width:46%}
-.maplibregl-popup-content{font:13px/1.45 var(--sans);border-radius:12px;padding:10px 12px}
-.bar3d{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:12.5px;color:var(--fg2);padding:0 2px 8px} .bar3d label{display:inline-flex;gap:6px;align-items:center;cursor:pointer} .bar3d input{accent-color:var(--yellow)}
-</style>
+<link rel="stylesheet" href="hud.css">
 </head>
 <body>
-<div class="grid">
-  <div><div class="bar3d"><label><input type="checkbox" id="terreno"> Relieve 3D</label><label><input type="checkbox" id="inclinar"> Inclinar</label></div><div id="map"></div></div>
-  <aside>
-    <div class="card"><h3 id="ttl">Corriente Anime · Chiriguaná y Curumaní</h3><div class="kpis" id="kpis"></div></div>
-    <div class="card"><h3>Capas</h3><div id="layers"></div></div>
-    <div class="card"><h3 id="infoT">Detalle</h3><div id="info">Pulse un polígono para ver sus datos.</div></div>
-    <div class="card nota"><b>Método:</b> zonas inundables por altura sobre el drenaje más cercano (HAND), calculadas con el DEM Copernicus de 30 m y flujo D8, sin calibrar con caudal ni con un evento real: es un modelo topográfico de dónde el agua tendería a acumularse, no una crecida específica. La pérdida de bosque y la huella minera son las mismas capas del <a href="dano.html?depto=20">visor de daño ambiental</a>, aquí recortadas a Chiriguaná y Curumaní. Ninguna de las dos ciudades tiene el radar de inundación por satélite que sí tienen las seis ciudades del piloto.</div>
+<div class="hud">
+  <div id="map"></div>
+
+  <div class="hud-top">
+    <div class="brand">
+      <svg viewBox="0 0 200 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M100 8C60 70 30 108 30 148a70 70 0 00140 0c0-40-30-78-70-140z" stroke="#6fa8dc" stroke-width="10"/>
+        <path d="M62 140c8-34 34-52 62-46-20 4-36 18-42 40-18 10-20 20-20 20s-4-10 0-14z" fill="#8dc152"/>
+      </svg>
+      <h1 id="ttl">Corriente Anime</h1>
+    </div>
+    <div class="sep"></div>
+    <div class="hud-coords"><span><b id="hcLat">—</b> lat</span><span><b id="hcLon">—</b> lon</span><span>z<b id="hcZoom">—</b></span></div>
+    <div class="hud-spacer"></div>
+    <div class="hud-toggles">
+      <label class="hud-chip"><input type="checkbox" id="terreno"> relieve 3D</label>
+      <label class="hud-chip"><input type="checkbox" id="inclinar"> inclinar</label>
+    </div>
+    <button class="hud-iconbtn" id="panelToggle" title="Mostrar/ocultar panel" aria-label="Mostrar/ocultar panel" aria-expanded="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/></svg>
+    </button>
+  </div>
+
+  <aside class="hud-panel" id="panel">
+    <div class="hud-panel-scroll">
+      <div class="hud-sec"><h3>Métricas · Chiriguaná y Curumaní</h3><div class="kpis" id="kpis"></div></div>
+      <div class="hud-sec"><h3>Capas</h3><div id="layers"></div></div>
+      <div class="hud-sec"><h3 id="infoT">Detalle</h3><div id="info">Pulse un polígono para ver sus datos.</div></div>
+    </div>
   </aside>
+
+  <details class="hud-bottom" id="bottomDrawer">
+    <summary>Método y limitaciones</summary>
+    <div class="hud-bottom-body">Zonas inundables por altura sobre el drenaje más cercano (HAND), calculadas con el DEM Copernicus de 30 m y flujo D8, sin calibrar con caudal ni con un evento real: es un modelo topográfico de dónde el agua tendería a acumularse, no una crecida específica. La pérdida de bosque y la huella minera son las mismas capas del <a href="dano.html?depto=20">visor de daño ambiental</a>, aquí recortadas a Chiriguaná y Curumaní. Ninguna de las dos ciudades tiene el radar de inundación por satélite que sí tienen las seis ciudades del piloto.</div>
+  </details>
 </div>
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script src="anime.js"></script>

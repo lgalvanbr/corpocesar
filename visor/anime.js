@@ -9,6 +9,14 @@ var HC={muy_alta:["#08519c",.55,"Muy alta (HAND < 1 m)"],alta:["#4292c6",.4,"Alt
 var DTIPOS={perdida_bosque:["Pérdida de cobertura arbórea 2001-2024","#d1495b"],suelo_alterado_mineria:["Suelo alterado por minería (huella 2017-2025)","#8a5a2b"]};
 
 var map=new maplibregl.Map({container:"map",style:"https://tiles.openfreemap.org/styles/liberty",center:[-73.52,9.33],zoom:10.6,pitch:0,maxPitch:75});
+(function(){var hcLat=document.getElementById("hcLat"),hcLon=document.getElementById("hcLon"),hcZoom=document.getElementById("hcZoom");
+  if(!hcLat)return;
+  map.on("mousemove",function(e){hcLat.textContent=e.lngLat.lat.toFixed(4);hcLon.textContent=e.lngLat.lng.toFixed(4);});
+  function zz(){hcZoom.textContent=map.getZoom().toFixed(1);}
+  map.on("zoom",zz);map.on("load",zz);zz();
+  var pt=document.getElementById("panelToggle"),pn=document.getElementById("panel");
+  if(pt)pt.addEventListener("click",function(){var c=pn.classList.toggle("collapsed");pt.setAttribute("aria-expanded",c?"false":"true");setTimeout(function(){map.resize();},360);});
+})();
 map.addControl(new maplibregl.NavigationControl({visualizePitch:true}),"top-left");
 map.addControl(new maplibregl.ScaleControl({unit:"metric"}),"bottom-left");
 function terrenoListo(){if(map.getSource("terreno"))return;map.addSource("terreno",{type:"raster-dem",tiles:["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"],tileSize:256,encoding:"terrarium",maxzoom:14,attribution:"Elevación: Mapzen/AWS Terrain Tiles"});
