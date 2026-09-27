@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ciudad | InfraestructuraVisible2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<link rel="stylesheet" href="sinergia.css">
+<style>
+body{padding:0} .grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:14px;align-items:start;padding:12px} @media(max-width:1000px){.grid{grid-template-columns:1fr}}
+#map{height:calc(100vh - 24px);min-height:520px;border-radius:12px;overflow:hidden;border:1px solid var(--border)}
+aside .card{padding:14px 16px;margin-bottom:12px} aside h3{font-size:14.5px;margin:0 0 8px}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px} .kpis b{display:block;font-size:22px;font-weight:600;letter-spacing:-.02em} .kpis span{font-size:11.5px;color:var(--fg2);line-height:1.3}
+.lr{margin:5px 0} .lr label{display:flex;gap:8px;align-items:center;font-size:13px;cursor:pointer} .lr input[type=checkbox]{accent-color:#000}
+.lr select{font:12.5px var(--sans);border:1px solid var(--border2);border-radius:8px;padding:3px 6px;margin-left:22px;margin-top:3px}
+.sw{width:11px;height:11px;border-radius:3px;display:inline-block;flex:none;border:1px solid rgba(0,0,0,.15)}
+#leg{display:flex;flex-wrap:wrap;gap:3px 12px;font-size:11.5px;color:var(--fg2);margin-top:8px} #leg i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-2px;border:1px solid rgba(0,0,0,.15)}
+#info{font-size:13px;color:var(--fg2)} #info table{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px} #info td{padding:3px 0;border-bottom:1px solid var(--border);vertical-align:top} #info td:first-child{color:var(--fg2);width:46%}
+.hechos{max-height:300px;overflow:auto;font-size:12.5px;display:grid;gap:8px} .hechos a{color:#000;text-decoration-color:var(--yellow)} .hechos small{color:var(--fg2)}
+.bar{display:flex;gap:8px;align-items:center;margin-bottom:8px;font-size:12.5px}
+</style>
+</head>
+<body>
+<div class="grid">
+  <div><div id="map"></div></div>
+  <aside>
+    <div class="card"><h3 id="ttl">Ciudad</h3><div class="kpis" id="kpis"></div></div>
+    <div class="card"><h3>Capas</h3><div id="layers"></div><div id="leg"></div></div>
+    <div class="card"><h3 id="infoT">Detalle</h3><div id="info">Pulse un edificio para ver sus datos.</div></div>
+    <div class="card"><h3>Hechos verificados</h3><div class="hechos" id="hechos"></div><p style="font-size:11.5px;color:var(--fg2);margin:8px 0 0">Cada hecho tiene su cita literal verificada contra la fuente; eso no garantiza que sea correcto.</p></div>
+  </aside>
+</div>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="ciudad.js"></script>
+</body>
+</html>
