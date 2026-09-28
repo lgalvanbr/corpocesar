@@ -19,17 +19,18 @@ nav.top .links a{font:600 14px var(--sans);color:var(--ink2)}
 nav.top .links a:hover{color:var(--ink);text-decoration:none}
 @media(max-width:720px){nav.top .links a:not(.btn){display:none}}
 
-.hero{padding:76px 0 56px;position:relative;overflow:hidden}
-.hero .eyebrow{font:700 12.5px var(--sans);text-transform:uppercase;letter-spacing:.08em;color:var(--accent-ink);background:var(--accent-soft);display:inline-block;padding:5px 12px;border-radius:999px}
-.hero h1{font-size:clamp(34px,5.4vw,58px);line-height:1.05;margin-top:18px;max-width:16ch}
-.hero p{font-size:18px;color:var(--ink2);max-width:56ch;margin-top:18px;line-height:1.6}
-.hero .cta{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
+.hero{padding:96px 0 64px;position:relative;overflow:hidden}
+.hero .eyebrow{font:700 12px var(--sans);text-transform:uppercase;letter-spacing:.09em;color:var(--accent-ink);display:inline-flex;align-items:center;gap:8px}
+.hero .eyebrow::before{content:"";width:14px;height:2.5px;background:var(--accent);display:inline-block;border-radius:2px}
+.hero h1{font-size:clamp(36px,5.6vw,60px);line-height:1.04;margin-top:20px;max-width:15.5ch}
+.hero p{font-size:18px;color:var(--ink2);max-width:54ch;margin-top:20px;line-height:1.65}
+.hero .cta{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap}
 
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:0 0 8px}
-.stat{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 22px;transition:box-shadow .25s var(--ease),transform .25s var(--ease)}
-.stat:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
-.stat b{display:block;font-family:var(--mono);font-size:26px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
-.stat span{font-size:13px;color:var(--ink3);line-height:1.4;display:block;margin-top:6px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;margin:0 0 8px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.stat{background:var(--card);padding:24px 24px;transition:background .2s var(--ease)}
+.stat:hover{background:var(--bg-alt)}
+.stat b{display:block;font-family:var(--mono);font-size:27px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.stat span{font-size:13px;color:var(--ink3);line-height:1.4;display:block;margin-top:7px}
 @media(max-width:820px){.stats{grid-template-columns:1fr 1fr}}
 
 section{padding:56px 0;scroll-margin-top:76px}
@@ -298,6 +299,7 @@ function boundsOf(feats){
   return b;
 }
 
+var obraSeleccionadaAntes = false;
 function selectObra(i){
   var o = OBRAS[i];
   SEL = i;
@@ -326,7 +328,11 @@ function selectObra(i){
   });
 
   renderDetail(o);
-  document.getElementById("detail").scrollIntoView({behavior:"smooth", block:"nearest"});
+  if(obraSeleccionadaAntes){
+    var d = document.getElementById("detail").getBoundingClientRect();
+    if(d.top < 0 || d.top > window.innerHeight * 0.6) document.getElementById("obrasMap").scrollIntoView({behavior:"smooth", block:"center"});
+  }
+  obraSeleccionadaAntes = true;
 }
 
 function renderDetail(o){
