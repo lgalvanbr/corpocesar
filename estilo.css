@@ -1,31 +1,44 @@
-/* Corpocesar en la mira — identidad: oscuro, un solo acento saturado, sin vidrio ni monoespaciada en titulares.
-   "Big Shoulders" es la familia de Google Fonts hecha para infraestructura civil (nace de la tipografía urbana
-   de Chicago); tiene sentido para un sitio de vigilancia de obra pública. */
+/* Corpocesar en la mira — diseño convencional, fondo blanco, un acento azul. */
 :root{
-  --canvas:#0a0a0a; --surface:#141414; --surface-2:#1b1b1b; --surface-hover:#222;
-  --border:rgba(255,255,255,.09); --border-strong:rgba(255,255,255,.18);
-  --ink:#f2f2f0; --ink2:#a3a39e; --ink3:#6e6e68;
-  --accent:#2f7dee; --accent-ink:#5b9bf5; --accent-dim:rgba(47,125,238,.15);
-  --cat-verde:#3fb950; --cat-verde-dim:rgba(63,185,80,.15);
-  --ok:#4fae5e; --ok-dim:rgba(79,174,94,.15);
-  --warn:#e0a53f; --warn-dim:rgba(224,165,63,.15);
-  --crit:#e0654a; --crit-dim:rgba(224,101,74,.15);
-  --display:"Big Shoulders Display","Arial Narrow",sans-serif;
+  --bg:#ffffff; --bg-alt:#f6f7f9; --card:#ffffff;
+  --border:#e6e8ec; --border-strong:#d4d8de;
+  --ink:#12141a; --ink2:#5a5f6b; --ink3:#8a8f99;
+  --accent:#2563eb; --accent-ink:#1d4ed8; --accent-soft:#eef3ff;
+  --cat-verde:#16a34a; --cat-verde-soft:#f0fbf3;
+  --warn:#b45309; --warn-soft:#fef8ec;
+  --crit:#c0362c; --crit-soft:#fdf1ef;
+  --shadow-sm:0 1px 2px rgba(15,17,26,.04);
+  --shadow-md:0 4px 16px -4px rgba(15,17,26,.08), 0 1px 2px rgba(15,17,26,.04);
+  --shadow-lg:0 16px 40px -12px rgba(15,17,26,.16);
+  --display:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Consolas,monospace;
-  --sp-spring:cubic-bezier(.34,1.56,.64,1); --sp-smooth:cubic-bezier(.16,1,.3,1); --sp-gentle:cubic-bezier(.22,.68,.36,1);
-  color-scheme:dark;
+  --ease:cubic-bezier(.22,1,.36,1); --spring:cubic-bezier(.34,1.56,.64,1);
+  color-scheme:light;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation-duration:.001ms !important;transition-duration:.001ms !important}}
-body{margin:0;background:var(--canvas);color:var(--ink);font:400 15px/1.62 var(--sans);-webkit-font-smoothing:antialiased}
-a{color:inherit}
-::selection{background:var(--accent-dim);color:var(--ink)}
-h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.01em;margin:0}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:var(--accent-ink);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:var(--accent-soft);color:var(--ink)}
+h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.02em;margin:0;text-wrap:balance}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
 
-.status{display:inline-flex;align-items:center;gap:5px;font:600 10.5px var(--mono);letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:4px}
-.status.ok{background:var(--ok-dim);color:var(--ok)}
-.status.warn{background:var(--warn-dim);color:var(--warn)}
-.status.crit{background:var(--crit-dim);color:var(--crit)}
+.btn{display:inline-flex;align-items:center;gap:8px;font:600 14.5px var(--display);padding:12px 22px;border-radius:10px;cursor:pointer;transition:transform .18s var(--spring),box-shadow .18s,background .18s;border:1px solid transparent}
+.btn.primary{background:var(--accent);color:#fff;box-shadow:var(--shadow-sm)}
+.btn.primary:hover{background:var(--accent-ink);box-shadow:var(--shadow-md);transform:translateY(-1px);text-decoration:none}
+.btn.ghost{background:#fff;color:var(--ink);border-color:var(--border-strong)}
+.btn.ghost:hover{border-color:var(--ink);text-decoration:none}
+.btn:active{transform:scale(.97)}
+
+.tag{display:inline-flex;font:700 11px var(--sans);text-transform:uppercase;letter-spacing:.04em;padding:3px 9px;border-radius:999px}
+.tag.agua{background:var(--accent-soft);color:var(--accent-ink)}
+.tag.bosque{background:var(--cat-verde-soft);color:var(--cat-verde)}
+.pillstat{display:inline-flex;align-items:center;gap:5px;font:700 11px var(--sans);text-transform:uppercase;letter-spacing:.03em;padding:3px 9px;border-radius:999px}
+.pillstat.warn{background:var(--warn-soft);color:var(--warn)}
+
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.reveal.in{opacity:1;transform:none}

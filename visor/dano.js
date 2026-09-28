@@ -33,7 +33,7 @@ function init(munGeo,depGeo,tipos){
     var MUN_SEL=P.get("mun");
     var focoFeats=MUN_SEL?munGeo.features.filter(function(f){return f.properties.codigo===MUN_SEL;}):depGeo.features.filter(function(f){return f.properties.codigo===DEP;});
     var b=new maplibregl.LngLatBounds();focoFeats.forEach(function(f){(f.geometry.type==="Polygon"?[f.geometry.coordinates]:f.geometry.coordinates).forEach(function(p){p[0].forEach(function(c){b.extend(c);});});});if(!b.isEmpty())map.fitBounds(b,{padding:MUN_SEL?60:30,duration:0});
-    if(MUN_SEL){map.addSource("foco",{type:"geojson",data:{type:"FeatureCollection",features:focoFeats}});map.addLayer({id:"foco_l",type:"line",source:"foco",paint:{"line-color":"#3fb950","line-width":2.6}},lbl);
+    if(MUN_SEL){map.addSource("foco",{type:"geojson",data:{type:"FeatureCollection",features:focoFeats}});map.addLayer({id:"foco_l",type:"line",source:"foco",paint:{"line-color":"#16a34a","line-width":2.6}},lbl);
       var mn=focoFeats[0];if(mn)document.getElementById("ttl").textContent="Daño ambiental · "+mn.properties.nombre+" (Corpocesar)";}
     if(P.get("terreno")==="1"){terrenoListo();document.getElementById("terreno").checked=true;document.getElementById("inclinar").checked=true;map.setTerrain({source:"terreno",exaggeration:1.6});map.jumpTo({pitch:+(P.get("pitch")||58)});}
     map.addSource("dano",{type:"vector",tiles:[API+"/tiles/dano/{z}/{x}/{y}.pbf?depto="+DEP],minzoom:0,maxzoom:14});

@@ -3,150 +3,143 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Corpocesar en la mira</title>
-<meta name="description" content="Hub de vigilancia de la contratación de Corpocesar: ocho obras en ejecución cruzadas con imagen satelital, un modelo de zonas inundables y los 531 contratos activos.">
+<meta name="description" content="Ocho obras de Corpocesar en ejecución, cruzadas con imagen satelital, un modelo de zonas inundables y los 531 contratos activos.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="estilo.css">
 <style>
-html,body{height:100%;overflow:hidden}
-.shell{display:flex;height:100vh;height:100dvh}
+nav.top{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.92);backdrop-filter:none;border-bottom:1px solid transparent;transition:border-color .25s,box-shadow .25s}
+nav.top.scrolled{border-color:var(--border);box-shadow:0 1px 0 rgba(15,17,26,.03)}
+nav.top .in{max-width:1120px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+nav.top .logo{font:800 16px var(--display);letter-spacing:-.01em;color:var(--ink);display:flex;align-items:center;gap:8px}
+nav.top .logo .dot{width:9px;height:9px;border-radius:3px;background:var(--accent)}
+nav.top .links{display:flex;align-items:center;gap:28px}
+nav.top .links a{font:600 14px var(--sans);color:var(--ink2)}
+nav.top .links a:hover{color:var(--ink);text-decoration:none}
+@media(max-width:720px){nav.top .links a:not(.btn){display:none}}
 
-/* ---- panel lateral ---- */
-.side{width:264px;flex:none;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100%}
-.side-head{padding:18px 18px 14px;border-bottom:1px solid var(--border)}
-.side-head .nm{font:700 17px var(--display);letter-spacing:.01em;color:var(--ink);text-transform:uppercase;line-height:1.05}
-.side-head .sub{font:500 10.5px var(--sans);color:var(--ink3);margin-top:4px;line-height:1.4}
-.nav-scroll{flex:1;overflow-y:auto;padding:10px 0;position:relative}
-.nav-group{padding:0 10px;margin-bottom:4px}
-.nav-label{font:600 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);padding:14px 10px 6px}
-.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:6px;cursor:pointer;font-size:12.5px;color:var(--ink2);position:relative;z-index:1;transition:color .15s;line-height:1.3}
-.nav-item:hover{color:var(--ink)}
-.nav-item.on{color:var(--ink);font-weight:500}
-.nav-item .dot{width:6px;height:6px;border-radius:50%;flex:none;background:var(--ink3)}
-.nav-item.on .dot{background:var(--accent)}
-.nav-item .dot.bosque{background:var(--ink3)}
-.nav-item.on .dot.bosque{background:var(--cat-verde)}
-.nav-item small{display:block;color:var(--ink3);font-size:10.5px;margin-top:1px;font-family:var(--mono)}
-.nav-hi{position:absolute;left:10px;right:10px;height:0;background:var(--surface-2);border-radius:6px;border:1px solid var(--border-strong);z-index:0;transition:transform .32s var(--sp-gentle),height .32s var(--sp-gentle),opacity .2s;opacity:0}
-.nav-ext{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;margin:2px 10px;border-radius:6px;font:500 12.5px var(--sans);color:var(--ink2);text-decoration:none;border:1px solid var(--border)}
-.nav-ext:hover{background:var(--surface-hover);color:var(--ink)}
-.nav-ext .n{font:600 11px var(--mono);color:var(--accent-ink)}
-.side-foot{padding:12px 18px 16px;border-top:1px solid var(--border);font:500 10.5px var(--mono);color:var(--ink3);line-height:1.7}
+.hero{padding:76px 0 56px;position:relative;overflow:hidden}
+.hero .eyebrow{font:700 12.5px var(--sans);text-transform:uppercase;letter-spacing:.08em;color:var(--accent-ink);background:var(--accent-soft);display:inline-block;padding:5px 12px;border-radius:999px}
+.hero h1{font-size:clamp(34px,5.4vw,58px);line-height:1.05;margin-top:18px;max-width:16ch}
+.hero p{font-size:18px;color:var(--ink2);max-width:56ch;margin-top:18px;line-height:1.6}
+.hero .cta{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
 
-/* ---- contenido ---- */
-.main{flex:1;overflow-y:auto;min-width:0}
-.view{display:none;padding:0}
-.view.on{display:block}
-.vhead{padding:26px 34px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--canvas);z-index:2}
-.vhead .eyebrow{font:600 10.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink)}
-.vhead h2{font-size:32px;margin-top:6px;letter-spacing:0;line-height:1.05;max-width:60ch;text-transform:uppercase}
-.vhead .vmeta{font:500 12px var(--mono);color:var(--ink3);margin-top:8px;letter-spacing:.01em}
-.vbody{padding:24px 34px 60px;max-width:920px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:0 0 8px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 22px;transition:box-shadow .25s var(--ease),transform .25s var(--ease)}
+.stat:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.stat b{display:block;font-family:var(--mono);font-size:26px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--ink3);line-height:1.4;display:block;margin-top:6px}
+@media(max-width:820px){.stats{grid-template-columns:1fr 1fr}}
 
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:26px}
-.stat{background:var(--surface);padding:15px 17px}
-.stat b{display:block;font-family:var(--mono);font-size:21px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
-.stat span{font-size:10.5px;color:var(--ink3);line-height:1.4;display:block;margin-top:5px}
-.stat span a{color:var(--accent-ink)}
-@media(max-width:700px){.stats{grid-template-columns:1fr 1fr}}
+section{padding:56px 0}
+section.alt{background:var(--bg-alt)}
+.section-head{max-width:60ch;margin-bottom:32px}
+.section-head .k{font:700 12.5px var(--sans);text-transform:uppercase;letter-spacing:.07em;color:var(--accent-ink)}
+.section-head h2{font-size:clamp(26px,3.4vw,36px);margin-top:10px;line-height:1.15}
+.lead{font-size:16.5px;color:var(--ink2);max-width:70ch;line-height:1.75;margin:0 0 16px}
+.lead a{font-weight:600}
+.callout{margin:24px 0;padding:20px 24px;border-radius:16px;background:linear-gradient(180deg,var(--cat-verde-soft),#fff);border:1px solid #d4f0dc;max-width:70ch}
+.callout .k{font:700 11.5px var(--sans);text-transform:uppercase;letter-spacing:.05em;color:var(--cat-verde);display:block;margin-bottom:8px}
+.callout p{margin:0;font-size:15px;color:var(--ink);line-height:1.65}
 
-.lead{font-size:14px;color:var(--ink2);max-width:70ch;line-height:1.7;margin:0 0 14px;font-family:var(--sans)}
-.lead a{color:var(--accent-ink);text-decoration:underline;text-decoration-color:var(--border-strong)}
-.callout{font-size:13.5px;line-height:1.65;margin:18px 0;padding:13px 16px;border:1px solid var(--border);border-left:2px solid var(--cat-verde);background:var(--surface);border-radius:0 6px 6px 0;font-family:var(--sans);max-width:70ch}
-.callout>b:first-child{color:var(--cat-verde);font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px}
-.callout b{color:var(--ink)}
+.grid-obras{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+@media(max-width:820px){.grid-obras{grid-template-columns:1fr}}
+.ocard{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;transition:box-shadow .25s var(--ease),border-color .2s}
+.ocard:hover{box-shadow:var(--shadow-md)}
+.ocard.open{border-color:var(--border-strong);box-shadow:var(--shadow-lg)}
+.ohead{padding:22px 22px;cursor:pointer;display:flex;flex-direction:column;gap:10px}
+.ohead .tags{display:flex;gap:8px;align-items:center}
+.ohead h3{font-size:18px;line-height:1.3;margin-top:2px}
+.ohead .meta{font-size:13px;color:var(--ink3);display:flex;flex-wrap:wrap;gap:6px 10px}
+.ohead .meta b{color:var(--ink2);font-weight:600;font-family:var(--mono)}
+.ohead .chev{align-self:flex-end;margin-top:-28px;width:26px;height:26px;border-radius:50%;background:var(--bg-alt);display:grid;place-items:center;transition:transform .35s var(--spring),background .2s}
+.ocard.open .chev{transform:rotate(180deg);background:var(--accent-soft)}
+.ocard.open .chev svg{stroke:var(--accent-ink)}
 
-.otable{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:22px}
-.otable th{text-align:left;font:600 10px var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--ink3);padding:8px 10px;border-bottom:1px solid var(--border-strong)}
-.otable td{padding:10px 10px;border-bottom:1px solid var(--border);color:var(--ink2);cursor:pointer}
-.otable tr:hover td{background:var(--surface)}
-.otable td.v{text-align:right;font-family:var(--mono);color:var(--ink);white-space:nowrap}
-.otable .tag{font:600 9.5px var(--mono);text-transform:uppercase;padding:2px 7px;border:1px solid currentColor;border-radius:4px}
-.tag.agua{color:var(--accent-ink)} .tag.bosque{color:var(--cat-verde)}
+.orow{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s var(--ease)}
+.ocard.open .orow{grid-template-rows:1fr}
+.oinner{overflow:hidden}
+.obody{padding:0 22px 26px;border-top:1px solid var(--border);margin-top:2px}
+.objeto{font-size:14px;color:var(--ink2);line-height:1.65;padding:14px 16px;background:var(--bg-alt);border-radius:12px;margin-top:18px}
+.objeto b{display:block;font:700 11px var(--sans);text-transform:uppercase;letter-spacing:.04em;color:var(--ink3);margin-bottom:6px}
+.finding{font-size:14.5px;line-height:1.6;margin:16px 0;padding:14px 16px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 10px 10px 0}
+.finding b{color:var(--accent-ink);display:block;font:700 11px var(--sans);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px}
+.label{font:700 11px var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);display:block;margin:20px 0 10px}
+.sol{margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
+.sol li{list-style:none;font-size:14.5px;line-height:1.65;padding-left:20px;position:relative;color:var(--ink2)}
+.sol li::before{content:"";position:absolute;left:0;top:8px;width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.mapbox{margin-top:20px;border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.mapbar{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:var(--bg-alt);font:600 12.5px var(--sans);color:var(--ink3)}
+.mapbar a{font-weight:700}
+iframe.map{width:100%;height:480px;border:0;display:block}
+.map-ph{height:480px;display:flex;align-items:center;justify-content:center;color:var(--ink3);font-size:13px;background:repeating-linear-gradient(135deg,#fff,#fff 10px,var(--bg-alt) 10px,var(--bg-alt) 20px)}
+.caveat{font-size:12.5px;color:var(--ink3);margin-top:16px;line-height:1.6}
+.caveat b{color:var(--ink2)}
+.interv{font-size:12.5px;color:var(--ink3);margin-top:14px}
 
-.objeto{font-size:13.5px;color:var(--ink2);line-height:1.65;font-family:var(--sans);padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:6px}
-.objeto b{color:var(--ink3);font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:5px}
-.label{font:600 10.5px var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);display:block;margin:22px 0 10px}
-.sol{margin:0;padding:0;display:flex;flex-direction:column;gap:11px;max-width:72ch}
-.sol li{font-size:13.5px;line-height:1.65;padding-left:16px;position:relative;color:var(--ink2);font-family:var(--sans);list-style:none}
-.sol li::before{content:"›";position:absolute;left:0;top:0;color:var(--accent);font-family:var(--mono);font-weight:700}
-.mapbox{margin-top:22px;border:1px solid var(--border);border-radius:6px;overflow:hidden;max-width:920px}
-.mapbar{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:var(--surface);border-bottom:1px solid var(--border);font:500 11px var(--mono);color:var(--ink3);letter-spacing:.03em;text-transform:uppercase}
-.mapbar a{font-weight:600;color:var(--accent-ink);text-decoration:none}
-.mapbar a:hover{text-decoration:underline}
-iframe.map{width:100%;height:520px;border:0;display:block}
-.map-ph{height:520px;display:flex;align-items:center;justify-content:center;color:var(--ink3);font:12px var(--mono);background:repeating-linear-gradient(135deg,var(--surface),var(--surface) 10px,var(--surface-2) 10px,var(--surface-2) 20px)}
-.caveat{font-size:12px;color:var(--ink3);margin-top:16px;font-family:var(--sans);line-height:1.6;max-width:72ch}
-.caveat::before{content:"NOTA · ";font-family:var(--mono);letter-spacing:.04em;color:var(--ink3)}
-.interv{font-size:12px;color:var(--ink3);margin-top:14px;font-family:var(--sans)}
-
-.mfoot{font-size:13px;color:var(--ink2);line-height:1.8;max-width:76ch;font-family:var(--sans)}
+.mfoot{font-size:15px;color:var(--ink2);line-height:1.8;max-width:76ch}
 .mfoot b{color:var(--ink)}
-@media(max-width:820px){
-  .side{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%);transition:transform .3s var(--sp-gentle);z-index:10;box-shadow:0 0 0 100vmax rgba(0,0,0,.5)}
-  .side.open{transform:none}
-  .vhead,.vbody{padding-left:20px;padding-right:20px}
-}
+footer{border-top:1px solid var(--border);padding:40px 0}
+footer .credit{font-size:13px;color:var(--ink3);margin-top:10px}
 </style>
 </head>
 <body>
-<div class="shell">
-  <nav class="side">
-    <div class="side-head">
-      <div class="nm">CORPOCESAR EN LA MIRA</div>
-      <div class="sub">Vigilancia de contratación pública · NIT 892.301.483</div>
+<nav class="top" id="navbar">
+  <div class="in">
+    <div class="logo"><span class="dot"></span>Corpocesar en la mira</div>
+    <div class="links">
+      <a href="#obras">Obras</a>
+      <a href="#metodo">Método</a>
+      <a class="btn primary" href="contratos.html" style="padding:9px 18px;font-size:13.5px">Ver 531 contratos</a>
     </div>
-    <div class="nav-scroll" id="navScroll">
-      <div class="nav-hi" id="navHi"></div>
-      <div class="nav-group">
-        <div class="nav-item" data-view="resumen"><span class="dot"></span>Resumen</div>
-      </div>
-      <div class="nav-group">
-        <div class="nav-label">Obras en la mira</div>
-        <div id="navObras"></div>
-      </div>
-      <div class="nav-group">
-        <a class="nav-ext" href="contratos.html">Contratos activos <span class="n">531</span></a>
-      </div>
-      <div class="nav-group">
-        <div class="nav-item" data-view="metodo"><span class="dot"></span>Método</div>
-      </div>
-    </div>
-    <div class="side-foot">Corte 27.09.2026<br>Laboratorio SinergIA · Uniandes</div>
-  </nav>
+  </div>
+</nav>
 
-  <main class="main" id="main">
-    <section class="view" id="view-resumen">
-      <div class="vhead"><div class="eyebrow">Resumen</div><h2>Ocho obras, con nuestra propia capa de satélite y de topografía</h2></div>
-      <div class="vbody">
-        <div class="stats">
-          <div class="stat"><b data-count="392.4" data-decimals="1" data-suffix=" mm">$0 mm</b><span>contratados por Corpocesar desde 2021</span></div>
-          <div class="stat"><b data-count="531">0</b><span>contratos en ejecución hoy, $128,5 mm — <a href="contratos.html">verlos</a></span></div>
-          <div class="stat"><b data-count="162">0</b><span>contratos activos sin póliza vigente <span class="status warn" style="margin-left:4px">alerta</span></span></div>
-          <div class="stat"><b data-count="1881" data-suffix=" ha">0</b><span>inundadas de verdad, 2010-11 y 2020-22 (IDEAM, Valledupar)</span></div>
-        </div>
-        <p class="lead">Elegimos las obras más grandes y más ligadas a un problema físico medible: inundación en Valledupar, Chiriguaná y Curumaní; deforestación y minería en Becerril, La Jagua de Ibirico, Pueblo Bello y La Paz. A cada una le pusimos encima pérdida de bosque (Hansen), huella de minería a cielo abierto (Sentinel-2), frecuencia de inundación por radar (Sentinel-1) y un modelo propio de altura sobre el drenaje (HAND) sobre el DEM de Copernicus, con relieve en 3D. En Valledupar cruzamos ese modelo contra las manchas de inundación real que el IDEAM mapeó en las crecientes de La Niña 2010-2011 y 2020-2022.</p>
-        <p class="lead">Según el propio <a href="https://www.corpocesar.gov.co/Plan-de-accion-2024-2027.html" target="_blank" rel="noreferrer">Plan de Acción Cuatrienal 2024-2027</a> de Corpocesar ("Gobernanza y Gobernabilidad en la Gestión Ambiental del Cesar", Acuerdo 003 del 17 de mayo de 2024, dirección de Adriana Margarita García Arévalo), la Serranía del Perijá y la margen derecha del río Guatapurí son dos de sus proyectos insignia — las mismas dos que esta lectura escogió de forma independiente. A mitad de 2025 la entidad reportó más del 70% de cumplimiento de metas a su Junta Directiva.</p>
-        <div class="callout"><b>Lo que salió de cruzar todo:</b> extendimos el modelo HAND a los 24 municipios de Cesar y reclasificamos con un modelo de lenguaje verificado los 236 contratos activos "sin clasificar". <b>Chimichagua</b> queda como el mayor desajuste del departamento: 1.695 ha de bosque perdidas entre 2022 y 2024, el promedio más alto entre municipios con contrato activo, frente a apenas $110 M contratados. Está en la <a href="contratos.html">lista completa</a>.</div>
-        <table class="otable" id="otable">
-          <thead><tr><th>Obra</th><th>Lugar</th><th style="text-align:right">Valor</th></tr></thead>
-          <tbody id="otableBody"></tbody>
-        </table>
-      </div>
-    </section>
+<header class="hero wrap">
+  <span class="eyebrow">Vigilancia de contratación pública · NIT 892.301.483</span>
+  <h1 class="reveal">Ocho obras de Corpocesar, con nuestra propia capa de satélite</h1>
+  <p class="reveal">Cruzamos las obras más grandes en ejecución con pérdida de bosque, huella de minería, un modelo de zonas inundables validado con el IDEAM y relieve en 3D — para saber si la plata está cayendo donde el problema es más grande.</p>
+  <div class="cta reveal">
+    <a class="btn primary" href="#obras">Ver las 8 obras ↓</a>
+    <a class="btn ghost" href="contratos.html">Explorar los 531 contratos activos</a>
+  </div>
+</header>
 
-    <div id="obraViews"></div>
+<section class="wrap">
+  <div class="stats reveal" id="stats">
+    <div class="stat"><b data-count="392.4" data-decimals="1" data-suffix=" mm">$0</b><span>contratados por Corpocesar desde 2021</span></div>
+    <div class="stat"><b data-count="531">0</b><span>contratos en ejecución hoy, $128,5 mm</span></div>
+    <div class="stat"><b data-count="162">0</b><span>sin póliza vigente <span class="pillstat warn" style="margin-left:4px">alerta</span></span></div>
+    <div class="stat"><b data-count="1881" data-suffix=" ha">0</b><span>inundadas de verdad, IDEAM (Valledupar)</span></div>
+  </div>
+</section>
 
-    <section class="view" id="view-metodo">
-      <div class="vhead"><div class="eyebrow">Método</div><h2>Fuentes, límites y a quién pertenece esto</h2></div>
-      <div class="vbody">
-        <p class="mfoot">Contratos de SECOP II (datos.gov.co), NIT de Corpocesar 892.301.483. Pérdida de bosque: <b>Hansen/UMD/Google/USGS/NASA</b>, 2001-2024. Minería a cielo abierto: clasificación propia sobre compuestos de <b>Sentinel-2</b>, 2017-2025. Inundación por radar: <b>Sentinel-1</b>, escenas de septiembre 2024 a septiembre 2026, solo en Valledupar. Zonas inundables por topografía: modelo <b>HAND</b> propio (altura sobre el drenaje más cercano) sobre el DEM Copernicus GLO-30 con flujo D8; es un modelo topográfico sin calibrar con caudal ni con un evento real. Inundación histórica real: <b>IDEAM</b> (visualizador oficial, manchas de La Niña 2010-2011 y 2020-2022).</p>
-        <p class="mfoot" style="margin-top:16px">Ningún hallazgo aquí reemplaza una auditoría técnica ni el diseño de ingeniería de cada consorcio, que no es público.</p>
-        <p class="mfoot" style="margin-top:16px">Investigación independiente del <b>Laboratorio SinergIA</b>, Ingeniería Civil y Ambiental, Universidad de los Andes — publicada como un sitio propio, separado del portafolio del laboratorio.</p>
-      </div>
-    </section>
-  </main>
-</div>
+<section class="wrap">
+  <div class="section-head reveal"><span class="k">Resumen</span><h2>Cómo elegimos y qué encontramos</h2></div>
+  <p class="lead reveal">Elegimos las obras más grandes y más ligadas a un problema físico medible: inundación en Valledupar, Chiriguaná y Curumaní; deforestación y minería en Becerril, La Jagua de Ibirico, Pueblo Bello y La Paz. A cada una le pusimos encima pérdida de bosque (Hansen), huella de minería a cielo abierto (Sentinel-2), frecuencia de inundación por radar (Sentinel-1) y un modelo propio de altura sobre el drenaje (HAND) sobre el DEM de Copernicus, con relieve en 3D. En Valledupar cruzamos ese modelo contra las manchas de inundación real que el IDEAM mapeó en las crecientes de La Niña 2010-2011 y 2020-2022.</p>
+  <p class="lead reveal">Según el propio <a href="https://www.corpocesar.gov.co/Plan-de-accion-2024-2027.html" target="_blank" rel="noreferrer">Plan de Acción Cuatrienal 2024-2027</a> de Corpocesar ("Gobernanza y Gobernabilidad en la Gestión Ambiental del Cesar", Acuerdo 003 del 17 de mayo de 2024, dirección de Adriana Margarita García Arévalo), la Serranía del Perijá y la margen derecha del río Guatapurí son dos de sus proyectos insignia — las mismas dos que esta lectura escogió de forma independiente. A mitad de 2025 la entidad reportó más del 70% de cumplimiento de metas a su Junta Directiva.</p>
+  <div class="callout reveal"><span class="k">Lo que salió de cruzar todo</span><p>Extendimos el modelo HAND a los 24 municipios de Cesar y reclasificamos con un modelo de lenguaje verificado los 236 contratos activos "sin clasificar". <b>Chimichagua</b> queda como el mayor desajuste del departamento: 1.695 ha de bosque perdidas entre 2022 y 2024, el promedio más alto entre municipios con contrato activo, frente a apenas $110 M contratados. Está en la <a href="contratos.html">lista completa</a>.</p></div>
+</section>
+
+<section class="alt" id="obras">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="k">Obras en la mira</span><h2>Las ocho obras, abiertas una por una</h2></div>
+    <div class="grid-obras" id="lista"></div>
+  </div>
+</section>
+
+<section class="wrap" id="metodo">
+  <div class="section-head reveal"><span class="k">Método</span><h2>Fuentes, límites y a quién pertenece esto</h2></div>
+  <p class="mfoot reveal">Contratos de SECOP II (datos.gov.co), NIT de Corpocesar 892.301.483. Pérdida de bosque: <b>Hansen/UMD/Google/USGS/NASA</b>, 2001-2024. Minería a cielo abierto: clasificación propia sobre compuestos de <b>Sentinel-2</b>, 2017-2025. Inundación por radar: <b>Sentinel-1</b>, escenas de septiembre 2024 a septiembre 2026, solo en Valledupar. Zonas inundables por topografía: modelo <b>HAND</b> propio sobre el DEM Copernicus GLO-30 con flujo D8; es un modelo topográfico sin calibrar con caudal ni con un evento real. Inundación histórica real: <b>IDEAM</b> (manchas de La Niña 2010-2011 y 2020-2022).</p>
+  <p class="mfoot reveal" style="margin-top:14px">Ningún hallazgo aquí reemplaza una auditoría técnica ni el diseño de ingeniería de cada consorcio, que no es público.</p>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="logo" style="display:flex;align-items:center;gap:8px"><span class="dot" style="width:9px;height:9px;border-radius:3px;background:var(--accent);display:inline-block"></span><span style="font:800 15px var(--display)">Corpocesar en la mira</span></div>
+    <p class="credit">Investigación independiente del Laboratorio SinergIA, Ingeniería Civil y Ambiental, Universidad de los Andes — sitio propio, separado del portafolio del laboratorio. Corte: 27 de septiembre de 2026.</p>
+  </div>
+</footer>
 
 <script>
 var OBRAS = [
@@ -221,61 +214,54 @@ var OBRAS = [
 ];
 
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
-function corto(n){return n.length>46 ? n.slice(0,46).replace(/\s+\S*$/,"")+"…" : n;}
-
-var navObras = document.getElementById("navObras");
-var otableBody = document.getElementById("otableBody");
-var obraViews = document.getElementById("obraViews");
+var host = document.getElementById("lista");
 OBRAS.forEach(function(o, i){
-  var id = "obra-"+i;
-  var d = document.createElement("div"); d.className = "nav-item"; d.dataset.view = id;
-  d.innerHTML = '<span class="dot '+o.tipo+'"></span><span>'+esc(corto(o.nombre))+'<small>'+esc(o.lugar.split(",")[0])+' · '+esc(o.valor)+'</small></span>';
-  navObras.appendChild(d);
-
-  var tr = document.createElement("tr"); tr.dataset.view = id;
-  tr.innerHTML = '<td>'+esc(corto(o.nombre))+'</td><td><span class="tag '+o.tipo+'">'+(o.tipo==="agua"?"Inundación":"Bosque")+'</span> '+esc(o.lugar)+'</td><td class="v">'+esc(o.valor)+'</td>';
-  otableBody.appendChild(tr);
-
-  var v = document.createElement("section"); v.className = "view"; v.id = "view-"+id;
-  v.innerHTML =
-    '<div class="vhead"><div class="eyebrow">'+(o.tipo==="agua"?"Inundación":"Restauración")+' · '+esc(o.lugar)+'</div><h2>'+esc(o.nombre)+'</h2>'
-    +'<div class="vmeta">'+esc(o.contratista)+' · '+esc(o.valor)+' · '+esc(o.firma)+'</div></div>'
-    +'<div class="vbody">'
+  var card = document.createElement("div");
+  card.className = "ocard reveal";
+  card.style.transitionDelay = (Math.min(i,5)*0.05)+"s";
+  card.innerHTML =
+    '<div class="ohead">'
+    +'<div class="tags"><span class="tag '+o.tipo+'">'+(o.tipo==="agua"?"Inundación":"Restauración")+'</span></div>'
+    +'<h3>'+esc(o.nombre)+'</h3>'
+    +'<div class="meta"><span>'+esc(o.lugar)+'</span><span>·</span><span><b>'+esc(o.valor)+'</b></span><span>·</span><span>'+esc(o.firma)+'</span></div>'
+    +'<span class="chev"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5a5f6b" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>'
+    +'</div>'
+    +'<div class="orow"><div class="oinner"><div class="obody">'
     +'<p class="objeto"><b>Objeto · '+esc(o.contrato)+'</b>'+esc(o.objeto)+'</p>'
-    +'<div class="callout"><b>Lo que llama la atención</b>'+esc(o.hallazgo)+'</div>'
+    +'<div class="finding"><b>Lo que llama la atención</b>'+esc(o.hallazgo)+'</div>'
     +'<span class="label">Nuestra solución</span><ul class="sol">'+o.analisis.map(function(t){return "<li>"+esc(t)+"</li>";}).join("")+'</ul>'
-    +'<div class="mapbox"><div class="mapbar"><span>Nuestro mapa de esta zona</span><a href="'+o.iframe+'" target="_blank" rel="noreferrer">Pantalla completa ↗</a></div><div class="map-slot" data-src="'+o.iframe+'" data-title="'+esc(o.nombre)+'"><div class="map-ph">Se carga al abrir esta vista…</div></div></div>'
+    +'<div class="mapbox"><div class="mapbar"><span>Nuestro mapa de esta zona</span><a href="'+o.iframe+'" target="_blank" rel="noreferrer">Pantalla completa ↗</a></div><div class="map-slot" data-src="'+o.iframe+'" data-title="'+esc(o.nombre)+'"><div class="map-ph">Se carga al abrir esta obra…</div></div></div>'
     +(o.interventoria?'<p class="interv">Interventoría: '+esc(o.interventoria)+'.</p>':'')
-    +'<p class="caveat">'+esc(o.caveat)+'</p>'
-    +'</div>';
-  obraViews.appendChild(v);
+    +'<p class="caveat"><b>Nota ·</b> '+esc(o.caveat)+'</p>'
+    +'</div></div></div>';
+  host.appendChild(card);
+  card.querySelector(".ohead").addEventListener("click", function(){
+    var wasOpen = card.classList.contains("open");
+    document.querySelectorAll(".ocard.open").forEach(function(c){ if(c!==card) c.classList.remove("open"); });
+    card.classList.toggle("open", !wasOpen);
+    if(!wasOpen){
+      var slot = card.querySelector(".map-slot");
+      if(slot && !slot.querySelector("iframe")){
+        var f = document.createElement("iframe"); f.className = "map"; f.loading = "lazy"; f.title = slot.dataset.title; f.src = slot.dataset.src;
+        slot.innerHTML = ""; slot.appendChild(f);
+      }
+      setTimeout(function(){ card.scrollIntoView({behavior:"smooth", block:"nearest"}); }, 200);
+    }
+  });
 });
 
-/* navegación por vistas (hash) */
-var VIEWS = ["resumen"].concat(OBRAS.map(function(_,i){return "obra-"+i;})).concat(["metodo"]);
-function irA(id){
-  if(VIEWS.indexOf(id)<0) id = "resumen";
-  document.querySelectorAll(".view").forEach(function(v){v.classList.toggle("on", v.id==="view-"+id);});
-  document.querySelectorAll(".nav-item").forEach(function(n){n.classList.toggle("on", n.dataset.view===id);});
-  document.getElementById("main").scrollTop = 0;
-  moverIndicador();
-  var slot = document.querySelector("#view-"+id+" .map-slot");
-  if(slot && !slot.querySelector("iframe")){
-    var f = document.createElement("iframe"); f.className = "map"; f.loading = "lazy"; f.title = slot.dataset.title; f.src = slot.dataset.src;
-    slot.innerHTML = ""; slot.appendChild(f);
-  }
-  if(location.hash.slice(1) !== id) history.replaceState(null, "", "#"+id);
-}
-function moverIndicador(){
-  var hi = document.getElementById("navHi"), on = document.querySelector(".nav-item.on"), sc = document.getElementById("navScroll");
-  if(!on){hi.style.opacity=0;return;}
-  var r1 = on.getBoundingClientRect(), r0 = sc.getBoundingClientRect();
-  hi.style.opacity = 1; hi.style.height = r1.height+"px"; hi.style.transform = "translateY("+(r1.top-r0.top+sc.scrollTop)+"px)";
-}
-document.querySelectorAll("[data-view]").forEach(function(el){el.addEventListener("click", function(){irA(el.dataset.view);});});
-window.addEventListener("hashchange", function(){irA(location.hash.slice(1));});
-window.addEventListener("resize", moverIndicador);
-irA(location.hash.slice(1) || "resumen");
+/* nav con sombra al bajar */
+var nav = document.getElementById("navbar");
+window.addEventListener("scroll", function(){ nav.classList.toggle("scrolled", window.scrollY > 8); }, {passive:true});
+
+/* revelado en scroll */
+var toReveal = document.querySelectorAll(".reveal");
+if("IntersectionObserver" in window){
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, {threshold:.1, rootMargin:"0px 0px -30px 0px"});
+  toReveal.forEach(function(el){ io.observe(el); });
+} else { toReveal.forEach(function(el){ el.classList.add("in"); }); }
 
 /* contadores animados */
 var reduced = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -283,9 +269,11 @@ document.querySelectorAll("[data-count]").forEach(function(el){
   var target = parseFloat(el.dataset.count), suf = el.dataset.suffix||"", isMoney = el.textContent.trim().charAt(0)==="$", dec = +(el.dataset.decimals||0);
   function paint(v){ var n = v.toLocaleString("es-CO",{minimumFractionDigits:dec,maximumFractionDigits:dec}); el.textContent = (isMoney?"$":"")+n+suf; }
   if(reduced){ paint(target); return; }
-  var t0 = null, dur = 800;
-  function step(ts){ if(!t0) t0 = ts; var p = Math.min(1,(ts-t0)/dur); paint(target*(1-Math.pow(1-p,3))); if(p<1) requestAnimationFrame(step); }
-  requestAnimationFrame(step);
+  function step(ts,t0){ var p = Math.min(1,(ts-t0)/900); paint(target*(1-Math.pow(1-p,3))); if(p<1) requestAnimationFrame(function(t){step(t,t0)}); }
+  var seen=false;
+  if("IntersectionObserver" in window){
+    new IntersectionObserver(function(entries,obs){ entries.forEach(function(e){ if(e.isIntersecting && !seen){ seen=true; requestAnimationFrame(function(t){step(t,t)}); obs.disconnect(); } }); }).observe(el);
+  }
 });
 </script>
 </body>
