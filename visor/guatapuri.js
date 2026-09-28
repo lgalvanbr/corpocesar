@@ -46,6 +46,10 @@ function init(handCapas){
   map.on("load", function(){
     var lbl = map.getStyle().layers.filter(function(l){return l.type==="symbol";})[0]; lbl = lbl && lbl.id;
 
+    map.addSource("img", {type:"image", url: API+"/api/imagen/guatapuri/anio_"+YEARS[IDX], coordinates: (imgs["anio_"+YEARS[IDX]]||{}).corners || [[-73.315,10.531],[-73.181,10.531],[-73.181,10.408],[-73.315,10.408]]});
+    map.addLayer({id:"img_l", type:"raster", source:"img", paint:{"raster-opacity":.95}}, lbl);
+    LAY.push({id:"img_l", label:"Imagen satelital Sentinel-2 (temporada seca)", sw:"#8a8f99", on:true});
+
     map.addSource("linea", {type:"vector", tiles:[API+"/tiles/capa/guatapuri/cauce_osm/{z}/{x}/{y}.pbf"], minzoom:0, maxzoom:16});
     map.addLayer({id:"linea_l", type:"line", source:"linea", "source-layer":"capa", paint:{"line-color":"#12141a", "line-width":1.4, "line-dasharray":[2,1.5]}}, lbl);
     LAY.push({id:"linea_l", label:"Trazado oficial del río (OSM)", sw:"#12141a", on:true});
@@ -73,10 +77,6 @@ function init(handCapas){
     map.addSource("sedimento", {type:"vector", tiles:[API+"/tiles/capacol/guatapuri_sedimento/{z}/{x}/{y}.pbf"], minzoom:0, maxzoom:16});
     map.addLayer({id:"sed_f", type:"fill", source:"sedimento", "source-layer":"capa", filter:["==",["get","capa"],YEARS[IDX]], layout:{visibility:"none"}, paint:{"fill-color":"#c2410c", "fill-opacity":.6}}, lbl);
     LAY.push({id:"sed_f", label:"Zonas de más sedimento (proxy NDTI)", sw:"#c2410c", on:false});
-
-    map.addSource("img", {type:"image", url: API+"/api/imagen/guatapuri/anio_"+YEARS[IDX], coordinates: (imgs["anio_"+YEARS[IDX]]||{}).corners || [[-73.315,10.531],[-73.181,10.531],[-73.181,10.408],[-73.315,10.408]]});
-    map.addLayer({id:"img_l", type:"raster", source:"img", paint:{"raster-opacity":.95}}, "cauce_f");
-    LAY.push({id:"img_l", label:"Imagen satelital Sentinel-2 (temporada seca)", sw:"#8a8f99", on:true});
 
     var box = document.getElementById("layers");
     LAY.forEach(function(l){
