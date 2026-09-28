@@ -17,7 +17,7 @@ map.addControl(new maplibregl.ScaleControl({unit:"metric"}), "bottom-left");
   pt.addEventListener("click", function(){ var c=pn.classList.toggle("collapsed"); pt.setAttribute("aria-expanded", c?"false":"true"); setTimeout(function(){map.resize();},360); });
 })();
 
-var IDX = 7, resumen = {anios:{}}, imgs = {};
+var IDX = 0, resumen = {anios:{}}, imgs = {};
 var LAY = [];
 
 Promise.all([
@@ -27,6 +27,18 @@ Promise.all([
 ]).then(function(v){
   resumen = v[0];
   v[1].forEach(function(im){ imgs[im.clave] = im; });
+  var disponibles = YEARS.filter(function(y){ return imgs["anio_"+y]; });
+  if(!disponibles.length){
+    document.getElementById("kpis").innerHTML = "<div class='nota'>Todavía no hay ningún año listo — la ATOM sigue procesando las imágenes. Actualice esta página en unos minutos.</div>";
+    document.getElementById("tlYear").textContent = "—";
+    return;
+  }
+  IDX = YEARS.indexOf(disponibles[disponibles.length-1]);
+  document.getElementById("tlRange").value = IDX;
+  document.getElementById("tlRange").max = YEARS.length-1;
+  if(disponibles.length < YEARS.length){
+    document.getElementById("riesgo").innerHTML = "Mostrando "+disponibles.length+" de "+YEARS.length+" años — la ATOM sigue calculando los que faltan ("+YEARS.filter(function(y){return !imgs["anio_"+y];}).join(", ")+"). Esta página no se actualiza sola: vuelva a cargarla más tarde para verlos.";
+  }
   init(v[2]);
 }).catch(function(e){ document.getElementById("kpis").textContent = "No se pudo leer la base ("+e.message+")."; });
 
