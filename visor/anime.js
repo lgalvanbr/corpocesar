@@ -3,7 +3,7 @@
 var P=new URLSearchParams(location.search),API=P.get("api")||CORPOCESAR_CONFIG.DEFAULT_API;
 var esc=function(t){return String(t==null?"":t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});};
 var fmt=function(v,d){return Number(v).toLocaleString("es-CO",{minimumFractionDigits:d||0,maximumFractionDigits:d||0});};
-function J(u){return fetch(API+u).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();});}
+function Jlocal(u){return fetch(u).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();});}
 var MUNS=["20178","20228"]; // Chiriguana, Curumani
 var HC={muy_alta:["#08519c",.55,"Muy alta (HAND < 1 m)"],alta:["#4292c6",.4,"Alta (1-2 m)"],moderada:["#9ecae1",.3,"Moderada (2-3 m)"]};
 var DTIPOS={perdida_bosque:["Pérdida de cobertura arbórea 2001-2024","#d1495b"],suelo_alterado_mineria:["Suelo alterado por minería (huella 2017-2025)","#8a5a2b"]};
@@ -24,9 +24,21 @@ function terrenoListo(){if(map.getSource("terreno"))return;map.addSource("terren
 document.getElementById("terreno").addEventListener("change",function(e){terrenoListo();map.setTerrain(e.target.checked?{source:"terreno",exaggeration:1.6}:null);if(e.target.checked&&map.getPitch()<30)map.easeTo({pitch:58});});
 document.getElementById("inclinar").addEventListener("change",function(e){map.easeTo({pitch:e.target.checked?58:0,duration:700});});
 
-Promise.all([J("/api/geo/municipios?depto=20&tol=0.0015"), J("/api/dano/resumen?depto=20")]).then(function(v){init(v[0], v[1]);}).catch(function(e){document.getElementById("info").textContent="No se pudo conectar con el servidor de datos del laboratorio ("+e.message+"). Este visor detallado depende de una API que hoy solo está disponible en la red del laboratorio (SinergIA, Universidad de los Andes).";});
+// Datos propios congelados (ver /datos en la raiz del sitio) -- este visor ya no depende de la API en vivo.
+Promise.all([
+  Jlocal("../datos/municipios.json"),
+  Jlocal("../datos/dano_resumen_20.json"),
+  Jlocal("../datos/dano/20178.json"),
+  Jlocal("../datos/dano/20228.json"),
+  Jlocal("../datos/hand/hand_anime_muy_alta.json"),
+  Jlocal("../datos/hand/hand_anime_alta.json"),
+  Jlocal("../datos/hand/hand_anime_moderada.json"),
+  Jlocal("../datos/hand/hand_anime_cauce_modelado.json")
+]).then(function(v){
+  init(v[0], v[1], {type:"FeatureCollection", features: v[2].features.concat(v[3].features)}, {muy_alta:v[4], alta:v[5], moderada:v[6], cauce_modelado:v[7]});
+}).catch(function(e){document.getElementById("info").textContent="No se pudieron leer los datos propios de este visor ("+e.message+").";});
 
-function init(munGeo, resumen){
+function init(munGeo, resumen, danoGeo, handGeo){
   var focoFeats = munGeo.features.filter(function(f){return MUNS.indexOf(f.properties.codigo)>=0;});
   var resFoco = resumen.filter(function(r){return MUNS.indexOf(r.municipio)>=0;});
   var kp = {}; resFoco.forEach(function(r){kp[r.tipo]=(kp[r.tipo]||0)+ +r.area_ha;});
@@ -47,18 +59,17 @@ function init(munGeo, resumen){
     if(!b.isEmpty())map.fitBounds(b,{padding:30,duration:0});
 
     Object.keys(HC).forEach(function(cl){var id="hd_"+cl;
-      map.addSource(id,{type:"vector",tiles:[API+"/tiles/capa/hand_anime/"+cl+"/{z}/{x}/{y}.pbf"],minzoom:0,maxzoom:14});
-      map.addLayer({id:id,type:"fill",source:id,"source-layer":"capa",layout:{visibility:"visible"},paint:{"fill-color":HC[cl][0],"fill-opacity":HC[cl][1]}},lbl);
+      map.addSource(id,{type:"geojson",data:handGeo[cl]});
+      map.addLayer({id:id,type:"fill",source:id,layout:{visibility:"visible"},paint:{"fill-color":HC[cl][0],"fill-opacity":HC[cl][1]}},lbl);
       LAY.push({label:HC[cl][2],sw:HC[cl][0],ids:[id],on:true}); fila(LAY[LAY.length-1]);});
-    map.addSource("hd_c",{type:"vector",tiles:[API+"/tiles/capa/hand_anime/cauce_modelado/{z}/{x}/{y}.pbf"],minzoom:0,maxzoom:14});
-    map.addLayer({id:"hd_c",type:"line",source:"hd_c","source-layer":"capa",layout:{visibility:"visible"},paint:{"line-color":"#08306b","line-width":1.8,"line-dasharray":[2,1]}},lbl);
+    map.addSource("hd_c",{type:"geojson",data:handGeo.cauce_modelado});
+    map.addLayer({id:"hd_c",type:"line",source:"hd_c",layout:{visibility:"visible"},paint:{"line-color":"#08306b","line-width":1.8,"line-dasharray":[2,1]}},lbl);
     LAY.push({label:"Cauces modelados desde el DEM (no es la línea oficial del río)",sw:"#08306b",ids:["hd_c"],on:true}); fila(LAY[LAY.length-1]);
     if(P.get("terreno")==="1"){terrenoListo();document.getElementById("terreno").checked=true;document.getElementById("inclinar").checked=true;map.setTerrain({source:"terreno",exaggeration:1.6});map.jumpTo({pitch:+(P.get("pitch")||55)});}
 
-    map.addSource("dano",{type:"vector",tiles:[API+"/tiles/dano/{z}/{x}/{y}.pbf?depto=20"],minzoom:0,maxzoom:14});
+    map.addSource("dano",{type:"geojson",data:danoGeo});
     var col=["match",["get","tipo"]];Object.keys(DTIPOS).forEach(function(t){col.push(t,DTIPOS[t][1]);});col.push("#888");
-    var fMun=["in",["get","municipio"],["literal",MUNS]];
-    map.addLayer({id:"dano_f",type:"fill",source:"dano","source-layer":"dano",filter:fMun,layout:{visibility:"visible"},paint:{"fill-color":col,"fill-opacity":.65}},lbl);
+    map.addLayer({id:"dano_f",type:"fill",source:"dano",layout:{visibility:"visible"},paint:{"fill-color":col,"fill-opacity":.65}},lbl);
     fila({label:"Pérdida de bosque (rojo) y huella minera (café), satélite",sw:"#d1495b",ids:["dano_f"],on:true});
 
     map.on("click","dano_f",function(e){var p=e.features[0].properties;document.getElementById("infoT").textContent=DTIPOS[p.tipo]?DTIPOS[p.tipo][0]:p.tipo;

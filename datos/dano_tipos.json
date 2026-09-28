@@ -1,0 +1,1 @@
+[{"tipo":"perdida_bosque","metodo":"hansen_gfc_v1.12","poligonos":1963552,"ha":4456776,"desde":2001,"hasta":2024},{"tipo":"suelo_alterado_mineria","metodo":"sentinel2_random_forest","poligonos":6254,"ha":325944,"desde":2017,"hasta":2025}]

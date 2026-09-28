@@ -7,6 +7,8 @@ var fmt=function(v,d){return Number(v).toLocaleString("es-CO",{minimumFractionDi
 var ACT={},YR=2024,MUN={},RES=[],timer=null,ESTADO={suelo_alterado_mineria:true};
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
 function J(u){return fetch(API+u).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();});}
+function Jlocal(u){return fetch(u).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();});}
+var ESCESAR = DEP==="20"; // solo Cesar tiene datos propios congelados; otros departamentos siguen en vivo
 var map=new maplibregl.Map({container:"map",style:"https://tiles.openfreemap.org/styles/liberty",center:[-73.5,9.5],zoom:7.4,pitch:0,maxPitch:75});map.addControl(new maplibregl.NavigationControl({visualizePitch:true}),"top-left");map.addControl(new maplibregl.ScaleControl({unit:"metric"}),"bottom-left");
 (function(){var hcLat=document.getElementById("hcLat"),hcLon=document.getElementById("hcLon"),hcZoom=document.getElementById("hcZoom");
   if(!hcLat)return;
@@ -20,12 +22,20 @@ function terrenoListo(){if(map.getSource("terreno"))return;map.addSource("terren
   if(typeof map.setSky==="function"){try{map.setSky({"sky-color":"#cfe8ff","sky-horizon-blend":.5,"horizon-color":"#fff","horizon-fog-blend":.5,"fog-color":"#e8ecef","fog-ground-blend":.3});}catch(e){}}}
 document.getElementById("terreno").addEventListener("change",function(e){terrenoListo();map.setTerrain(e.target.checked?{source:"terreno",exaggeration:1.6}:null);if(e.target.checked&&map.getPitch()<30)map.easeTo({pitch:58});});
 document.getElementById("inclinar").addEventListener("change",function(e){map.easeTo({pitch:e.target.checked?58:0,duration:700});});
-Promise.all([J("/api/dano/resumen?depto="+DEP),J("/api/geo/municipios?depto="+DEP+"&tol=0.002"),J("/api/geo/departamentos?tol=0.003"),J("/api/dano/tipos")]).then(function(v){RES=v[0];v[1].features.forEach(function(f){MUN[f.properties.codigo]=f.properties.nombre;});init(v[1],v[2],v[3]);}).catch(function(e){document.getElementById("info").textContent="No se pudo conectar con el servidor de datos del laboratorio ("+e.message+"). Este visor detallado depende de una API que hoy solo está disponible en la red del laboratorio (SinergIA, Universidad de los Andes).";});
+
+// Para Cesar (depto=20), los datos son archivos propios congelados en /datos (ver README del repo).
+// Para cualquier otro departamento, este visor sigue leyendo la API en vivo del laboratorio.
+var fuente = ESCESAR
+  ? Promise.all([Jlocal("../datos/dano_resumen_20.json"), Jlocal("../datos/municipios.json"), Jlocal("../datos/departamentos.json"), Jlocal("../datos/dano_tipos.json")])
+  : Promise.all([J("/api/dano/resumen?depto="+DEP), J("/api/geo/municipios?depto="+DEP+"&tol=0.002"), J("/api/geo/departamentos?tol=0.003"), J("/api/dano/tipos")]);
+fuente.then(function(v){RES=v[0];v[1].features.forEach(function(f){MUN[f.properties.codigo]=f.properties.nombre;});init(v[1],v[2],v[3]);}).catch(function(e){document.getElementById("info").textContent="No se pudo conectar con el servidor de datos del laboratorio ("+e.message+"). Este departamento no tiene datos propios congelados; depende de una API que hoy solo está disponible en la red del laboratorio (SinergIA, Universidad de los Andes).";});
 function init(munGeo,depGeo,tipos){
   var prese=Object.keys(TIPOS).filter(function(t){return RES.some(function(r){return r.tipo===t;});});var pt=(P.get("tipos")||"").split(",").filter(Boolean);prese.forEach(function(t,i){ACT[t]=pt.length?pt.indexOf(t)>=0:(i===0||t==="perdida_bosque");});
   var box=document.getElementById("tipos");prese.forEach(function(t){var d=document.createElement("div");d.className="lr";d.innerHTML='<label><input type="checkbox" data-t="'+t+'" '+(ACT[t]?"checked":"")+'> <i class="sw" style="background:'+TIPOS[t][1]+'"></i>'+esc(TIPOS[t][0])+"</label>";box.appendChild(d);d.querySelector("input").addEventListener("change",function(e){ACT[t]=e.target.checked;filtra();resumen();});});
   var yrs=RES.map(function(r){return r.anio;}),y0=Math.min.apply(null,yrs),y1=Math.max.apply(null,yrs),sl=document.getElementById("yr");sl.min=y0;sl.max=y1;YR=+(P.get("anio")||y1);sl.value=YR;document.getElementById("yv").textContent=YR;document.getElementById("rng").textContent=y0+"–"+y1;
-  var dn=depGeo.features.filter(function(f){return f.properties.codigo===DEP;})[0];var sel=document.getElementById("depSel");depGeo.features.slice().sort(function(a,b){return a.properties.nombre.localeCompare(b.properties.nombre);}).forEach(function(f){var o=document.createElement("option");o.value=f.properties.codigo;o.textContent=f.properties.nombre;if(f.properties.codigo===DEP)o.selected=true;sel.appendChild(o);});sel.addEventListener("change",function(){P.set("depto",sel.value);location.search=P.toString();});document.getElementById("ttl").textContent="Daño ambiental · "+(dn?dn.properties.nombre:DEP);J("/api/hechos?proyecto=mineria&departamento="+encodeURIComponent(dn?dn.properties.nombre:"")+"&limit=25").then(function(hs){var b=document.getElementById("prensa");if(!hs.length){b.textContent="Aún no hay hechos verificados de prensa para este departamento.";return;}b.innerHTML=hs.map(function(h){var dom=(h.url||"").split("/")[2]||"";return"<div style='margin-bottom:8px'><b>"+esc(h.fecha&&h.fecha!=="null"?h.fecha:"s/f")+"</b> "+esc(h.hecho)+" <a href='"+esc(h.url)+"' target='_blank' rel='noopener'>"+esc(dom.replace(/^www\./,""))+"</a>"+(h.municipio&&h.municipio!=="null"?" · "+esc(h.municipio):"")+"</div>";}).join("");}).catch(function(){});
+  var dn=depGeo.features.filter(function(f){return f.properties.codigo===DEP;})[0];var sel=document.getElementById("depSel");depGeo.features.slice().sort(function(a,b){return a.properties.nombre.localeCompare(b.properties.nombre);}).forEach(function(f){var o=document.createElement("option");o.value=f.properties.codigo;o.textContent=f.properties.nombre+(f.properties.codigo==="20"?" (con datos propios)":"");if(f.properties.codigo===DEP)o.selected=true;sel.appendChild(o);});sel.addEventListener("change",function(){P.set("depto",sel.value);location.search=P.toString();});document.getElementById("ttl").textContent="Daño ambiental · "+(dn?dn.properties.nombre:DEP);
+  var hechosProm = ESCESAR ? Jlocal("../datos/hechos_mineria_cesar.json") : J("/api/hechos?proyecto=mineria&departamento="+encodeURIComponent(dn?dn.properties.nombre:"")+"&limit=25");
+  hechosProm.then(function(hs){var b=document.getElementById("prensa");if(!hs.length){b.textContent="Aún no hay hechos verificados de prensa para este departamento.";return;}b.innerHTML=hs.map(function(h){var dom=(h.url||"").split("/")[2]||"";return"<div style='margin-bottom:8px'><b>"+esc(h.fecha&&h.fecha!=="null"?h.fecha:"s/f")+"</b> "+esc(h.hecho)+" <a href='"+esc(h.url)+"' target='_blank' rel='noopener'>"+esc(dom.replace(/^www\./,""))+"</a>"+(h.municipio&&h.municipio!=="null"?" · "+esc(h.municipio):"")+"</div>";}).join("");}).catch(function(){});
   (map.isStyleLoaded()?function(f){f();}:function(f){map.once("load",f);})(function(){
     var lbl=map.getStyle().layers.filter(function(l){return l.type==="symbol";})[0];lbl=lbl&&lbl.id;
     map.addSource("mun",{type:"geojson",data:munGeo});map.addLayer({id:"mun_l",type:"line",source:"mun",paint:{"line-color":"#333","line-width":.6,"line-opacity":.5}},lbl);
@@ -36,12 +46,23 @@ function init(munGeo,depGeo,tipos){
     if(MUN_SEL){map.addSource("foco",{type:"geojson",data:{type:"FeatureCollection",features:focoFeats}});map.addLayer({id:"foco_l",type:"line",source:"foco",paint:{"line-color":"#16a34a","line-width":2.6}},lbl);
       var mn=focoFeats[0];if(mn)document.getElementById("ttl").textContent="Daño ambiental · "+mn.properties.nombre+" (Corpocesar)";}
     if(P.get("terreno")==="1"){terrenoListo();document.getElementById("terreno").checked=true;document.getElementById("inclinar").checked=true;map.setTerrain({source:"terreno",exaggeration:1.6});map.jumpTo({pitch:+(P.get("pitch")||58)});}
-    map.addSource("dano",{type:"vector",tiles:[API+"/tiles/dano/{z}/{x}/{y}.pbf?depto="+DEP],minzoom:0,maxzoom:14});
     var col=["match",["get","tipo"]];Object.keys(TIPOS).forEach(function(t){col.push(t,TIPOS[t][1]);});col.push("#888");
-    map.addLayer({id:"dano_f",type:"fill",source:"dano","source-layer":"dano",paint:{"fill-color":col,"fill-opacity":.72}},lbl);map.addLayer({id:"dano_o",type:"line",source:"dano","source-layer":"dano",paint:{"line-color":col,"line-width":.5}},lbl);
-    filtra();resumen();
-    map.on("click","dano_f",function(e){var p=e.features[0].properties;document.getElementById("infoT").textContent=TIPOS[p.tipo]?TIPOS[p.tipo][0]:p.tipo;document.getElementById("info").innerHTML="<table><tr><td>Año</td><td>"+p.anio+"</td></tr><tr><td>Área</td><td>"+fmt(p.area_ha,1)+" ha</td></tr><tr><td>Municipio</td><td>"+esc(MUN[p.municipio]||p.municipio||"sin asignar")+"</td></tr></table>";});
-    map.on("mouseenter","dano_f",function(){map.getCanvas().style.cursor="pointer";});map.on("mouseleave","dano_f",function(){map.getCanvas().style.cursor="";});
+    function montarCapaDano(danoGeo){
+      map.addSource("dano",{type:"geojson",data:danoGeo});
+      map.addLayer({id:"dano_f",type:"fill",source:"dano",paint:{"fill-color":col,"fill-opacity":.72}},lbl);map.addLayer({id:"dano_o",type:"line",source:"dano",paint:{"line-color":col,"line-width":.5}},lbl);
+      filtra();resumen();
+      map.on("click","dano_f",function(e){var p=e.features[0].properties;document.getElementById("infoT").textContent=TIPOS[p.tipo]?TIPOS[p.tipo][0]:p.tipo;document.getElementById("info").innerHTML="<table><tr><td>Año</td><td>"+p.anio+"</td></tr><tr><td>Área</td><td>"+fmt(p.area_ha,1)+" ha</td></tr><tr><td>Municipio</td><td>"+esc(MUN[p.municipio]||p.municipio||"sin asignar")+"</td></tr></table>";});
+      map.on("mouseenter","dano_f",function(){map.getCanvas().style.cursor="pointer";});map.on("mouseleave","dano_f",function(){map.getCanvas().style.cursor="";});
+    }
+    if(ESCESAR){
+      Jlocal("../datos/dano_poligonos_20.json").then(montarCapaDano).catch(function(){document.getElementById("info").textContent="No se pudo leer el detalle de polígonos de daño.";});
+    } else {
+      map.addSource("dano",{type:"vector",tiles:[API+"/tiles/dano/{z}/{x}/{y}.pbf?depto="+DEP],minzoom:0,maxzoom:14});
+      map.addLayer({id:"dano_f",type:"fill",source:"dano","source-layer":"dano",paint:{"fill-color":col,"fill-opacity":.72}},lbl);map.addLayer({id:"dano_o",type:"line",source:"dano","source-layer":"dano",paint:{"line-color":col,"line-width":.5}},lbl);
+      filtra();resumen();
+      map.on("click","dano_f",function(e){var p=e.features[0].properties;document.getElementById("infoT").textContent=TIPOS[p.tipo]?TIPOS[p.tipo][0]:p.tipo;document.getElementById("info").innerHTML="<table><tr><td>Año</td><td>"+p.anio+"</td></tr><tr><td>Área</td><td>"+fmt(p.area_ha,1)+" ha</td></tr><tr><td>Municipio</td><td>"+esc(MUN[p.municipio]||p.municipio||"sin asignar")+"</td></tr></table>";});
+      map.on("mouseenter","dano_f",function(){map.getCanvas().style.cursor="pointer";});map.on("mouseleave","dano_f",function(){map.getCanvas().style.cursor="";});
+    }
   });
   sl.addEventListener("input",function(){YR=+sl.value;document.getElementById("yv").textContent=YR;filtra();resumen();});
   document.getElementById("acum").addEventListener("change",function(){filtra();resumen();});

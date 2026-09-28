@@ -1,12 +1,12 @@
 (function(){
 "use strict";
-var P = new URLSearchParams(location.search), API = P.get("api") || CORPOCESAR_CONFIG.DEFAULT_API;
 var YEARS = ["2018","2019","2020","2021","2022","2023","2024","2025"];
 var MESES_2025 = ["2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12"];
 var MES_NOMBRE = {"01":"ene","02":"feb","03":"mar","04":"abr","05":"may","06":"jun","07":"jul","08":"ago","09":"sep","10":"oct","11":"nov","12":"dic"};
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
 function fmt(v,d){return Number(v).toLocaleString("es-CO",{minimumFractionDigits:d||0,maximumFractionDigits:d||0});}
-function J(u){return fetch(API+u).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();});}
+function Jlocal(u){return fetch(u).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();});}
+var CAJA_POR_DEFECTO = [[-73.315,10.531],[-73.181,10.531],[-73.181,10.408],[-73.315,10.408]];
 
 var map = new maplibregl.Map({container:"map", style:"https://tiles.openfreemap.org/styles/liberty", center:[-73.245,10.46], zoom:12.2, pitch:0, maxPitch:75});
 map.addControl(new maplibregl.NavigationControl({visualizePitch:true}), "top-left");
@@ -23,6 +23,7 @@ var MODE = "anio";           // "anio" | "mes"
 var IDX = 0, IDX_MES = 11;
 var resumen = {anios:{}}, resumenMes = {meses:{}}, imgs = {}, imgsMes = {};
 var LAY = [], LBL = null, sedVisible = false;
+var cauceCache = {}, sedCache = {};
 
 function labels(){ return MODE==="anio" ? YEARS : MESES_2025; }
 function idx(){ return MODE==="anio" ? IDX : IDX_MES; }
@@ -32,20 +33,32 @@ function claveImagen(et){ return (MODE==="anio"?"anio_":"mes_")+et; }
 function tablaImgs(){ return MODE==="anio" ? imgs : imgsMes; }
 function tablaResumen(){ return MODE==="anio" ? (resumen.anios||{}) : (resumenMes.meses||{}); }
 function nombreTick(et){ return MODE==="anio" ? et.slice(2) : MES_NOMBRE[et.slice(5)]; }
+function rutaImagen(et){ return "../datos/guatapuri/imagenes/"+claveImagen(et)+".png"; }
+function rutaCapa(tipo, et){
+  // tipo: "cauce" | "sedimento". et: "2019" (carpeta anual) o "2025-03" (carpeta mensual)
+  return MODE==="anio" ? "../datos/guatapuri/anual/"+tipo+"_"+et+".json" : "../datos/guatapuri/mensual/"+tipo+"_"+et+".json";
+}
+function cargarCapa(tipo, et){
+  var cache = tipo==="cauce" ? cauceCache : sedCache, k = MODE+"_"+et;
+  if(cache[k]) return Promise.resolve(cache[k]);
+  return Jlocal(rutaCapa(tipo,et)).then(function(gj){ cache[k]=gj; return gj; }).catch(function(){ return {type:"FeatureCollection",features:[]}; });
+}
 
+// Todos los datos de este visor (resumenes, listas de imagenes, imagenes mismas, capas de cauce/
+// sedimento por anio y mes, HAND e IDEAM) estan congelados como archivos propios en /datos -- ver
+// README del repo. Este visor ya no depende de ningun servidor en vivo.
 Promise.all([
-  J("/api/guatapuri/resumen").catch(function(){return {anios:{}};}),
-  J("/api/guatapuri/resumen_mensual").catch(function(){return {meses:{}};}),
-  J("/api/imagenes/guatapuri").catch(function(){return [];}),
-  J("/api/imagenes/guatapuri_mes").catch(function(){return [];}),
-  J("/api/capas/hand_valledupar").catch(function(){return [];})
+  Jlocal("../datos/guatapuri/resumen.json").catch(function(){return {anios:{}};}),
+  Jlocal("../datos/guatapuri/resumen_mensual.json").catch(function(){return {meses:{}};}),
+  Jlocal("../datos/guatapuri/imagenes_anual.json").catch(function(){return [];}),
+  Jlocal("../datos/guatapuri/imagenes_mensual.json").catch(function(){return [];})
 ]).then(function(v){
   resumen = v[0]; resumenMes = v[1];
   v[2].forEach(function(im){ imgs[im.clave] = im; });
   v[3].forEach(function(im){ imgsMes[im.clave] = im; });
   var disponibles = YEARS.filter(function(y){ return imgs["anio_"+y]; });
   if(!disponibles.length){
-    document.getElementById("kpis").innerHTML = "<div class='nota'>Todavía no hay ningún año listo — la ATOM sigue procesando las imágenes. Actualice esta página en unos minutos.</div>";
+    document.getElementById("kpis").innerHTML = "<div class='nota'>No se encontraron las imágenes del análisis. Revise que /datos/guatapuri/imagenes esté completo.</div>";
     document.getElementById("tlYear").textContent = "—";
     return;
   }
@@ -53,75 +66,74 @@ Promise.all([
   var disponiblesMes = MESES_2025.filter(function(m){ return imgsMes["mes_"+m]; });
   IDX_MES = disponiblesMes.length ? MESES_2025.indexOf(disponiblesMes[disponiblesMes.length-1]) : 11;
   configurarModoUI();
-  if(disponibles.length < YEARS.length){
-    document.getElementById("riesgo").innerHTML = "Mostrando "+disponibles.length+" de "+YEARS.length+" años — la ATOM sigue calculando los que faltan ("+YEARS.filter(function(y){return !imgs["anio_"+y];}).join(", ")+"). Esta página no se actualiza sola: vuelva a cargarla más tarde para verlos.";
-  }
-  init(v[4]);
-}).catch(function(e){ document.getElementById("kpis").textContent = "No se pudo leer la base ("+e.message+")."; });
+  init();
+}).catch(function(e){ document.getElementById("kpis").textContent = "No se pudieron leer los datos propios de este visor ("+e.message+")."; });
 
-function init(handCapas){
+function init(){
   map.on("load", function(){
     LBL = map.getStyle().layers.filter(function(l){return l.type==="symbol";})[0]; LBL = LBL && LBL.id;
 
-    map.addSource("img", {type:"image", url: API+"/api/imagen/guatapuri/"+claveImagen(etiquetaActual()), coordinates: (tablaImgs()[claveImagen(etiquetaActual())]||{}).corners || [[-73.315,10.531],[-73.181,10.531],[-73.181,10.408],[-73.315,10.408]]});
+    map.addSource("img", {type:"image", url: rutaImagen(etiquetaActual()), coordinates: (tablaImgs()[claveImagen(etiquetaActual())]||{}).corners || CAJA_POR_DEFECTO});
     map.addLayer({id:"img_l", type:"raster", source:"img", paint:{"raster-opacity":.95, "raster-resampling":"linear"}}, LBL);
     LAY.push({id:"img_l", label:"Imagen satelital Sentinel-2", sw:"#8a8f99", on:true});
 
-    map.addSource("linea", {type:"vector", tiles:[API+"/tiles/capa/guatapuri/cauce_osm/{z}/{x}/{y}.pbf"], minzoom:0, maxzoom:16});
-    map.addLayer({id:"linea_l", type:"line", source:"linea", "source-layer":"capa", paint:{"line-color":"#12141a", "line-width":1.4, "line-dasharray":[2,1.5]}}, LBL);
-    LAY.push({id:"linea_l", label:"Trazado oficial del río (OSM)", sw:"#12141a", on:true});
+    Jlocal("../datos/guatapuri/cauce_osm.json").then(function(gj){
+      map.addSource("linea", {type:"geojson", data: gj});
+      map.addLayer({id:"linea_l", type:"line", source:"linea", paint:{"line-color":"#12141a", "line-width":1.4, "line-dasharray":[2,1.5]}}, LBL);
+      LAY.push({id:"linea_l", label:"Trazado oficial del río (OSM)", sw:"#12141a", on:true});
+      redibujarPanel();
+    });
 
-    if(handCapas.length){
-      ["muy_alta","alta"].forEach(function(cl){
+    Promise.all(["muy_alta","alta"].map(function(cl){ return Jlocal("../datos/hand/hand_valledupar_"+cl+".json"); })).then(function(gjs){
+      ["muy_alta","alta"].forEach(function(cl,i){
         var id = "hd_"+cl;
-        map.addSource(id, {type:"vector", tiles:[API+"/tiles/capa/hand_valledupar/"+cl+"/{z}/{x}/{y}.pbf"], minzoom:0, maxzoom:14});
-        map.addLayer({id:id, type:"fill", source:id, "source-layer":"capa", layout:{visibility:"none"}, paint:{"fill-color":cl==="muy_alta"?"#08519c":"#3182bd", "fill-opacity":.25}}, LBL);
+        map.addSource(id, {type:"geojson", data: gjs[i]});
+        map.addLayer({id:id, type:"fill", source:id, layout:{visibility:"none"}, paint:{"fill-color":cl==="muy_alta"?"#08519c":"#3182bd", "fill-opacity":.25}}, LBL);
         LAY.push({id:id, label:"Zona inundable HAND · "+(cl==="muy_alta"?"muy alta":"alta"), sw:cl==="muy_alta"?"#08519c":"#3182bd", on:false});
       });
-    }
-
-    ["2010-2011","2020-2022"].forEach(function(anio){
-      var id = "ideam_"+anio;
-      map.addSource(id, {type:"vector", tiles:[API+"/tiles/capa/ideam_inundacion_historica/"+anio+"/{z}/{x}/{y}.pbf"], minzoom:0, maxzoom:16});
-      map.addLayer({id:id, type:"fill", source:id, "source-layer":"capa", layout:{visibility:"none"}, paint:{"fill-color":"#e05a2b", "fill-opacity":.45}}, LBL);
-      LAY.push({id:id, label:"Inundación real IDEAM "+anio, sw:"#e05a2b", on:false});
+      redibujarPanel();
     });
 
-    crearCapasDatos();
-    LAY.push({id:"sed_f", label:"Zonas de más sedimento (proxy NDTI)", sw:"#c2410c", on:false});
-
-    var box = document.getElementById("layers");
-    LAY.forEach(function(l){
-      var d = document.createElement("div"); d.className = "lr";
-      d.innerHTML = '<label><input type="checkbox" '+(l.on?"checked":"")+'> <i class="sw" style="background:'+l.sw+'"></i>'+esc(l.label)+"</label>";
-      box.appendChild(d);
-      d.querySelector("input").addEventListener("change", function(e){
-        if(l.id==="sed_f") sedVisible = e.target.checked;
-        map.setLayoutProperty(l.id, "visibility", e.target.checked?"visible":"none");
+    Promise.all(["2010-2011","2020-2022"].map(function(anio){ return Jlocal("../datos/ideam/"+anio+".json"); })).then(function(gjs){
+      ["2010-2011","2020-2022"].forEach(function(anio,i){
+        var id = "ideam_"+anio;
+        map.addSource(id, {type:"geojson", data: gjs[i]});
+        map.addLayer({id:id, type:"fill", source:id, layout:{visibility:"none"}, paint:{"fill-color":"#e05a2b", "fill-opacity":.45}}, LBL);
+        LAY.push({id:id, label:"Inundación real IDEAM "+anio, sw:"#e05a2b", on:false});
       });
+      redibujarPanel();
     });
+
+    map.addSource("cauce", {type:"geojson", data:{type:"FeatureCollection",features:[]}});
+    map.addLayer({id:"cauce_f", type:"fill", source:"cauce", paint:{"fill-color":"#2563eb", "fill-opacity":.55}}, LBL);
+    map.addLayer({id:"cauce_l", type:"line", source:"cauce", paint:{"line-color":"#1d4ed8", "line-width":1}}, LBL);
+    map.addSource("sedimento", {type:"geojson", data:{type:"FeatureCollection",features:[]}});
+    map.addLayer({id:"sed_f", type:"fill", source:"sedimento", layout:{visibility:"none"}, paint:{"fill-color":"#c2410c", "fill-opacity":.6}}, LBL);
+    LAY.push({id:"sed_f", label:"Zonas de más sedimento (proxy NDTI)", sw:"#c2410c", on:false});
+    redibujarPanel();
 
     var b = new maplibregl.LngLatBounds([-73.3149009,10.4084177],[-73.1810985,10.531347]);
     map.fitBounds(b, {padding:40, duration:0});
 
-    map.on("click", "cauce_f", function(e){ var p = e.features[0].properties; document.getElementById("infoT").textContent = "Franja húmeda "+p.capa; document.getElementById("info").textContent = "10% más húmedo (MNDWI) del corredor de 500m del río en "+p.capa+" — una aproximación gruesa, no el ancho real del cauce (el río es más angosto de lo que Sentinel-2 puede resolver bien)."; });
-    map.on("click", "sed_f", function(e){ var p = e.features[0].properties; document.getElementById("infoT").textContent = "Sedimento "+p.capa; document.getElementById("info").textContent = "Zona con mayor proxy de turbidez (NDTI) dentro de la franja húmeda detectada en "+p.capa+" — indica posible mayor carga de sedimento en superficie, no una medición directa."; });
+    map.on("click", "cauce_f", function(e){ var p = e.features[0].properties; document.getElementById("infoT").textContent = "Franja húmeda "+(p.anio||etiquetaActual()); document.getElementById("info").textContent = "10% más húmedo (MNDWI) del corredor de 500m del río en "+(p.anio||etiquetaActual())+" — una aproximación gruesa, no el ancho real del cauce (el río es más angosto de lo que Sentinel-2 puede resolver bien)."; });
+    map.on("click", "sed_f", function(e){ var p = e.features[0].properties; document.getElementById("infoT").textContent = "Sedimento "+(p.anio||etiquetaActual()); document.getElementById("info").textContent = "Zona con mayor proxy de turbidez (NDTI) dentro de la franja húmeda detectada en "+(p.anio||etiquetaActual())+" — indica posible mayor carga de sedimento en superficie, no una medición directa."; });
 
     actualizar();
   });
 }
 
-function crearCapasDatos(){
-  ["cauce_f","cauce_l","sed_f"].forEach(function(id){ if(map.getLayer(id)) map.removeLayer(id); });
-  ["cauce","sedimento"].forEach(function(id){ if(map.getSource(id)) map.removeSource(id); });
-  var colCauce = "guatapuri_cauce"+(MODE==="mes"?"_mes":"");
-  var colSed = "guatapuri_sedimento"+(MODE==="mes"?"_mes":"");
-  var et = etiquetaActual();
-  map.addSource("cauce", {type:"vector", tiles:[API+"/tiles/capacol/"+colCauce+"/{z}/{x}/{y}.pbf"], minzoom:0, maxzoom:16});
-  map.addLayer({id:"cauce_f", type:"fill", source:"cauce", "source-layer":"capa", filter:["==",["get","capa"],et], paint:{"fill-color":"#2563eb", "fill-opacity":.55}}, LBL);
-  map.addLayer({id:"cauce_l", type:"line", source:"cauce", "source-layer":"capa", filter:["==",["get","capa"],et], paint:{"line-color":"#1d4ed8", "line-width":1}}, LBL);
-  map.addSource("sedimento", {type:"vector", tiles:[API+"/tiles/capacol/"+colSed+"/{z}/{x}/{y}.pbf"], minzoom:0, maxzoom:16});
-  map.addLayer({id:"sed_f", type:"fill", source:"sedimento", "source-layer":"capa", filter:["==",["get","capa"],et], layout:{visibility: sedVisible?"visible":"none"}, paint:{"fill-color":"#c2410c", "fill-opacity":.6}}, LBL);
+function redibujarPanel(){
+  var box = document.getElementById("layers");
+  box.innerHTML = "";
+  LAY.forEach(function(l){
+    var d = document.createElement("div"); d.className = "lr";
+    d.innerHTML = '<label><input type="checkbox" '+(l.on?"checked":"")+'> <i class="sw" style="background:'+l.sw+'"></i>'+esc(l.label)+"</label>";
+    box.appendChild(d);
+    d.querySelector("input").addEventListener("change", function(e){
+      if(l.id==="sed_f") sedVisible = e.target.checked;
+      map.setLayoutProperty(l.id, "visibility", e.target.checked?"visible":"none");
+    });
+  });
 }
 
 function configurarModoUI(){
@@ -138,7 +150,6 @@ function configurarModoUI(){
         document.getElementById("tlRange").max = labels().length-1;
         document.getElementById("tlRange").value = idx();
         pintarTicks();
-        if(map.isStyleLoaded() && map.getSource("cauce")) crearCapasDatos();
         actualizar();
       });
     });
@@ -156,10 +167,12 @@ function pintarTicks(){
 function actualizar(){
   var et = etiquetaActual();
   document.getElementById("tlYear").textContent = MODE==="anio" ? et : nombreTick(et)+" "+et.slice(0,4);
-  if(map.getLayer("cauce_f")){ map.setFilter("cauce_f", ["==",["get","capa"],et]); map.setFilter("cauce_l", ["==",["get","capa"],et]); }
-  if(map.getLayer("sed_f")) map.setFilter("sed_f", ["==",["get","capa"],et]);
+
+  if(map.getSource("cauce")) cargarCapa("cauce", et).then(function(gj){ if(map.getSource("cauce")) map.getSource("cauce").setData(gj); });
+  if(map.getSource("sedimento")) cargarCapa("sedimento", et).then(function(gj){ if(map.getSource("sedimento")) map.getSource("sedimento").setData(gj); });
+
   var clave = claveImagen(et), im = tablaImgs()[clave];
-  if(map.getSource("img") && im && im.corners){ map.getSource("img").updateImage({url: API+"/api/imagen/guatapuri/"+clave, coordinates: im.corners}); }
+  if(map.getSource("img") && im && im.corners){ map.getSource("img").updateImage({url: rutaImagen(et), coordinates: im.corners}); }
 
   var tabla = tablaResumen(), a = tabla[et];
   var kp = document.getElementById("kpis");
@@ -172,7 +185,7 @@ function actualizar(){
   } else if(a && a.sin_datos) {
     kp.innerHTML = '<div class="nota">Sin escenas Sentinel-2 utilizables para '+et+' (posiblemente un mes muy nublado).</div>';
   } else {
-    kp.innerHTML = '<div class="nota">Sin datos todavía para '+et+' (el análisis puede seguir corriendo en la ATOM).</div>';
+    kp.innerHTML = '<div class="nota">Sin datos todavía para '+et+'.</div>';
   }
 
   var stat = document.getElementById("tlStat");
@@ -209,7 +222,7 @@ function actualizar(){
       var maxM = meses[vals.indexOf(Math.max.apply(null,vals))], minM = meses[vals.indexOf(Math.min.apply(null,vals))];
       riesgo.innerHTML = "Dentro de 2025, el mes con más agua detectada fue "+nombreTick(maxM)+" ("+fmt(Math.max.apply(null,vals),2)+" km²) y el de menos fue "+nombreTick(minM)+" ("+fmt(Math.min.apply(null,vals),2)+" km²). Esta variación mes a mes es sobre todo estacional (lluvias vs. seca) y de cobertura de nubes — no la compare directamente con el cambio entre años, que usa siempre el compuesto de enero-marzo.";
     } else {
-      riesgo.innerHTML = "La ATOM está calculando los compuestos mensuales de 2025 (uno por mes, puede tardar). Esta página no se actualiza sola — recárguela para ver más meses.";
+      riesgo.innerHTML = "Sin suficientes meses cargados para comparar.";
     }
   }
 }
