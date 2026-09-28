@@ -104,8 +104,8 @@ function init(handCapas){
     var b = new maplibregl.LngLatBounds([-73.3149009,10.4084177],[-73.1810985,10.531347]);
     map.fitBounds(b, {padding:40, duration:0});
 
-    map.on("click", "cauce_f", function(e){ var p = e.features[0].properties; document.getElementById("infoT").textContent = "Cauce "+p.capa; document.getElementById("info").textContent = "Extensión de agua detectada por MNDWI en el compuesto de Sentinel-2 de "+p.capa+"."; });
-    map.on("click", "sed_f", function(e){ var p = e.features[0].properties; document.getElementById("infoT").textContent = "Sedimento "+p.capa; document.getElementById("info").textContent = "Zona con mayor proxy de turbidez (NDTI) dentro del agua detectada en "+p.capa+" — indica posible mayor carga de sedimento en superficie, no una medición directa."; });
+    map.on("click", "cauce_f", function(e){ var p = e.features[0].properties; document.getElementById("infoT").textContent = "Franja húmeda "+p.capa; document.getElementById("info").textContent = "10% más húmedo (MNDWI) del corredor de 500m del río en "+p.capa+" — una aproximación gruesa, no el ancho real del cauce (el río es más angosto de lo que Sentinel-2 puede resolver bien)."; });
+    map.on("click", "sed_f", function(e){ var p = e.features[0].properties; document.getElementById("infoT").textContent = "Sedimento "+p.capa; document.getElementById("info").textContent = "Zona con mayor proxy de turbidez (NDTI) dentro de la franja húmeda detectada en "+p.capa+" — indica posible mayor carga de sedimento en superficie, no una medición directa."; });
 
     actualizar();
   });
@@ -165,8 +165,8 @@ function actualizar(){
   var kp = document.getElementById("kpis");
   if(a){
     var extra = MODE==="mes" && a.cobertura_valida!=null ? '<div><b>'+Math.round(a.cobertura_valida*100)+'%</b><span>del tramo con imagen sin nube</span></div>' : '';
-    kp.innerHTML = '<div><b>'+fmt(a.area_agua_km2,2)+' km²</b><span>agua detectada (MNDWI), '+et+'</span></div>'
-      + '<div><b>'+fmt(a.poligonos_cauce)+'</b><span>polígonos de cauce</span></div>'
+    kp.innerHTML = '<div><b>'+fmt(a.area_agua_km2,2)+' km²</b><span>franja húmeda (aprox.), '+et+'</span></div>'
+      + '<div><b>'+fmt(a.poligonos_cauce)+'</b><span>polígonos de franja húmeda</span></div>'
       + '<div><b>'+fmt(a.poligonos_sedimento)+'</b><span>zonas de mayor sedimento</span></div>'
       + (MODE==="anio" ? '<div><b>'+(a.cambio_km2_vs_anio_anterior==null?"—":(a.cambio_km2_vs_anio_anterior>=0?"+":"")+fmt(a.cambio_km2_vs_anio_anterior,2)+" km²")+'</b><span>cambio vs. año anterior</span></div>' : extra);
   } else if(a && a.sin_datos) {
@@ -198,8 +198,8 @@ function actualizar(){
     if(anios.length>=2){
       var a0 = resumen.anios[anios[0]], a1 = resumen.anios[anios[anios.length-1]];
       var delta = a1.area_agua_km2 - a0.area_agua_km2;
-      riesgo.innerHTML = "Entre "+anios[0]+" y "+anios[anios.length-1]+", el agua detectada en el corredor pasó de "+fmt(a0.area_agua_km2,2)+" a "+fmt(a1.area_agua_km2,2)+" km² ("+(delta>=0?"+":"")+fmt(delta,2)+" km²). "
-        + (Math.abs(delta) > 0.3 ? "Es un cambio grande para ser solo variación estacional entre compuestos — compare el trazado del cauce de ambos años en el mapa para ver si hay desplazamiento lateral, no solo más o menos agua." : "El cambio es modesto; no sugiere una migración grande del cauce en este período, aunque cada año es un solo compuesto de temporada seca, no un promedio robusto.");
+      riesgo.innerHTML = "Entre "+anios[0]+" y "+anios[anios.length-1]+", la franja húmeda estimada en el corredor pasó de "+fmt(a0.area_agua_km2,2)+" a "+fmt(a1.area_agua_km2,2)+" km² ("+(delta>=0?"+":"")+fmt(delta,2)+" km²). "
+        + (Math.abs(delta) > 0.3 ? "Es un cambio grande para ser solo variación estacional entre compuestos — compare la posición de la franja de ambos años en el mapa para ver si hay desplazamiento lateral, no solo más o menos humedad detectada." : "El cambio es modesto; no sugiere una migración grande del cauce en este período. Recuerde que esto es una aproximación gruesa, no una medición precisa del ancho del río.");
     } else riesgo.textContent = "Aún no hay suficientes años cargados para comparar.";
   } else {
     if(riesgoT) riesgoT.textContent = "Estacionalidad dentro de 2025";
