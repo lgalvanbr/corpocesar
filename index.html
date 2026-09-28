@@ -164,7 +164,7 @@ footer .credit{font-size:13px;color:var(--ink3);margin-top:10px}
 <script>
 var API = "http://10.10.10.2:8010";
 var OBRAS = [
-{tipo:"agua",municipios:["20001"],nombre:"Control de inundación · margen derecha del río Guatapurí",lugar:"Valledupar, Cesar",contrato:"CO1.PCCNTR.7185328",contratista:"Consorcio Protección Margen Guatapurí",interventoria:"Consorcio Interventoría Río Guatapurí ($2.510 M)",valor:"$50.643 M",firma:"abril de 2025 · en ejecución",
+{tipo:"agua",municipios:["20001"],rio:"guatapuri",nombre:"Control de inundación · margen derecha del río Guatapurí",lugar:"Valledupar, Cesar",contrato:"CO1.PCCNTR.7185328",contratista:"Consorcio Protección Margen Guatapurí",interventoria:"Consorcio Interventoría Río Guatapurí ($2.510 M)",valor:"$50.643 M",firma:"abril de 2025 · en ejecución",
  objeto:"Obras hidráulicas para el control de inundación sobre la margen derecha del río Guatapurí, jurisdicción del municipio de Valledupar.",
  hallazgo:"Es el contrato más grande de toda la contratación de Corpocesar desde 2021: el 12,9% de los $392.449 M contratados en cinco años están en esta sola obra.",
  analisis:["Nuestro radar Sentinel-1 sobre Valledupar (septiembre 2024 a septiembre 2026) midió 6,1 km² de agua no permanente en la escena de mayor extensión detectada. Es la capa de frecuencia que se ve abajo: cuántas escenas mostraron agua en cada punto.",
@@ -175,7 +175,7 @@ var OBRAS = [
  caveat:"El HAND es topografía pura: dice qué tan bajo está cada punto respecto al drenaje, no cuánta agua trae el río ni cada cuánto se desborda. La ventana de radar (2024-2026) no incluye la creciente que motivó este contrato.",
  iframe:"visor/ciudad.html?c=valledupar&zoom=12.3&terreno=1&pitch=55"},
 
-{tipo:"agua",municipios:["20001"],nombre:"Control de inundación · caño El Arroyito, corregimiento de Guacoche",lugar:"Valledupar, Cesar",contrato:"CO1.PCCNTR.8341669",contratista:"UTGA 2025",interventoria:"BROKA S.A.S. ($504 M)",valor:"$5.924 M",firma:"octubre de 2025 · en ejecución",
+{tipo:"agua",municipios:["20001"],rio:"guatapuri",nombre:"Control de inundación · caño El Arroyito, corregimiento de Guacoche",lugar:"Valledupar, Cesar",contrato:"CO1.PCCNTR.8341669",contratista:"UTGA 2025",interventoria:"BROKA S.A.S. ($504 M)",valor:"$5.924 M",firma:"octubre de 2025 · en ejecución",
  objeto:"Construcción de obras hidráulicas para el control de la inundación sobre el caño El Arroyito, en el corregimiento de Guacoche, jurisdicción del municipio de Valledupar.",
  hallazgo:"Es la misma cuenca radar que la del Guatapurí, pero un afluente menor y un corregimiento rural específico dentro del municipio.",
  analisis:["Usamos la misma capa de frecuencia de inundación de Valledupar, centrada esta vez sobre Guacoche en lugar del casco urbano.",
@@ -347,6 +347,7 @@ function renderDetail(o){
     +'<div class="finding"><b>Lo que llama la atención</b>'+esc(o.hallazgo)+'</div>'
     +'<span class="label">Nuestra solución</span><ul class="sol">'+o.analisis.map(function(t){return "<li>"+esc(t)+"</li>";}).join("")+'</ul>'
     +legend
+    +(o.rio==="guatapuri"?'<a class="fullscreen-link" href="visor/guatapuri.html" target="_blank" rel="noreferrer" style="background:var(--accent-soft);padding:10px 16px;border-radius:10px;margin-top:20px">📡 Análisis multianual del río Guatapurí: imágenes 2018-2025, cauce y sedimento ↗</a>':'')
     +(o.interventoria?'<p class="interv">Interventoría: '+esc(o.interventoria)+'.</p>':'')
     +'<p class="caveat"><b>Nota ·</b> '+esc(o.caveat)+'</p>'
     +'<a class="fullscreen-link" href="'+o.iframe+'" target="_blank" rel="noreferrer">Abrir el visor completo de esta obra ↗</a>';
