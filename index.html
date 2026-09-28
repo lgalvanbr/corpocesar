@@ -102,6 +102,20 @@ input[type=range]#mtlRange{width:100%;accent-color:var(--accent);height:20px}
 .mtl-ticks{display:flex;justify-content:space-between;font:600 10px var(--mono);color:var(--ink3);margin-top:2px;padding:0 2px}
 .mfoot{font-size:15px;color:var(--ink2);line-height:1.8;max-width:76ch}
 .mfoot b{color:var(--ink)}
+
+.profundiza{display:grid;grid-template-columns:1.3fr 1fr;gap:40px;align-items:start}
+@media(max-width:860px){.profundiza{grid-template-columns:1fr}}
+.rank{margin:0;padding:0;border-top:1px solid var(--border)}
+.rank li{list-style:none;display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px}
+.rank li b{font-family:var(--mono);font-weight:600;color:var(--ink);white-space:nowrap;font-variant-numeric:tabular-nums}
+.rank li span{color:var(--ink2)}
+.rank-title{font:700 11px var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:6px;display:block}
+
+.consult{border-top:1px solid var(--border);padding-top:28px;margin-top:8px}
+.consult ol{margin:18px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:10px 32px;counter-reset:c}
+@media(max-width:700px){.consult ol{grid-template-columns:1fr}}
+.consult li{list-style:none;counter-increment:c;display:flex;gap:12px;font-size:14.5px;color:var(--ink2);line-height:1.5;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.consult li::before{content:counter(c);font:700 12px var(--mono);color:var(--ink3);flex:none;width:20px}
 footer{border-top:1px solid var(--border);padding:40px 0}
 footer .credit{font-size:13px;color:var(--ink3);margin-top:10px}
 </style>
@@ -175,10 +189,68 @@ footer .credit{font-size:13px;color:var(--ink3);margin-top:10px}
   </div>
 </section>
 
+<section class="alt">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="k">Profundización</span><h2>Minería a cielo abierto en Cesar</h2></div>
+    <div class="profundiza reveal">
+      <div>
+        <p class="lead">Detectamos <b>104.539 ha</b> de suelo alterado por minería a cielo abierto en Cesar entre 2017 y 2025 (clasificación propia sobre Sentinel-2). Dos municipios concentran el 68% del total — <b>La Jagua de Ibirico</b> (39.765 ha) y <b>Becerril</b> (31.883 ha) — los mismos dos donde este sitio sigue un contrato de restauración. Pero <b>El Paso</b> (11.023 ha) y <b>Agustín Codazzi</b> (10.546 ha) tienen una huella comparable a la de Chiriguaná sin que hoy aparezca aquí ningún contrato de restauración destacado para ellos.</p>
+        <p class="lead" style="margin-top:14px">El área detectada casi se duplicó entre 2021 (8.920 ha) y 2022 (15.610 ha). No logramos confirmar si es un cambio real en el terreno o un efecto de la calidad de las imágenes satelitales de ese año — lo dejamos como pregunta abierta, no como hallazgo cerrado.</p>
+      </div>
+      <div>
+        <span class="rank-title">Municipios con más huella minera, 2017-2025</span>
+        <ul class="rank">
+          <li><span>La Jagua de Ibirico</span><b>39.765 ha</b></li>
+          <li><span>Becerril</span><b>31.883 ha</b></li>
+          <li><span>El Paso</span><b>11.023 ha</b></li>
+          <li><span>Agustín Codazzi</span><b>10.546 ha</b></li>
+          <li><span>San Martín</span><b>6.339 ha</b></li>
+          <li><span>Chiriguaná</span><b>4.600 ha</b></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="section-head reveal"><span class="k">Profundización</span><h2>Pérdida de bosque en Cesar, 2001-2024</h2></div>
+  <div class="profundiza reveal">
+    <div>
+      <p class="lead">El departamento perdió <b>114.855 ha</b> de cobertura arbórea entre 2001 y 2024 (Hansen/UMD/Google/USGS/NASA). <b>Valledupar</b> (14.262 ha) y <b>Chimichagua</b> (12.817 ha) encabezan la lista — Chimichagua es el mismo municipio que señalamos antes como el caso más llamativo frente a lo poco que se ha contratado ahí. <b>El Copey</b> (10.849 ha) tampoco tiene hoy un contrato de restauración destacado en este sitio.</p>
+      <p class="lead" style="margin-top:14px">La pérdida no viene bajando: 2023 fue el año más alto de los últimos seis (7.186 ha), con una caída parcial en 2024 (5.656 ha) que un solo año no permite confirmar como tendencia.</p>
+    </div>
+    <div>
+      <span class="rank-title">Municipios con más bosque perdido, 2001-2024</span>
+      <ul class="rank">
+        <li><span>Valledupar</span><b>14.262 ha</b></li>
+        <li><span>Chimichagua</span><b>12.817 ha</b></li>
+        <li><span>El Copey</span><b>10.849 ha</b></li>
+        <li><span>Agustín Codazzi</span><b>6.061 ha</b></li>
+        <li><span>La Jagua de Ibirico</span><b>5.506 ha</b></li>
+        <li><span>Becerril</span><b>5.341 ha</b></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
 <section class="wrap" id="metodo">
   <div class="section-head reveal"><span class="k">Método</span><h2>Fuentes, límites y a quién pertenece esto</h2></div>
   <p class="mfoot reveal">Contratos de SECOP II (datos.gov.co), NIT de Corpocesar 892.301.483. Pérdida de bosque: <b>Hansen/UMD/Google/USGS/NASA</b>, 2001-2024. Minería a cielo abierto: clasificación propia sobre compuestos de <b>Sentinel-2</b>, 2017-2025. Inundación por radar: <b>Sentinel-1</b>, escenas de septiembre 2024 a septiembre 2026, solo en Valledupar. Zonas inundables por topografía: modelo <b>HAND</b> propio sobre el DEM Copernicus GLO-30 con flujo D8; es un modelo topográfico sin calibrar con caudal ni con un evento real. Inundación histórica real: <b>IDEAM</b> (manchas de La Niña 2010-2011 y 2020-2022).</p>
   <p class="mfoot reveal" style="margin-top:14px">Esto es un análisis exploratorio con datos abiertos, no una auditoría: no reemplaza una revisión técnica ni el diseño de ingeniería de cada consorcio, que no es público.</p>
+
+  <div class="consult reveal">
+    <span class="k" style="font:700 12.5px var(--sans);text-transform:uppercase;letter-spacing:.07em;color:var(--accent-ink)">Otras líneas de trabajo posibles</span>
+    <ol>
+      <li>Calibración del modelo de zonas inundables (HAND) con caudal y batimetría</li>
+      <li>Monitoreo satelital continuo de minería y deforestación (alertas, no solo un corte)</li>
+      <li>Priorización de inversión ambiental basada en evidencia satelital</li>
+      <li>Análisis multianual de otros ríos de Cesar, siguiendo el método usado en el Guatapurí</li>
+      <li>Tablero propio de seguimiento de contratación (transparencia proactiva)</li>
+      <li>Indicadores de impacto antes/después para contratos de restauración</li>
+      <li>Gestión y monitoreo de datos hidrológicos (series de caudal, instrumentación)</li>
+      <li>Transferencia técnica al equipo de Corpocesar para mantener estos análisis</li>
+    </ol>
+  </div>
 </section>
 
 <footer>
