@@ -6,13 +6,17 @@
   "use strict";
   function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
   function indiceActual(obras){
-    var aqui = location.pathname.split("/").pop() + location.search;
     var pagina = location.pathname.split("/").pop();
-    var i = obras.findIndex(function(o){ return o.ruta === aqui; });
-    if(i>=0) return i;
     // guatapuri.html no tiene una obra propia en la lista: lo anclamos a la primera de Valledupar
     if(pagina === "guatapuri.html") return 0;
-    // si no hay coincidencia exacta de query, igual usamos la primera obra que abra la misma pagina
+    // marcador explicito &obra=N (lo agregan los propios enlaces del sitio) -- necesario porque
+    // dos obras distintas pueden compartir exactamente la misma pagina y los mismos parametros
+    // (p.ej. las dos de Valledupar), y comparar solo la URL no alcanza para distinguirlas.
+    var n = +new URLSearchParams(location.search).get("obra");
+    if(!isNaN(n) && obras[n]) return n;
+    var aqui = pagina + location.search;
+    var i = obras.findIndex(function(o){ return o.ruta === aqui; });
+    if(i>=0) return i;
     i = obras.findIndex(function(o){ return o.ruta.split("?")[0] === pagina; });
     return i>=0 ? i : 0;
   }

@@ -1,10 +1,10 @@
 [
-  {"nombre":"Control de inundación · margen derecha del río Guatapurí","lugar":"Valledupar, Cesar","valor":"$50.643 M","tipo":"agua","ruta":"ciudad.html?c=valledupar&zoom=12.3&terreno=1&pitch=55"},
-  {"nombre":"Control de inundación · caño El Arroyito, corregimiento de Guacoche","lugar":"Valledupar, Cesar","valor":"$5.924 M","tipo":"agua","ruta":"ciudad.html?c=valledupar&zoom=12.3&terreno=1&pitch=55"},
-  {"nombre":"Restauración ecológica · resguardo indígena Sokorpa, cuenca del río Calenturitas","lugar":"Becerril, Cesar","valor":"$8.652 M","tipo":"bosque","ruta":"dano.html?depto=20&mun=20045&tipos=perdida_bosque,suelo_alterado_mineria&anio=2024"},
-  {"nombre":"Restauración de microcuencas de alto valor ambiental","lugar":"La Jagua de Ibirico, Cesar","valor":"$1.283 M","tipo":"bosque","ruta":"dano.html?depto=20&mun=20400&tipos=perdida_bosque,suelo_alterado_mineria&anio=2024"},
-  {"nombre":"Rehabilitación de microcuencas de alto valor ambiental","lugar":"Pueblo Bello, Cesar (Sierra Nevada de Santa Marta)","valor":"$1.759 M","tipo":"bosque","ruta":"dano.html?depto=20&mun=20570&tipos=perdida_bosque&anio=2024"},
-  {"nombre":"Control de erosión e inundación · corriente Anime, fase III","lugar":"Chiriguaná y Curumaní, Cesar","valor":"$9.583 M","tipo":"agua","ruta":"anime.html?terreno=1&pitch=52"},
-  {"nombre":"Reducir la presión sobre el bosque y mitigar el cambio climático","lugar":"La Paz, Cesar","valor":"$851 M","tipo":"bosque","ruta":"dano.html?depto=20&mun=20621&tipos=perdida_bosque&anio=2024"},
-  {"nombre":"Biodiversidad del arroyo Maquencal, territorio de Coafropal","lugar":"La Jagua de Ibirico, Cesar","valor":"$197 M","tipo":"bosque","ruta":"dano.html?depto=20&mun=20400&tipos=perdida_bosque,suelo_alterado_mineria&anio=2024"}
+  {"nombre":"Control de inundación · margen derecha del río Guatapurí","lugar":"Valledupar, Cesar","valor":"$50.643 M","tipo":"agua","ruta":"ciudad.html?c=valledupar&zoom=12.3&terreno=1&pitch=55&obra=0"},
+  {"nombre":"Control de inundación · caño El Arroyito, corregimiento de Guacoche","lugar":"Valledupar, Cesar","valor":"$5.924 M","tipo":"agua","ruta":"ciudad.html?c=valledupar&zoom=12.3&terreno=1&pitch=55&obra=1"},
+  {"nombre":"Restauración ecológica · resguardo indígena Sokorpa, cuenca del río Calenturitas","lugar":"Becerril, Cesar","valor":"$8.652 M","tipo":"bosque","ruta":"dano.html?depto=20&mun=20045&tipos=perdida_bosque,suelo_alterado_mineria&anio=2024&obra=2"},
+  {"nombre":"Restauración de microcuencas de alto valor ambiental","lugar":"La Jagua de Ibirico, Cesar","valor":"$1.283 M","tipo":"bosque","ruta":"dano.html?depto=20&mun=20400&tipos=perdida_bosque,suelo_alterado_mineria&anio=2024&obra=3"},
+  {"nombre":"Rehabilitación de microcuencas de alto valor ambiental","lugar":"Pueblo Bello, Cesar (Sierra Nevada de Santa Marta)","valor":"$1.759 M","tipo":"bosque","ruta":"dano.html?depto=20&mun=20570&tipos=perdida_bosque&anio=2024&obra=4"},
+  {"nombre":"Control de erosión e inundación · corriente Anime, fase III","lugar":"Chiriguaná y Curumaní, Cesar","valor":"$9.583 M","tipo":"agua","ruta":"anime.html?terreno=1&pitch=52&obra=5"},
+  {"nombre":"Reducir la presión sobre el bosque y mitigar el cambio climático","lugar":"La Paz, Cesar","valor":"$851 M","tipo":"bosque","ruta":"dano.html?depto=20&mun=20621&tipos=perdida_bosque&anio=2024&obra=6"},
+  {"nombre":"Biodiversidad del arroyo Maquencal, territorio de Coafropal","lugar":"La Jagua de Ibirico, Cesar","valor":"$197 M","tipo":"bosque","ruta":"dano.html?depto=20&mun=20400&tipos=perdida_bosque,suelo_alterado_mineria&anio=2024&obra=7"}
 ]

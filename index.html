@@ -200,7 +200,7 @@ var OBRAS = [
    "Además modelamos la cuenca: con el DEM Copernicus de 30 m calculamos flujo D8 y la altura de cada punto sobre el cauce modelado más cercano (HAND). Actívela como 'Zonas inundables por topografía'. En los 515 km² alrededor de Valledupar, 127 km² quedan a menos de 3 m sobre un cauce modelado (82 km² a menos de 1 m), y ese cauce pasa a 2,4 km del centro de la ciudad — coherente con el recorrido real del Guatapurí.",
    "Cómo varía a lo largo del año: con las 108 escenas de radar ya descargadas (2024-2026) agrupamos el agua detectada por mes del calendario (km² promedio): ene 3,6 · feb 1,3 · mar 3,8 · abr 2,7 · may 1,1 · jun 0,6 · jul 4,0 · ago 5,0 · sep 1,7 · oct 0,05 · nov 0,3 · dic 2,1. El promedio más alto sale en agosto y marzo, el más bajo en octubre — pero son solo 7 a 11 escenas por mes en dos años, muy poco para hablar de un ciclo climático confiable. Lo mostramos como señal a seguir, no como la curva estacional del río."],
  caveat:"El HAND es topografía pura: dice qué tan bajo está cada punto respecto al drenaje, no cuánta agua trae el río ni cada cuánto se desborda. La ventana de radar (2024-2026) no incluye la creciente que motivó este contrato.",
- iframe:"visor/ciudad.html?c=valledupar&zoom=12.3&terreno=1&pitch=55"},
+ iframe:"visor/ciudad.html?c=valledupar&zoom=12.3&terreno=1&pitch=55&obra=0"},
 
 {tipo:"agua",municipios:["20001"],rio:"guatapuri",nombre:"Control de inundación · caño El Arroyito, corregimiento de Guacoche",lugar:"Valledupar, Cesar",contrato:"CO1.PCCNTR.8341669",contratista:"UTGA 2025",interventoria:"BROKA S.A.S. ($504 M)",valor:"$5.924 M",firma:"octubre de 2025 · en ejecución",
  objeto:"Construcción de obras hidráulicas para el control de la inundación sobre el caño El Arroyito, en el corregimiento de Guacoche, jurisdicción del municipio de Valledupar.",
@@ -208,7 +208,7 @@ var OBRAS = [
  analisis:["Usamos la misma capa de frecuencia de inundación de Valledupar, centrada esta vez sobre Guacoche en lugar del casco urbano.",
    "OpenStreetMap no tiene El Arroyito trazado como vía de agua. El modelo HAND lo resuelve distinto: calcula desde el propio DEM dónde se concentraría el flujo — ese es el cauce modelado que aparece al activar 'Zonas inundables por topografía', junto con las tres bandas de altura sobre ese cauce."],
  caveat:"El cauce que traza el modelo es una estimación desde la topografía, no el trazado oficial de El Arroyito; en terreno muy plano el D8 puede desviarse del canal real.",
- iframe:"visor/ciudad.html?c=valledupar&zoom=12.3&terreno=1&pitch=55"},
+ iframe:"visor/ciudad.html?c=valledupar&zoom=12.3&terreno=1&pitch=55&obra=1"},
 
 {tipo:"bosque",municipios:["20045"],nombre:"Restauración ecológica · resguardo indígena Sokorpa, cuenca del río Calenturitas",lugar:"Becerril, Cesar",contrato:"CO1.PCCNTR.8745141",contratista:"Consorcio Restauración Sokorpa",interventoria:"Consorcio Inter Sokorpa ($847 M)",valor:"$8.652 M",firma:"enero de 2026 · en ejecución",
  objeto:"Desarrollo de acciones para la restauración ecológica de áreas de especial importancia ecológica de la cuenca hidrográfica del río Calenturitas, jurisdicción del resguardo indígena Sokorpa, municipio de Becerril.",
@@ -217,7 +217,7 @@ var OBRAS = [
    "El mapa de abajo es esa capa, filtrada a Becerril: cada polígono rojo es un parche de bosque perdido, cada polígono café es huella minera de un año dado — la 'ubicación de áreas de deforestación' que el contrato necesita para priorizar dónde restaurar.",
    "Recomendación concreta: cruzar los polígonos más recientes (2020-2024) con los límites del resguardo Sokorpa antes de fijar los predios de restauración, y repetir la detección de minería en 2026 al terminar el contrato."],
  caveat:"Los polígonos son estimaciones de satélite sin verificación de campo; la pérdida de bosque incluye incendios y rotación de cultivos, no solo minería o tala.",
- iframe:"visor/dano.html?depto=20&mun=20045&tipos=perdida_bosque,suelo_alterado_mineria&anio=2024"},
+ iframe:"visor/dano.html?depto=20&mun=20045&tipos=perdida_bosque,suelo_alterado_mineria&anio=2024&obra=2"},
 
 {tipo:"bosque",municipios:["20400"],nombre:"Restauración de microcuencas de alto valor ambiental",lugar:"La Jagua de Ibirico, Cesar",contrato:"CO1.PCCNTR.9478836",contratista:"U.T. Restauración La Jagua 2026",valor:"$1.283 M",firma:"mayo de 2026 · en ejecución",
  objeto:"Acciones de restauración y manejo sostenible en microcuencas de alto valor ambiental y estratégico para la gestión integral del recurso hídrico en el municipio de La Jagua de Ibirico.",
@@ -225,7 +225,7 @@ var OBRAS = [
  analisis:["5.506 ha de pérdida de cobertura arbórea acumulada (2001-2024, 2.642 polígonos) y una huella minera que en los años de mayor actividad (2022, 2024) superó las 15.000 ha detectadas en un solo año — la cifra de 2022 sigue sin verificar en campo.",
    "El mapa de abajo muestra dónde caen esos polígonos dentro del municipio, para priorizar las microcuencas cerca de la huella minera más reciente."],
  caveat:"El salto de la huella minera en 2022 puede deberse a la calidad de las imágenes de ese año y no a un cambio real de esa magnitud; lo dejamos sin resolver.",
- iframe:"visor/dano.html?depto=20&mun=20400&tipos=perdida_bosque,suelo_alterado_mineria&anio=2024"},
+ iframe:"visor/dano.html?depto=20&mun=20400&tipos=perdida_bosque,suelo_alterado_mineria&anio=2024&obra=3"},
 
 {tipo:"bosque",municipios:["20570"],nombre:"Rehabilitación de microcuencas de alto valor ambiental",lugar:"Pueblo Bello, Cesar (Sierra Nevada de Santa Marta)",contrato:"CO1.PCCNTR.9356561",contratista:"Consorcio Rehabilitación Microcuencas 2026",valor:"$1.759 M",firma:"abril de 2026 · en ejecución",
  objeto:"Implementación de acciones de rehabilitación y manejo sostenible en microcuencas de alto valor ambiental y estratégico para la gestión integral del recurso hídrico en el municipio de Pueblo Bello.",
@@ -233,7 +233,7 @@ var OBRAS = [
  analisis:["2.577 ha de pérdida de cobertura arbórea acumulada entre 2001 y 2024, en 2.032 polígonos, dentro de territorio en su mayoría indígena de la Sierra Nevada.",
    "Sin huella minera propia, esta pérdida es más probablemente agrícola o de leña; el mapa sirve igual para ubicar las microcuencas con pérdida más reciente."],
  caveat:"No cruzamos estos polígonos con los límites exactos de los resguardos de la Sierra Nevada; falta esa capa para precisar dentro o fuera de territorio indígena.",
- iframe:"visor/dano.html?depto=20&mun=20570&tipos=perdida_bosque&anio=2024"},
+ iframe:"visor/dano.html?depto=20&mun=20570&tipos=perdida_bosque&anio=2024&obra=4"},
 
 {tipo:"agua",municipios:["20178","20228"],hand:"hand_anime",nombre:"Control de erosión e inundación · corriente Anime, fase III",lugar:"Chiriguaná y Curumaní, Cesar",contrato:"CO1.PCCNTR.8406466",contratista:"Consorcio Curumaní",interventoria:"DEFCO S.A.S. ($671 M)",valor:"$9.583 M",firma:"octubre de 2025 · en ejecución",
  objeto:"Implementación de medidas estructurales y no estructurales para el control de la erosión e inundación en la corriente superficial Anime, en los municipios de Chiriguaná y Curumaní — fase III (hay una fase anterior, de 2022, ya cerrada).",
@@ -242,7 +242,7 @@ var OBRAS = [
    "Bajamos el DEM Copernicus de la corriente Anime y corrimos el mismo modelo HAND que en Valledupar: en un corredor de 772 km² entre los dos municipios, 287 km² quedan a menos de 3 m sobre algún cauce modelado (207 km² a menos de 1 m). El modelo traza su propio cauce desde la topografía, sin necesitar que el Anime esté digitalizado en OpenStreetMap.",
    "El mapa cruza esa capa con la pérdida de bosque de ambos municipios: donde coinciden HAND bajo y bosque perdido recientemente es el primer lugar donde miraríamos si hay una fase IV."],
  caveat:"El corredor de 772 km² es una caja amplia entre los dos municipios, no la cuenca hidrográfica exacta del Anime. El HAND es topografía, no medición de caudal ni de la causa de la erosión.",
- iframe:"visor/anime.html?terreno=1&pitch=52"},
+ iframe:"visor/anime.html?terreno=1&pitch=52&obra=5"},
 
 {tipo:"bosque",municipios:["20621"],nombre:"Reducir la presión sobre el bosque y mitigar el cambio climático",lugar:"La Paz, Cesar",contrato:"CO1.PCCNTR.9159652",contratista:"Consorcio Barak",interventoria:"Consorcio Thermocontrol ($146 M)",valor:"$851 M",firma:"febrero de 2026 · en ejecución",
  objeto:"Implementación de estrategias para disminuir la presión sobre el recurso forestal e implementación de medidas para la mitigación del cambio climático en zonas rurales del municipio de La Paz.",
@@ -250,7 +250,7 @@ var OBRAS = [
  analisis:["La Paz acumula 4.128 ha de pérdida de cobertura arbórea entre 2001 y 2024 (2.111 polígonos), sin huella de minería detectada — la presión aquí es agrícola o de leña, no minera.",
    "El mapa de abajo es esa pérdida dentro de La Paz. Como el contrato no nombra una vereda o microcuenca específica, sirve para decidir dónde, dentro del municipio, la presión sobre el bosque es más reciente y más urgente."],
  caveat:"Sin un polígono oficial de las 'zonas rurales' que cubre el contrato, mostramos todo el municipio.",
- iframe:"visor/dano.html?depto=20&mun=20621&tipos=perdida_bosque&anio=2024"},
+ iframe:"visor/dano.html?depto=20&mun=20621&tipos=perdida_bosque&anio=2024&obra=6"},
 
 {tipo:"bosque",municipios:["20400"],nombre:"Biodiversidad del arroyo Maquencal, territorio de Coafropal",lugar:"La Jagua de Ibirico, Cesar",contrato:"CO1.PCCNTR.9691595",contratista:"Consorcio Biomaquencal 2026",valor:"$197 M",firma:"agosto de 2026 · en ejecución",
  objeto:"Implementación de medidas para la conservación de la biodiversidad y sus servicios ecosistémicos en el arroyo Maquencal, territorio de interés del Consejo Comunitario de Comunidades Afrodescendientes La Palmita (Coafropal), municipio de La Jagua de Ibirico.",
@@ -258,7 +258,7 @@ var OBRAS = [
  analisis:["Usa la misma capa que Sokorpa: La Jagua de Ibirico es el municipio con más huella minera de Cesar. No aislamos el arroyo Maquencal en particular — no está trazado en OpenStreetMap ni en nuestra capa de ríos.",
    "Vale la pena cruzar este contrato con el de Sokorpa: dos territorios distintos (Coafropal afrodescendiente, Sokorpa resguardo indígena) dentro del mismo municipio con la mayor huella minera del departamento, contratados con nueve meses de diferencia."],
  caveat:"No tenemos el polígono del territorio de Coafropal ni el trazado del arroyo Maquencal; el mapa es del municipio completo.",
- iframe:"visor/dano.html?depto=20&mun=20400&tipos=perdida_bosque,suelo_alterado_mineria&anio=2024"}
+ iframe:"visor/dano.html?depto=20&mun=20400&tipos=perdida_bosque,suelo_alterado_mineria&anio=2024&obra=7"}
 ];
 
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
