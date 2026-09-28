@@ -121,7 +121,7 @@ footer .credit{font-size:13px;color:var(--ink3);margin-top:10px}
 <header class="hero wrap">
   <span class="eyebrow">Corpocesar · NIT 892.301.483 — CAR del departamento del Cesar</span>
   <h1 class="reveal">Ocho obras de Corpocesar, cruzadas con una capa propia de datos satelitales</h1>
-  <p class="reveal">Tomamos las obras ambientales más grandes en ejecución y les pusimos encima pérdida de bosque, huella de minería, un modelo de zonas inundables contrastado con eventos reales del IDEAM y relieve en 3D — para ver si la inversión coincide con dónde el problema físico es más grande.</p>
+  <p class="reveal">Tomamos las obras ambientales más grandes en ejecución y exploramos cómo se ven desde el satélite: pérdida de bosque, huella de minería, un modelo de zonas inundables contrastado con eventos reales del IDEAM y relieve en 3D.</p>
   <div class="cta reveal">
     <a class="btn primary" href="#obras">Ver las 8 obras ↓</a>
     <a class="btn ghost" href="contratos.html">Explorar los 531 contratos activos</a>
@@ -133,7 +133,7 @@ footer .credit{font-size:13px;color:var(--ink3);margin-top:10px}
   <div class="stats reveal" id="stats">
     <div class="stat"><b data-count="392.4" data-decimals="1" data-suffix=" mm">$0</b><span>contratados por Corpocesar desde 2021</span></div>
     <div class="stat"><b data-count="531">0</b><span>contratos en ejecución hoy, $128,5 mm</span></div>
-    <div class="stat"><b data-count="162">0</b><span>sin póliza vigente <span class="pillstat warn" style="margin-left:4px">alerta</span></span></div>
+    <div class="stat"><b data-count="114855" data-suffix=" ha">0</b><span>de bosque perdidas en Cesar, 2001-2024 (Hansen)</span></div>
     <div class="stat"><b data-count="1881" data-suffix=" ha">0</b><span>inundadas de verdad, IDEAM (Valledupar)</span></div>
   </div>
 </section>
@@ -142,13 +142,13 @@ footer .credit{font-size:13px;color:var(--ink3);margin-top:10px}
   <div class="section-head reveal"><span class="k">Resumen</span><h2>Cómo elegimos y qué encontramos</h2></div>
   <p class="lead reveal">Elegimos las obras más grandes y más ligadas a un problema físico medible: inundación en Valledupar, Chiriguaná y Curumaní; deforestación y minería en Becerril, La Jagua de Ibirico, Pueblo Bello y La Paz. A cada una le pusimos encima pérdida de bosque (Hansen), huella de minería a cielo abierto (Sentinel-2), frecuencia de inundación por radar (Sentinel-1) y un modelo propio de altura sobre el drenaje (HAND) sobre el DEM de Copernicus, con relieve en 3D. En Valledupar cruzamos ese modelo contra las manchas de inundación real que el IDEAM mapeó en las crecientes de La Niña 2010-2011 y 2020-2022.</p>
   <p class="lead reveal">Según el propio <a href="https://www.corpocesar.gov.co/Plan-de-accion-2024-2027.html" target="_blank" rel="noreferrer">Plan de Acción Cuatrienal 2024-2027</a> de Corpocesar ("Gobernanza y Gobernabilidad en la Gestión Ambiental del Cesar", Acuerdo 003 del 17 de mayo de 2024, dirección de Adriana Margarita García Arévalo), la Serranía del Perijá y la margen derecha del río Guatapurí son dos de sus proyectos insignia — las mismas dos que esta lectura escogió de forma independiente. A mitad de 2025 la entidad reportó más del 70% de cumplimiento de metas a su Junta Directiva.</p>
-  <div class="callout reveal"><span class="k">Lo que salió de cruzar todo</span><p>Extendimos el modelo HAND a los 24 municipios de Cesar y reclasificamos con un modelo de lenguaje verificado los 236 contratos activos "sin clasificar". <b>Chimichagua</b> queda como el mayor desajuste del departamento: 1.695 ha de bosque perdidas entre 2022 y 2024, el promedio más alto entre municipios con contrato activo, frente a apenas $110 M contratados. Está en la <a href="contratos.html">lista completa</a>.</p></div>
+  <div class="callout reveal"><span class="k">Lo que salió de cruzar todo</span><p>Extendimos el modelo HAND a los 24 municipios de Cesar y reclasificamos con un modelo de lenguaje verificado los 236 contratos activos "sin clasificar". <b>Chimichagua</b> es el caso más llamativo para explorar más a fondo: 1.695 ha de bosque perdidas entre 2022 y 2024, el promedio más alto entre municipios con contrato activo, frente a apenas $110 M contratados. Está en la <a href="contratos.html">lista completa</a>.</p></div>
 </section>
 
 <section class="alt" id="obras">
   <div class="wrap">
-    <div class="section-head reveal"><span class="k">Obras seguidas</span><h2>Seleccione un contrato y véalo en el mapa</h2>
-      <p style="font-size:14.5px;color:var(--ink2);margin-top:10px;max-width:60ch">El mapa queda siempre visible. Al elegir una obra, se resalta su municipio y se enciende la capa real que sustenta el hallazgo — pérdida de bosque, huella minera o el modelo de zonas inundables.</p>
+    <div class="section-head reveal"><span class="k">Obras en ejecución</span><h2>Seleccione un contrato y véalo en el mapa</h2>
+      <p style="font-size:14.5px;color:var(--ink2);margin-top:10px;max-width:60ch">El mapa queda siempre visible. Al elegir una obra, se resalta su municipio y se enciende la capa real que sustenta el dato — pérdida de bosque, huella minera o el modelo de zonas inundables.</p>
     </div>
     <div class="mapshell reveal">
       <div class="mlist" id="lista"></div>
@@ -178,7 +178,7 @@ footer .credit{font-size:13px;color:var(--ink3);margin-top:10px}
 <section class="wrap" id="metodo">
   <div class="section-head reveal"><span class="k">Método</span><h2>Fuentes, límites y a quién pertenece esto</h2></div>
   <p class="mfoot reveal">Contratos de SECOP II (datos.gov.co), NIT de Corpocesar 892.301.483. Pérdida de bosque: <b>Hansen/UMD/Google/USGS/NASA</b>, 2001-2024. Minería a cielo abierto: clasificación propia sobre compuestos de <b>Sentinel-2</b>, 2017-2025. Inundación por radar: <b>Sentinel-1</b>, escenas de septiembre 2024 a septiembre 2026, solo en Valledupar. Zonas inundables por topografía: modelo <b>HAND</b> propio sobre el DEM Copernicus GLO-30 con flujo D8; es un modelo topográfico sin calibrar con caudal ni con un evento real. Inundación histórica real: <b>IDEAM</b> (manchas de La Niña 2010-2011 y 2020-2022).</p>
-  <p class="mfoot reveal" style="margin-top:14px">Ningún hallazgo aquí reemplaza una auditoría técnica ni el diseño de ingeniería de cada consorcio, que no es público.</p>
+  <p class="mfoot reveal" style="margin-top:14px">Esto es un análisis exploratorio con datos abiertos, no una auditoría: no reemplaza una revisión técnica ni el diseño de ingeniería de cada consorcio, que no es público.</p>
 </section>
 
 <footer>
