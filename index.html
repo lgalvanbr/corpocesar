@@ -88,6 +88,18 @@ section.alt{background:var(--bg-alt)}
 .caveat b{color:var(--ink2)}
 .interv{font-size:12.5px;color:var(--ink3);margin-top:14px}
 
+.mtimeline{margin-top:14px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 18px}
+.mtl-top{display:flex;align-items:center;gap:14px;margin-bottom:9px}
+.mtl-play{width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;border:0;display:grid;place-items:center;cursor:pointer;flex:none;transition:background .15s,transform .15s var(--spring)}
+.mtl-play:hover{background:var(--accent-ink)}
+.mtl-play:active{transform:scale(.94)}
+.mtl-year{font:800 20px var(--display);color:var(--ink);min-width:48px;font-variant-numeric:tabular-nums}
+.mtl-stat{font:600 12.5px var(--sans);color:var(--ink2)}
+.mtl-stat b{font-family:var(--mono);color:var(--ink)}
+.mtl-spacer{flex:1}
+.mtl-note{font-size:11.5px;color:var(--ink3)}
+input[type=range]#mtlRange{width:100%;accent-color:var(--accent);height:20px}
+.mtl-ticks{display:flex;justify-content:space-between;font:600 10px var(--mono);color:var(--ink3);margin-top:2px;padding:0 2px}
 .mfoot{font-size:15px;color:var(--ink2);line-height:1.8;max-width:76ch}
 .mfoot b{color:var(--ink)}
 footer{border-top:1px solid var(--border);padding:40px 0}
@@ -145,6 +157,17 @@ footer .credit{font-size:13px;color:var(--ink3);margin-top:10px}
           <span class="mtag" id="mapTag">Cesar, Colombia</span>
           <button class="mdepto" id="verDepto" type="button">Ver todo el departamento</button>
           <div id="obrasMap"></div>
+        </div>
+        <div class="mtimeline" id="mTimeline">
+          <div class="mtl-top">
+            <button class="mtl-play" id="mtlPlay" aria-label="Reproducir"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+            <div class="mtl-year" id="mtlYear">2024</div>
+            <div class="mtl-stat" id="mtlStat"></div>
+            <div class="mtl-spacer"></div>
+            <span class="mtl-note">Bosque: acumulado hasta el año · minería: huella de ese año</span>
+          </div>
+          <input type="range" id="mtlRange" min="2001" max="2024" value="2024" step="1">
+          <div class="mtl-ticks" id="mtlTicks"></div>
         </div>
         <div class="mdetail" id="detail"></div>
       </div>
@@ -263,6 +286,7 @@ var map = new maplibregl.Map({container:"obrasMap", style:"https://tiles.openfre
 map.addControl(new maplibregl.NavigationControl(), "top-right");
 var markers = [], munIndex = {}, SEL = -1;
 var danoCache = {}, handCache = {};
+var TL_MIN = 2001, TL_MAX = 2024, TL_YR = TL_MAX, danoFeatsActuales = [];
 function Jlocal(u){ return fetch(u).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); }); }
 function danoDe(mun){
   if(danoCache[mun]) return Promise.resolve(danoCache[mun]);
@@ -321,11 +345,59 @@ function boundsOf(feats){
   return b;
 }
 
+// Linea de tiempo 2001-2024: el bosque perdido (Hansen) se acumula año a año; la huella
+// minera (Sentinel-2, solo existe 2017-2025) se muestra como la huella de ESE año, no
+// acumulada, porque cada compuesto anual ya es un estado del terreno, no un flujo.
+function fijarDano(feats){
+  danoFeatsActuales = feats;
+  if(map.getSource("dano")) map.getSource("dano").setData({type:"FeatureCollection", features: feats});
+  if(map.getLayer("dano_f")) map.setFilter("dano_f", filtroTimeline(TL_YR));
+  actualizarTimeline();
+}
+function filtroTimeline(yr){
+  return ["any",
+    ["all", ["!=",["get","tipo"],"suelo_alterado_mineria"], ["<=",["get","anio"],yr]],
+    ["all", ["==",["get","tipo"],"suelo_alterado_mineria"], ["==",["get","anio"],yr]]
+  ];
+}
+function actualizarTimeline(){
+  document.getElementById("mtlYear").textContent = TL_YR;
+  document.getElementById("mtlRange").value = TL_YR;
+  var bosqueHa=0, bosqueN=0, mineriaHa=0, mineriaN=0;
+  danoFeatsActuales.forEach(function(f){
+    var p = f.properties;
+    if(p.tipo==="suelo_alterado_mineria"){ if(p.anio===TL_YR){ mineriaHa+=+p.area_ha; mineriaN++; } }
+    else if(p.anio<=TL_YR){ bosqueHa+=+p.area_ha; bosqueN++; }
+  });
+  var partes = [];
+  if(bosqueN || danoFeatsActuales.some(function(f){return f.properties.tipo!=="suelo_alterado_mineria";})) partes.push(Math.round(bosqueHa).toLocaleString("es-CO")+" ha de bosque perdidas hasta "+TL_YR);
+  if(mineriaN) partes.push(Math.round(mineriaHa).toLocaleString("es-CO")+" ha de huella minera en "+TL_YR);
+  else if(TL_YR<2017) partes.push("sin capa de minería antes de 2017 (no hay Sentinel-2 suficiente)");
+  document.getElementById("mtlStat").innerHTML = partes.map(function(s){return "<b>"+s.split(" ")[0]+"</b> "+s.slice(s.indexOf(" ")+1);}).join(" · ");
+}
+(function(){
+  var ticks = document.getElementById("mtlTicks");
+  for(var y=TL_MIN; y<=TL_MAX; y+=(TL_MAX-TL_MIN>16?4:2)){ var s=document.createElement("span"); s.textContent=y; ticks.appendChild(s); }
+  document.getElementById("mtlRange").addEventListener("input", function(e){ TL_YR = +e.target.value; actualizarTimeline(); if(map.getLayer("dano_f")) map.setFilter("dano_f", filtroTimeline(TL_YR)); });
+  var jugando = null;
+  document.getElementById("mtlPlay").addEventListener("click", function(){
+    var btn = this;
+    if(jugando){ clearInterval(jugando); jugando=null; btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'; return; }
+    btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
+    if(TL_YR>=TL_MAX) TL_YR = TL_MIN;
+    jugando = setInterval(function(){
+      TL_YR++; if(TL_YR>TL_MAX){ clearInterval(jugando); jugando=null; btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'; return; }
+      actualizarTimeline(); if(map.getLayer("dano_f")) map.setFilter("dano_f", filtroTimeline(TL_YR));
+    }, 550);
+  });
+})();
+
 var obraSeleccionadaAntes = false, vistaDepto = false;
 function selectObra(i){
   var o = OBRAS[i];
   SEL = i;
   vistaDepto = false;
+  TL_YR = TL_MAX;
   document.getElementById("verDepto").classList.remove("on");
   document.getElementById("verDepto").textContent = "Ver todo el departamento";
   ["hand_muy_alta","hand_cauce_modelado"].forEach(function(id){ if(map.getLayer(id)) map.setLayoutProperty(id, "visibility", "visible"); });
@@ -338,8 +410,7 @@ function selectObra(i){
   var b = boundsOf(feats); if(b) map.fitBounds(b, {padding: 70, duration: 900});
 
   Promise.all(o.municipios.map(danoDe)).then(function(lists){
-    var feats = [].concat.apply([], lists);
-    if(map.getSource("dano")) map.getSource("dano").setData({type:"FeatureCollection", features: feats});
+    fijarDano([].concat.apply([], lists));
   });
 
   var handCol = o.hand || (o.municipios[0]==="20001" ? "hand_valledupar" : "hand_"+o.municipios[0]);
@@ -369,7 +440,7 @@ function selectObra(i){
 document.getElementById("verDepto").addEventListener("click", function(){
   var btn = this;
   if(vistaDepto){ if(SEL>=0) selectObra(SEL); return; }
-  vistaDepto = true; SEL = -1;
+  vistaDepto = true; SEL = -1; TL_YR = TL_MAX;
   btn.classList.add("on"); btn.textContent = "Volver a la obra";
   document.querySelectorAll(".ocard").forEach(function(c){ c.classList.remove("sel"); });
   markers.forEach(function(mk){ mk.getElement().classList.remove("sel"); });
@@ -377,7 +448,7 @@ document.getElementById("verDepto").addEventListener("click", function(){
   if(map.getSource("hi")) map.getSource("hi").setData({type:"FeatureCollection", features: []});
   ["hand_muy_alta","hand_cauce_modelado"].forEach(function(id){ if(map.getLayer(id)) map.setLayoutProperty(id, "visibility", "none"); });
   var b = boundsOf(Object.values(munIndex)); if(b) map.fitBounds(b, {padding: 40, duration: 900});
-  danoDepto().then(function(feats){ if(map.getSource("dano")) map.getSource("dano").setData({type:"FeatureCollection", features: feats}); });
+  danoDepto().then(fijarDano);
   document.getElementById("detail").innerHTML =
     '<span class="tag bosque">Vista general</span>'
     +'<h3 style="margin-top:10px">Daño ambiental y minero en los 24 municipios de Cesar</h3>'
