@@ -44,7 +44,8 @@ function init(munGeo,depGeo,tipos){
     var focoFeats=MUN_SEL?munGeo.features.filter(function(f){return f.properties.codigo===MUN_SEL;}):depGeo.features.filter(function(f){return f.properties.codigo===DEP;});
     var b=new maplibregl.LngLatBounds();focoFeats.forEach(function(f){(f.geometry.type==="Polygon"?[f.geometry.coordinates]:f.geometry.coordinates).forEach(function(p){p[0].forEach(function(c){b.extend(c);});});});if(!b.isEmpty())map.fitBounds(b,{padding:MUN_SEL?60:30,duration:0});
     if(MUN_SEL){map.addSource("foco",{type:"geojson",data:{type:"FeatureCollection",features:focoFeats}});map.addLayer({id:"foco_l",type:"line",source:"foco",paint:{"line-color":"#16a34a","line-width":2.6}},lbl);
-      var mn=focoFeats[0];if(mn)document.getElementById("ttl").textContent="Daño ambiental · "+mn.properties.nombre+" (Corpocesar)";}
+      var mn=focoFeats[0];if(mn)document.getElementById("ttl").textContent="Daño ambiental · "+mn.properties.nombre+" (Corpocesar)";
+      var btnDepto=document.getElementById("verDepto");btnDepto.style.display="";btnDepto.addEventListener("click",function(){P.delete("mun");location.search=P.toString();});}
     if(P.get("terreno")==="1"){terrenoListo();document.getElementById("terreno").checked=true;document.getElementById("inclinar").checked=true;map.setTerrain({source:"terreno",exaggeration:1.6});map.jumpTo({pitch:+(P.get("pitch")||58)});}
     var col=["match",["get","tipo"]];Object.keys(TIPOS).forEach(function(t){col.push(t,TIPOS[t][1]);});col.push("#888");
     function montarCapaDano(danoGeo){

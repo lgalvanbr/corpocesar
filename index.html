@@ -62,6 +62,9 @@ section.alt{background:var(--bg-alt)}
 #obrasMap{height:440px;width:100%}
 .mtag{position:absolute;left:14px;top:14px;z-index:2;background:#fff;border:1px solid var(--border);border-radius:999px;padding:6px 13px;font:700 12px var(--sans);color:var(--ink2);box-shadow:var(--shadow-sm)}
 .mtag b{color:var(--accent-ink)}
+.mdepto{position:absolute;right:14px;top:14px;z-index:2;background:#fff;border:1px solid var(--border);border-radius:999px;padding:7px 14px;font:700 12px var(--sans);color:var(--ink2);box-shadow:var(--shadow-sm);cursor:pointer;transition:border-color .15s,color .15s}
+.mdepto:hover{border-color:var(--accent);color:var(--accent-ink)}
+.mdepto.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .marker-dot{width:16px;height:16px;border-radius:50%;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);cursor:pointer;transition:transform .2s var(--spring)}
 .marker-dot:hover{transform:scale(1.25)}
 .marker-dot.sel{transform:scale(1.35);box-shadow:0 0 0 4px rgba(37,99,235,.3),0 1px 4px rgba(0,0,0,.35)}
@@ -140,6 +143,7 @@ footer .credit{font-size:13px;color:var(--ink3);margin-top:10px}
       <div class="mmain">
         <div class="mmap-wrap" style="position:relative">
           <span class="mtag" id="mapTag">Cesar, Colombia</span>
+          <button class="mdepto" id="verDepto" type="button">Ver todo el departamento</button>
           <div id="obrasMap"></div>
         </div>
         <div class="mdetail" id="detail"></div>
@@ -269,6 +273,11 @@ function handDe(col, capa){
   if(handCache[k]) return Promise.resolve(handCache[k]);
   return Jlocal("datos/hand/"+k+".json").then(function(d){ handCache[k]=d; return d; }).catch(function(){ return {type:"FeatureCollection",features:[]}; });
 }
+var danoDeptoCache = null;
+function danoDepto(){
+  if(danoDeptoCache) return Promise.resolve(danoDeptoCache);
+  return Jlocal("datos/dano_poligonos_20.json").then(function(d){ danoDeptoCache = d.features; return d.features; }).catch(function(){ return []; });
+}
 
 map.on("load", function(){
   Promise.all([Jlocal("datos/municipios.json"), Jlocal("datos/departamentos.json")]).then(function(v){
@@ -312,10 +321,14 @@ function boundsOf(feats){
   return b;
 }
 
-var obraSeleccionadaAntes = false;
+var obraSeleccionadaAntes = false, vistaDepto = false;
 function selectObra(i){
   var o = OBRAS[i];
   SEL = i;
+  vistaDepto = false;
+  document.getElementById("verDepto").classList.remove("on");
+  document.getElementById("verDepto").textContent = "Ver todo el departamento";
+  ["hand_muy_alta","hand_cauce_modelado"].forEach(function(id){ if(map.getLayer(id)) map.setLayoutProperty(id, "visibility", "visible"); });
   document.querySelectorAll(".ocard").forEach(function(c){ c.classList.toggle("sel", +c.dataset.i===i); });
   markers.forEach(function(mk,k){ mk.getElement().classList.toggle("sel", k===i); });
   document.getElementById("mapTag").innerHTML = esc(o.lugar) + " · <b>" + esc(o.valor) + "</b>";
@@ -352,6 +365,26 @@ function selectObra(i){
   }
   obraSeleccionadaAntes = true;
 }
+
+document.getElementById("verDepto").addEventListener("click", function(){
+  var btn = this;
+  if(vistaDepto){ if(SEL>=0) selectObra(SEL); return; }
+  vistaDepto = true; SEL = -1;
+  btn.classList.add("on"); btn.textContent = "Volver a la obra";
+  document.querySelectorAll(".ocard").forEach(function(c){ c.classList.remove("sel"); });
+  markers.forEach(function(mk){ mk.getElement().classList.remove("sel"); });
+  document.getElementById("mapTag").innerHTML = "Cesar, Colombia · <b>24 municipios</b>";
+  if(map.getSource("hi")) map.getSource("hi").setData({type:"FeatureCollection", features: []});
+  ["hand_muy_alta","hand_cauce_modelado"].forEach(function(id){ if(map.getLayer(id)) map.setLayoutProperty(id, "visibility", "none"); });
+  var b = boundsOf(Object.values(munIndex)); if(b) map.fitBounds(b, {padding: 40, duration: 900});
+  danoDepto().then(function(feats){ if(map.getSource("dano")) map.getSource("dano").setData({type:"FeatureCollection", features: feats}); });
+  document.getElementById("detail").innerHTML =
+    '<span class="tag bosque">Vista general</span>'
+    +'<h3 style="margin-top:10px">Daño ambiental y minero en los 24 municipios de Cesar</h3>'
+    +'<p class="objeto">Capa completa de pérdida de bosque (Hansen) y huella de minería a cielo abierto (Sentinel-2) para todo el departamento, con polígonos de 5 hectáreas o más. Las 8 obras seguidas en este sitio aparecen como los puntos azul (inundación) y verde (restauración) en el mapa — pulse cualquiera para volver a su detalle.</p>'
+    +'<div class="legend2"><span><i style="background:'+DTIPOS.perdida_bosque[1]+'"></i>'+DTIPOS.perdida_bosque[0]+'</span><span><i style="background:'+DTIPOS.suelo_alterado_mineria[1]+'"></i>'+DTIPOS.suelo_alterado_mineria[0]+'</span></div>'
+    +'<p class="caveat"><b>Nota ·</b> Para un análisis año por año con gráfica de barras y ranking de municipios, use el <a href="visor/dano.html?depto=20" target="_blank" rel="noreferrer">explorador de daño ambiental completo ↗</a>.</p>';
+});
 
 function renderDetail(o){
   var legend = '<div class="legend2">'

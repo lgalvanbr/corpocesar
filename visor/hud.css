@@ -26,6 +26,14 @@ a{color:var(--accent-ink)}
 .hud-top .brand svg{width:20px;height:20px;flex:none}
 .hud-top h1{font:800 16px/1 var(--display);letter-spacing:-.01em;color:var(--ink);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hud-top .sep{width:1px;height:18px;background:var(--border-strong);flex:none}
+.hud-navproy{display:flex;align-items:center;gap:2px;min-width:0;flex:1}
+.hud-navproy-btn{flex:none;width:26px;height:26px;border-radius:7px;border:1px solid var(--border);background:#fff;color:var(--ink2);display:grid;place-items:center;cursor:pointer;transition:background .15s,border-color .15s}
+.hud-navproy-btn:hover{background:var(--bg-alt);border-color:var(--border-strong);color:var(--ink)}
+.hud-navproy-actual{display:flex;flex-direction:column;justify-content:center;min-width:0;padding:0 10px;text-decoration:none;line-height:1.2}
+.hud-navproy-n{font:700 9.5px var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--ink3)}
+.hud-navproy-t{font:600 12.5px var(--sans);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
+.hud-navproy-actual:hover .hud-navproy-t{color:var(--accent-ink)}
+@media(max-width:900px){.hud-navproy-t{max-width:120px}}
 .hud-coords{display:flex;gap:14px;font:600 11px var(--mono);color:var(--ink3);letter-spacing:.01em;white-space:nowrap}
 .hud-coords b{color:var(--ink2);font-weight:600}
 .hud-spacer{flex:1;min-width:8px}
