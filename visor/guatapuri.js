@@ -47,7 +47,7 @@ function init(handCapas){
     var lbl = map.getStyle().layers.filter(function(l){return l.type==="symbol";})[0]; lbl = lbl && lbl.id;
 
     map.addSource("img", {type:"image", url: API+"/api/imagen/guatapuri/anio_"+YEARS[IDX], coordinates: (imgs["anio_"+YEARS[IDX]]||{}).corners || [[-73.315,10.531],[-73.181,10.531],[-73.181,10.408],[-73.315,10.408]]});
-    map.addLayer({id:"img_l", type:"raster", source:"img", paint:{"raster-opacity":.95}}, lbl);
+    map.addLayer({id:"img_l", type:"raster", source:"img", paint:{"raster-opacity":.95, "raster-resampling":"linear"}}, lbl);
     LAY.push({id:"img_l", label:"Imagen satelital Sentinel-2 (temporada seca)", sw:"#8a8f99", on:true});
 
     map.addSource("linea", {type:"vector", tiles:[API+"/tiles/capa/guatapuri/cauce_osm/{z}/{x}/{y}.pbf"], minzoom:0, maxzoom:16});
