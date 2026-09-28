@@ -4,14 +4,14 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Contratos en ejecución · Corpocesar en la mira</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="estilo.css">
 <style>
 html,body{height:100%;overflow:hidden}
 .shell{display:flex;height:100vh;height:100dvh}
 .side{width:264px;flex:none;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100%}
 .side-head{padding:18px 18px 14px;border-bottom:1px solid var(--border)}
-.side-head .nm{font:600 13px var(--mono);letter-spacing:-.01em;color:var(--ink);text-decoration:none;display:block}
+.side-head .nm{font:700 17px var(--display);letter-spacing:.01em;color:var(--ink);text-decoration:none;display:block;text-transform:uppercase;line-height:1.05}
 .side-head .sub{font:500 10.5px var(--sans);color:var(--ink3);margin-top:4px;line-height:1.4}
 .nav-scroll{flex:1;overflow-y:auto;padding:10px 0}
 .nav-group{padding:0 10px;margin-bottom:4px}
@@ -21,28 +21,28 @@ html,body{height:100%;overflow:hidden}
 .nav-item small{display:block;color:var(--ink3);font-size:10.5px;margin-top:1px;font-family:var(--mono)}
 .nav-item .dot{width:6px;height:6px;border-radius:50%;flex:none;background:var(--ink3)}
 .nav-ext{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;margin:2px 10px;border-radius:6px;font:600 12.5px var(--sans);color:var(--ink);background:var(--surface-2);border:1px solid var(--border-strong);text-decoration:none}
-.nav-ext .n{font:600 11px var(--mono);color:var(--agua-ink)}
+.nav-ext .n{font:600 11px var(--mono);color:var(--accent-ink)}
 .side-foot{padding:12px 18px 16px;border-top:1px solid var(--border);font:500 10.5px var(--mono);color:var(--ink3);line-height:1.7}
 .main{flex:1;overflow-y:auto;min-width:0}
 .vhead{padding:26px 34px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--canvas);z-index:2}
-.vhead .eyebrow{font:600 10.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--agua-ink)}
-.vhead h2{font-size:21px;margin-top:7px;letter-spacing:-.01em;line-height:1.25;max-width:60ch}
+.vhead .eyebrow{font:600 10.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink)}
+.vhead h2{font-size:32px;margin-top:6px;letter-spacing:0;line-height:1.05;max-width:60ch;text-transform:uppercase}
 .vhead p{font-size:13px;color:var(--ink2);margin-top:8px;max-width:64ch;line-height:1.6}
 .vbody{padding:20px 34px 60px}
 .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
 .bar input,.bar select{font:13.5px var(--sans);border:1px solid var(--border);border-radius:6px;padding:9px 12px;background:var(--surface);color:var(--ink);transition:border-color .15s}
-.bar input:focus,.bar select:focus{border-color:var(--agua);outline:none}
+.bar input:focus,.bar select:focus{border-color:var(--accent);outline:none}
 .bar input{flex:1;min-width:220px}
 .bar input::placeholder{color:var(--ink3)}
 .count{font:500 11px var(--mono);color:var(--ink3);margin:0 0 14px;letter-spacing:.03em;text-transform:uppercase}
 .tbl-wrap{overflow-x:auto;border:1px solid var(--border);background:var(--surface);border-radius:8px}
 table{width:100%;border-collapse:collapse;font-size:13px;min-width:900px;font-family:var(--sans)}
 th{text-align:left;font:600 10px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);padding:11px 12px;border-bottom:1px solid var(--border);cursor:pointer;white-space:nowrap;background:var(--surface-2);transition:color .15s}
-th:hover{color:var(--agua-ink)}
+th:hover{color:var(--accent-ink)}
 td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--ink2)}
 td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;font-family:var(--mono);color:var(--ink)}
 tr:hover td{background:var(--surface-hover)}
-.pill{font:600 9.5px var(--mono);text-transform:uppercase;letter-spacing:.02em;padding:3px 8px;border:1px solid var(--border-strong);border-radius:4px;white-space:nowrap;color:var(--agua-ink)}
+.pill{font:600 9.5px var(--mono);text-transform:uppercase;letter-spacing:.02em;padding:3px 8px;border:1px solid var(--border-strong);border-radius:4px;white-space:nowrap;color:var(--accent-ink)}
 </style>
 </head>
 <body>
