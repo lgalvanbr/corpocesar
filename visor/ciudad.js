@@ -1,11 +1,11 @@
 (function(){
 "use strict";
-var P=new URLSearchParams(location.search),slug=P.get("c")||"barranquilla",API=P.get("api")||"http://10.10.10.2:8010";
+var P=new URLSearchParams(location.search),slug=P.get("c")||"barranquilla",API=P.get("api")||CORPOCESAR_CONFIG.DEFAULT_API;
 var C={blue:"#2a78d6",navy:"#0d2a5c",gray:"#b9c0be",seq:["#cde2fb","#9ec5f4","#5598e7","#1c5cab","#104281"],warm:["#fbe3b4","#f5c26b","#e79a1f","#b56d0a","#6f3f06"],orange:"#eb6834"};
 var fmt=function(v,d){return Number(v).toLocaleString("es-CO",{minimumFractionDigits:d||0,maximumFractionDigits:d||0});},esc=function(t){return String(t==null?"":t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});};
 function J(u){return fetch(API+u).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();});}
 var LAY=[];
-Promise.all([J("/api/ciudades/"+slug),J("/api/imagenes/"+slug).catch(function(){return[];}),J("/api/ciudades/"+slug+"/capas")]).then(function(v){init(v[0],v[1],v[2]);}).catch(function(e){document.getElementById("ttl").textContent="No se pudo leer la base ("+e.message+"). ¿La API de la ATOM está activa en "+API+"?";});
+Promise.all([J("/api/ciudades/"+slug),J("/api/imagenes/"+slug).catch(function(){return[];}),J("/api/ciudades/"+slug+"/capas")]).then(function(v){init(v[0],v[1],v[2]);}).catch(function(e){document.getElementById("ttl").textContent="No se pudo conectar con el servidor de datos del laboratorio ("+e.message+"). Este visor detallado depende de una API que hoy solo está disponible en la red del laboratorio (SinergIA, Universidad de los Andes).";});
 function init(R,imgs,capas){
   var RS=R.resumen||{},E=R.edificios||{},pico=RS.pico||{};document.getElementById("ttl").textContent=R.nombre+" · "+R.depto;
   var ctr=[+(P.get("lon")||R.lon),+(P.get("lat")||R.lat)],z=+(P.get("zoom")||11.3);

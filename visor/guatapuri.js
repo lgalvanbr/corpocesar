@@ -1,6 +1,6 @@
 (function(){
 "use strict";
-var P = new URLSearchParams(location.search), API = P.get("api") || "http://10.10.10.2:8010";
+var P = new URLSearchParams(location.search), API = P.get("api") || CORPOCESAR_CONFIG.DEFAULT_API;
 var YEARS = ["2018","2019","2020","2021","2022","2023","2024","2025"];
 var MESES_2025 = ["2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12"];
 var MES_NOMBRE = {"01":"ene","02":"feb","03":"mar","04":"abr","05":"may","06":"jun","07":"jul","08":"ago","09":"sep","10":"oct","11":"nov","12":"dic"};

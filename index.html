@@ -104,13 +104,14 @@ footer .credit{font-size:13px;color:var(--ink3);margin-top:10px}
 </nav>
 
 <header class="hero wrap">
-  <span class="eyebrow">Vigilancia de contratación pública · NIT 892.301.483</span>
-  <h1 class="reveal">Ocho obras de Corpocesar, con nuestra propia capa de satélite</h1>
-  <p class="reveal">Cruzamos las obras más grandes en ejecución con pérdida de bosque, huella de minería, un modelo de zonas inundables validado con el IDEAM y relieve en 3D — para saber si la plata está cayendo donde el problema es más grande.</p>
+  <span class="eyebrow">Corpocesar · NIT 892.301.483 — CAR del departamento del Cesar</span>
+  <h1 class="reveal">Ocho obras de Corpocesar, cruzadas con una capa propia de datos satelitales</h1>
+  <p class="reveal">Tomamos las obras ambientales más grandes en ejecución y les pusimos encima pérdida de bosque, huella de minería, un modelo de zonas inundables contrastado con eventos reales del IDEAM y relieve en 3D — para ver si la inversión coincide con dónde el problema físico es más grande.</p>
   <div class="cta reveal">
     <a class="btn primary" href="#obras">Ver las 8 obras ↓</a>
     <a class="btn ghost" href="contratos.html">Explorar los 531 contratos activos</a>
   </div>
+  <p class="reveal" style="font-size:13px;color:var(--ink3);margin-top:22px">Investigación independiente del Laboratorio SinergIA (Ingeniería Civil y Ambiental, Universidad de los Andes) — sin relación contractual ni institucional con Corpocesar. Todas las cifras citan su fuente.</p>
 </header>
 
 <section class="wrap">
@@ -162,7 +163,6 @@ footer .credit{font-size:13px;color:var(--ink3);margin-top:10px}
 
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script>
-var API = "http://10.10.10.2:8010";
 var OBRAS = [
 {tipo:"agua",municipios:["20001"],rio:"guatapuri",nombre:"Control de inundación · margen derecha del río Guatapurí",lugar:"Valledupar, Cesar",contrato:"CO1.PCCNTR.7185328",contratista:"Consorcio Protección Margen Guatapurí",interventoria:"Consorcio Interventoría Río Guatapurí ($2.510 M)",valor:"$50.643 M",firma:"abril de 2025 · en ejecución",
  objeto:"Obras hidráulicas para el control de inundación sobre la margen derecha del río Guatapurí, jurisdicción del municipio de Valledupar.",
@@ -235,7 +235,6 @@ var OBRAS = [
 ];
 
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
-function J(u){return fetch(API+u).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();});}
 var DTIPOS={perdida_bosque:["Pérdida de bosque (Hansen)","#c0362c"],suelo_alterado_mineria:["Huella de minería (Sentinel-2)","#8a5a2b"]};
 var HANDCOL={muy_alta:"#2563eb",cauce_modelado:"#1d4ed8"};
 
@@ -253,12 +252,26 @@ OBRAS.forEach(function(o, i){
 });
 
 /* ---- mapa unico, siempre visible ---- */
+/* Los datos geograficos son archivos propios congelados en /datos (no dependen de ningun servidor
+   en vivo): municipios, departamentos, danio ambiental por municipio y zonas inundables (HAND) por
+   obra. Se exportaron desde la base del laboratorio el 28 de septiembre de 2026; ver /metodo. */
 var map = new maplibregl.Map({container:"obrasMap", style:"https://tiles.openfreemap.org/styles/liberty", center:[-73.55,9.6], zoom:7, attributionControl:{compact:true}});
 map.addControl(new maplibregl.NavigationControl(), "top-right");
 var markers = [], munIndex = {}, SEL = -1;
+var danoCache = {}, handCache = {};
+function Jlocal(u){ return fetch(u).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); }); }
+function danoDe(mun){
+  if(danoCache[mun]) return Promise.resolve(danoCache[mun]);
+  return Jlocal("datos/dano/"+mun+".json").then(function(d){ danoCache[mun]=d.features; return d.features; }).catch(function(){ return []; });
+}
+function handDe(col, capa){
+  var k = col+"_"+capa;
+  if(handCache[k]) return Promise.resolve(handCache[k]);
+  return Jlocal("datos/hand/"+k+".json").then(function(d){ handCache[k]=d; return d; }).catch(function(){ return {type:"FeatureCollection",features:[]}; });
+}
 
 map.on("load", function(){
-  Promise.all([J("/api/geo/municipios?depto=20&tol=0.0015"), J("/api/geo/departamentos?tol=0.004")]).then(function(v){
+  Promise.all([Jlocal("datos/municipios.json"), Jlocal("datos/departamentos.json")]).then(function(v){
     var munGeo = v[0], depGeo = v[1];
     munGeo.features.forEach(function(f){ munIndex[f.properties.codigo] = f; });
     var lbl = map.getStyle().layers.filter(function(l){ return l.type==="symbol"; })[0]; lbl = lbl && lbl.id;
@@ -272,9 +285,9 @@ map.on("load", function(){
     map.addLayer({id:"hi_f", type:"fill", source:"hi", paint:{"fill-color":"#2563eb", "fill-opacity":.10}}, lbl);
     map.addLayer({id:"hi_l", type:"line", source:"hi", paint:{"line-color":"#2563eb", "line-width":2.4}}, lbl);
 
-    map.addSource("dano", {type:"vector", tiles:[API+"/tiles/dano/{z}/{x}/{y}.pbf?depto=20"], minzoom:0, maxzoom:14});
+    map.addSource("dano", {type:"geojson", data:{type:"FeatureCollection", features:[]}});
     var col = ["match", ["get","tipo"]]; Object.keys(DTIPOS).forEach(function(t){ col.push(t, DTIPOS[t][1]); }); col.push("#999");
-    map.addLayer({id:"dano_f", type:"fill", source:"dano", "source-layer":"dano", filter:["==",1,0], paint:{"fill-color":col, "fill-opacity":.55}}, lbl);
+    map.addLayer({id:"dano_f", type:"fill", source:"dano", paint:{"fill-color":col, "fill-opacity":.55}}, lbl);
 
     OBRAS.forEach(function(o, i){
       var feats = o.municipios.map(function(c){ return munIndex[c]; }).filter(Boolean);
@@ -310,21 +323,26 @@ function selectObra(i){
   var feats = o.municipios.map(function(c){ return munIndex[c]; }).filter(Boolean);
   if(map.getSource("hi")) map.getSource("hi").setData({type:"FeatureCollection", features: feats});
   var b = boundsOf(feats); if(b) map.fitBounds(b, {padding: 70, duration: 900});
-  if(map.getLayer("dano_f")) map.setFilter("dano_f", ["in", ["get","municipio"], ["literal", o.municipios]]);
+
+  Promise.all(o.municipios.map(danoDe)).then(function(lists){
+    var feats = [].concat.apply([], lists);
+    if(map.getSource("dano")) map.getSource("dano").setData({type:"FeatureCollection", features: feats});
+  });
 
   var handCol = o.hand || (o.municipios[0]==="20001" ? "hand_valledupar" : "hand_"+o.municipios[0]);
   ["muy_alta","cauce_modelado"].forEach(function(cl){
     var id = "hand_"+cl;
-    if(!map.getSource(id)){
-      map.addSource(id, {type:"vector", tiles:[API+"/tiles/capa/"+handCol+"/"+cl+"/{z}/{x}/{y}.pbf"], minzoom:0, maxzoom:14});
-      var lbl = map.getStyle().layers.filter(function(l){ return l.type==="symbol"; })[0]; lbl = lbl && lbl.id;
-      if(cl==="muy_alta") map.addLayer({id:id, type:"fill", source:id, "source-layer":"capa", paint:{"fill-color":HANDCOL[cl], "fill-opacity":.28}}, lbl);
-      else map.addLayer({id:id, type:"line", source:id, "source-layer":"capa", paint:{"line-color":HANDCOL[cl], "line-width":1.6}}, lbl);
-    } else {
-      var src = map.getSource(id);
-      if(src.setTiles) src.setTiles([API+"/tiles/capa/"+handCol+"/"+cl+"/{z}/{x}/{y}.pbf"]);
-      map.setLayoutProperty(id, "visibility", "visible");
-    }
+    handDe(handCol, cl).then(function(gj){
+      if(!map.getSource(id)){
+        map.addSource(id, {type:"geojson", data: gj});
+        var lbl = map.getStyle().layers.filter(function(l){ return l.type==="symbol"; })[0]; lbl = lbl && lbl.id;
+        if(cl==="muy_alta") map.addLayer({id:id, type:"fill", source:id, paint:{"fill-color":HANDCOL[cl], "fill-opacity":.28}}, lbl);
+        else map.addLayer({id:id, type:"line", source:id, paint:{"line-color":HANDCOL[cl], "line-width":1.6}}, lbl);
+      } else {
+        map.getSource(id).setData(gj);
+        map.setLayoutProperty(id, "visibility", "visible");
+      }
+    });
   });
 
   renderDetail(o);
@@ -344,8 +362,8 @@ function renderDetail(o){
     +'<h3 style="margin-top:10px">'+esc(o.nombre)+'</h3>'
     +'<div class="dmeta">'+esc(o.contratista)+' · <b>'+esc(o.valor)+'</b> · '+esc(o.firma)+'</div>'
     +'<p class="objeto"><b>Objeto · '+esc(o.contrato)+'</b>'+esc(o.objeto)+'</p>'
-    +'<div class="finding"><b>Lo que llama la atención</b>'+esc(o.hallazgo)+'</div>'
-    +'<span class="label">Nuestra solución</span><ul class="sol">'+o.analisis.map(function(t){return "<li>"+esc(t)+"</li>";}).join("")+'</ul>'
+    +'<div class="finding"><b>Dato relevante</b>'+esc(o.hallazgo)+'</div>'
+    +'<span class="label">Qué muestra el cruce de datos</span><ul class="sol">'+o.analisis.map(function(t){return "<li>"+esc(t)+"</li>";}).join("")+'</ul>'
     +legend
     +(o.rio==="guatapuri"?'<a class="fullscreen-link" href="visor/guatapuri.html" target="_blank" rel="noreferrer" style="background:var(--accent-soft);padding:10px 16px;border-radius:10px;margin-top:20px">📡 Análisis multianual del río Guatapurí: imágenes 2018-2025, cauce y sedimento ↗</a>':'')
     +(o.interventoria?'<p class="interv">Interventoría: '+esc(o.interventoria)+'.</p>':'')

@@ -1,6 +1,6 @@
 (function(){
 "use strict";
-var P=new URLSearchParams(location.search),API=P.get("api")||"http://10.10.10.2:8010";
+var P=new URLSearchParams(location.search),API=P.get("api")||CORPOCESAR_CONFIG.DEFAULT_API;
 var esc=function(t){return String(t==null?"":t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});};
 var fmt=function(v,d){return Number(v).toLocaleString("es-CO",{minimumFractionDigits:d||0,maximumFractionDigits:d||0});};
 function J(u){return fetch(API+u).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();});}
@@ -24,7 +24,7 @@ function terrenoListo(){if(map.getSource("terreno"))return;map.addSource("terren
 document.getElementById("terreno").addEventListener("change",function(e){terrenoListo();map.setTerrain(e.target.checked?{source:"terreno",exaggeration:1.6}:null);if(e.target.checked&&map.getPitch()<30)map.easeTo({pitch:58});});
 document.getElementById("inclinar").addEventListener("change",function(e){map.easeTo({pitch:e.target.checked?58:0,duration:700});});
 
-Promise.all([J("/api/geo/municipios?depto=20&tol=0.0015"), J("/api/dano/resumen?depto=20")]).then(function(v){init(v[0], v[1]);}).catch(function(e){document.getElementById("info").textContent="No se pudo leer la base ("+e.message+").";});
+Promise.all([J("/api/geo/municipios?depto=20&tol=0.0015"), J("/api/dano/resumen?depto=20")]).then(function(v){init(v[0], v[1]);}).catch(function(e){document.getElementById("info").textContent="No se pudo conectar con el servidor de datos del laboratorio ("+e.message+"). Este visor detallado depende de una API que hoy solo está disponible en la red del laboratorio (SinergIA, Universidad de los Andes).";});
 
 function init(munGeo, resumen){
   var focoFeats = munGeo.features.filter(function(f){return MUNS.indexOf(f.properties.codigo)>=0;});
