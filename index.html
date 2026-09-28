@@ -6,6 +6,7 @@
 <meta name="description" content="Ocho obras de Corpocesar en ejecución, cruzadas con imagen satelital, un modelo de zonas inundables y los 531 contratos activos.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <link rel="stylesheet" href="estilo.css">
 <style>
 nav.top{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.92);backdrop-filter:none;border-bottom:1px solid transparent;transition:border-color .25s,box-shadow .25s}
@@ -31,7 +32,7 @@ nav.top .links a:hover{color:var(--ink);text-decoration:none}
 .stat span{font-size:13px;color:var(--ink3);line-height:1.4;display:block;margin-top:6px}
 @media(max-width:820px){.stats{grid-template-columns:1fr 1fr}}
 
-section{padding:56px 0}
+section{padding:56px 0;scroll-margin-top:76px}
 section.alt{background:var(--bg-alt)}
 .section-head{max-width:60ch;margin-bottom:32px}
 .section-head .k{font:700 12.5px var(--sans);text-transform:uppercase;letter-spacing:.07em;color:var(--accent-ink)}
@@ -42,24 +43,32 @@ section.alt{background:var(--bg-alt)}
 .callout .k{font:700 11.5px var(--sans);text-transform:uppercase;letter-spacing:.05em;color:var(--cat-verde);display:block;margin-bottom:8px}
 .callout p{margin:0;font-size:15px;color:var(--ink);line-height:1.65}
 
-.grid-obras{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-@media(max-width:820px){.grid-obras{grid-template-columns:1fr}}
-.ocard{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;transition:box-shadow .25s var(--ease),border-color .2s}
-.ocard:hover{box-shadow:var(--shadow-md)}
-.ocard.open{border-color:var(--border-strong);box-shadow:var(--shadow-lg)}
-.ohead{padding:22px 22px;cursor:pointer;display:flex;flex-direction:column;gap:10px}
-.ohead .tags{display:flex;gap:8px;align-items:center}
-.ohead h3{font-size:18px;line-height:1.3;margin-top:2px}
-.ohead .meta{font-size:13px;color:var(--ink3);display:flex;flex-wrap:wrap;gap:6px 10px}
-.ohead .meta b{color:var(--ink2);font-weight:600;font-family:var(--mono)}
-.ohead .chev{align-self:flex-end;margin-top:-28px;width:26px;height:26px;border-radius:50%;background:var(--bg-alt);display:grid;place-items:center;transition:transform .35s var(--spring),background .2s}
-.ocard.open .chev{transform:rotate(180deg);background:var(--accent-soft)}
-.ocard.open .chev svg{stroke:var(--accent-ink)}
+.mapshell{display:grid;grid-template-columns:340px 1fr;gap:20px;align-items:start}
+@media(max-width:980px){.mapshell{grid-template-columns:1fr}}
 
-.orow{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s var(--ease)}
-.ocard.open .orow{grid-template-rows:1fr}
-.oinner{overflow:hidden}
-.obody{padding:0 22px 26px;border-top:1px solid var(--border);margin-top:2px}
+.mlist{display:flex;flex-direction:column;gap:10px;max-height:calc(100vh - 120px);overflow-y:auto;padding-right:4px;position:sticky;top:88px}
+@media(max-width:980px){.mlist{position:static;max-height:none}}
+.ocard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;cursor:pointer;transition:box-shadow .2s var(--ease),border-color .2s,background .2s}
+.ocard:hover{box-shadow:var(--shadow-sm);border-color:var(--border-strong)}
+.ocard.sel{border-color:var(--accent);background:var(--accent-soft);box-shadow:var(--shadow-md)}
+.ocard .tags{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.ocard h3{font-size:14.5px;line-height:1.3;font-weight:700}
+.ocard .meta{font-size:12px;color:var(--ink3);margin-top:6px;display:flex;flex-wrap:wrap;gap:4px 8px}
+.ocard .meta b{color:var(--ink2);font-family:var(--mono);font-weight:600}
+
+.mmain{position:sticky;top:88px}
+.mmap-wrap{border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow-sm)}
+#obrasMap{height:440px;width:100%}
+.mtag{position:absolute;left:14px;top:14px;z-index:2;background:#fff;border:1px solid var(--border);border-radius:999px;padding:6px 13px;font:700 12px var(--sans);color:var(--ink2);box-shadow:var(--shadow-sm)}
+.mtag b{color:var(--accent-ink)}
+.marker-dot{width:16px;height:16px;border-radius:50%;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);cursor:pointer;transition:transform .2s var(--spring)}
+.marker-dot:hover{transform:scale(1.25)}
+.marker-dot.sel{transform:scale(1.35);box-shadow:0 0 0 4px rgba(37,99,235,.3),0 1px 4px rgba(0,0,0,.35)}
+
+.mdetail{margin-top:20px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px 26px}
+.mdetail h3{font-size:19px;line-height:1.3}
+.mdetail .dmeta{font-size:13px;color:var(--ink3);margin-top:8px}
+.mdetail .dmeta b{color:var(--ink2);font-family:var(--mono);font-weight:600}
 .objeto{font-size:14px;color:var(--ink2);line-height:1.65;padding:14px 16px;background:var(--bg-alt);border-radius:12px;margin-top:18px}
 .objeto b{display:block;font:700 11px var(--sans);text-transform:uppercase;letter-spacing:.04em;color:var(--ink3);margin-bottom:6px}
 .finding{font-size:14.5px;line-height:1.6;margin:16px 0;padding:14px 16px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 10px 10px 0}
@@ -68,11 +77,9 @@ section.alt{background:var(--bg-alt)}
 .sol{margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
 .sol li{list-style:none;font-size:14.5px;line-height:1.65;padding-left:20px;position:relative;color:var(--ink2)}
 .sol li::before{content:"";position:absolute;left:0;top:8px;width:7px;height:7px;border-radius:50%;background:var(--accent)}
-.mapbox{margin-top:20px;border:1px solid var(--border);border-radius:14px;overflow:hidden}
-.mapbar{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:var(--bg-alt);font:600 12.5px var(--sans);color:var(--ink3)}
-.mapbar a{font-weight:700}
-iframe.map{width:100%;height:480px;border:0;display:block}
-.map-ph{height:480px;display:flex;align-items:center;justify-content:center;color:var(--ink3);font-size:13px;background:repeating-linear-gradient(135deg,#fff,#fff 10px,var(--bg-alt) 10px,var(--bg-alt) 20px)}
+.fullscreen-link{display:inline-flex;align-items:center;gap:6px;margin-top:18px;font:600 13px var(--sans);color:var(--accent-ink)}
+.legend2{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11.5px;color:var(--ink3);margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.legend2 i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 .caveat{font-size:12.5px;color:var(--ink3);margin-top:16px;line-height:1.6}
 .caveat b{color:var(--ink2)}
 .interv{font-size:12.5px;color:var(--ink3);margin-top:14px}
@@ -123,8 +130,19 @@ footer .credit{font-size:13px;color:var(--ink3);margin-top:10px}
 
 <section class="alt" id="obras">
   <div class="wrap">
-    <div class="section-head reveal"><span class="k">Obras en la mira</span><h2>Las ocho obras, abiertas una por una</h2></div>
-    <div class="grid-obras" id="lista"></div>
+    <div class="section-head reveal"><span class="k">Obras en la mira</span><h2>Seleccione un contrato y véalo en el mapa</h2>
+      <p style="font-size:14.5px;color:var(--ink2);margin-top:10px;max-width:60ch">El mapa queda siempre visible. Al elegir una obra, se resalta su municipio y se enciende la capa real que sustenta el hallazgo — pérdida de bosque, huella minera o el modelo de zonas inundables.</p>
+    </div>
+    <div class="mapshell reveal">
+      <div class="mlist" id="lista"></div>
+      <div class="mmain">
+        <div class="mmap-wrap" style="position:relative">
+          <span class="mtag" id="mapTag">Cesar, Colombia</span>
+          <div id="obrasMap"></div>
+        </div>
+        <div class="mdetail" id="detail"></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -141,9 +159,11 @@ footer .credit{font-size:13px;color:var(--ink3);margin-top:10px}
   </div>
 </footer>
 
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script>
+var API = "http://10.10.10.2:8010";
 var OBRAS = [
-{tipo:"agua",nombre:"Control de inundación · margen derecha del río Guatapurí",lugar:"Valledupar, Cesar",contrato:"CO1.PCCNTR.7185328",contratista:"Consorcio Protección Margen Guatapurí",interventoria:"Consorcio Interventoría Río Guatapurí ($2.510 M)",valor:"$50.643 M",firma:"abril de 2025 · en ejecución",
+{tipo:"agua",municipios:["20001"],nombre:"Control de inundación · margen derecha del río Guatapurí",lugar:"Valledupar, Cesar",contrato:"CO1.PCCNTR.7185328",contratista:"Consorcio Protección Margen Guatapurí",interventoria:"Consorcio Interventoría Río Guatapurí ($2.510 M)",valor:"$50.643 M",firma:"abril de 2025 · en ejecución",
  objeto:"Obras hidráulicas para el control de inundación sobre la margen derecha del río Guatapurí, jurisdicción del municipio de Valledupar.",
  hallazgo:"Es el contrato más grande de toda la contratación de Corpocesar desde 2021: el 12,9% de los $392.449 M contratados en cinco años están en esta sola obra.",
  analisis:["Nuestro radar Sentinel-1 sobre Valledupar (septiembre 2024 a septiembre 2026) midió 6,1 km² de agua no permanente en la escena de mayor extensión detectada. Es la capa de frecuencia que se ve abajo: cuántas escenas mostraron agua en cada punto.",
@@ -154,7 +174,7 @@ var OBRAS = [
  caveat:"El HAND es topografía pura: dice qué tan bajo está cada punto respecto al drenaje, no cuánta agua trae el río ni cada cuánto se desborda. La ventana de radar (2024-2026) no incluye la creciente que motivó este contrato.",
  iframe:"visor/ciudad.html?c=valledupar&zoom=12.3&terreno=1&pitch=55"},
 
-{tipo:"agua",nombre:"Control de inundación · caño El Arroyito, corregimiento de Guacoche",lugar:"Valledupar, Cesar",contrato:"CO1.PCCNTR.8341669",contratista:"UTGA 2025",interventoria:"BROKA S.A.S. ($504 M)",valor:"$5.924 M",firma:"octubre de 2025 · en ejecución",
+{tipo:"agua",municipios:["20001"],nombre:"Control de inundación · caño El Arroyito, corregimiento de Guacoche",lugar:"Valledupar, Cesar",contrato:"CO1.PCCNTR.8341669",contratista:"UTGA 2025",interventoria:"BROKA S.A.S. ($504 M)",valor:"$5.924 M",firma:"octubre de 2025 · en ejecución",
  objeto:"Construcción de obras hidráulicas para el control de la inundación sobre el caño El Arroyito, en el corregimiento de Guacoche, jurisdicción del municipio de Valledupar.",
  hallazgo:"Es la misma cuenca radar que la del Guatapurí, pero un afluente menor y un corregimiento rural específico dentro del municipio.",
  analisis:["Usamos la misma capa de frecuencia de inundación de Valledupar, centrada esta vez sobre Guacoche en lugar del casco urbano.",
@@ -162,7 +182,7 @@ var OBRAS = [
  caveat:"El cauce que traza el modelo es una estimación desde la topografía, no el trazado oficial de El Arroyito; en terreno muy plano el D8 puede desviarse del canal real.",
  iframe:"visor/ciudad.html?c=valledupar&zoom=12.3&terreno=1&pitch=55"},
 
-{tipo:"bosque",nombre:"Restauración ecológica · resguardo indígena Sokorpa, cuenca del río Calenturitas",lugar:"Becerril, Cesar",contrato:"CO1.PCCNTR.8745141",contratista:"Consorcio Restauración Sokorpa",interventoria:"Consorcio Inter Sokorpa ($847 M)",valor:"$8.652 M",firma:"enero de 2026 · en ejecución",
+{tipo:"bosque",municipios:["20045"],nombre:"Restauración ecológica · resguardo indígena Sokorpa, cuenca del río Calenturitas",lugar:"Becerril, Cesar",contrato:"CO1.PCCNTR.8745141",contratista:"Consorcio Restauración Sokorpa",interventoria:"Consorcio Inter Sokorpa ($847 M)",valor:"$8.652 M",firma:"enero de 2026 · en ejecución",
  objeto:"Desarrollo de acciones para la restauración ecológica de áreas de especial importancia ecológica de la cuenca hidrográfica del río Calenturitas, jurisdicción del resguardo indígena Sokorpa, municipio de Becerril.",
  hallazgo:"Es el ejemplo más directo: un contrato de restauración necesita saber dónde restaurar. Becerril es, después de La Jagua de Ibirico, el municipio con más huella de minería a cielo abierto de Cesar.",
  analisis:["Becerril acumula 5.341 ha de pérdida de cobertura arbórea entre 2001 y 2024 (2.440 polígonos) y 148 polígonos de suelo alterado por minería a cielo abierto en compuestos de Sentinel-2 entre 2017 y 2025.",
@@ -171,7 +191,7 @@ var OBRAS = [
  caveat:"Los polígonos son estimaciones de satélite sin verificación de campo; la pérdida de bosque incluye incendios y rotación de cultivos, no solo minería o tala.",
  iframe:"visor/dano.html?depto=20&mun=20045&tipos=perdida_bosque,suelo_alterado_mineria&anio=2024"},
 
-{tipo:"bosque",nombre:"Restauración de microcuencas de alto valor ambiental",lugar:"La Jagua de Ibirico, Cesar",contrato:"CO1.PCCNTR.9478836",contratista:"U.T. Restauración La Jagua 2026",valor:"$1.283 M",firma:"mayo de 2026 · en ejecución",
+{tipo:"bosque",municipios:["20400"],nombre:"Restauración de microcuencas de alto valor ambiental",lugar:"La Jagua de Ibirico, Cesar",contrato:"CO1.PCCNTR.9478836",contratista:"U.T. Restauración La Jagua 2026",valor:"$1.283 M",firma:"mayo de 2026 · en ejecución",
  objeto:"Acciones de restauración y manejo sostenible en microcuencas de alto valor ambiental y estratégico para la gestión integral del recurso hídrico en el municipio de La Jagua de Ibirico.",
  hallazgo:"La Jagua de Ibirico es, de los 24 municipios de Cesar, el que tiene la huella de minería a cielo abierto más grande que medimos: 257 polígonos frente a los 148 de Becerril.",
  analisis:["5.506 ha de pérdida de cobertura arbórea acumulada (2001-2024, 2.642 polígonos) y una huella minera que en los años de mayor actividad (2022, 2024) superó las 15.000 ha detectadas en un solo año — la cifra de 2022 sigue sin verificar en campo.",
@@ -179,7 +199,7 @@ var OBRAS = [
  caveat:"El salto de la huella minera en 2022 puede deberse a la calidad de las imágenes de ese año y no a un cambio real de esa magnitud; lo dejamos sin resolver.",
  iframe:"visor/dano.html?depto=20&mun=20400&tipos=perdida_bosque,suelo_alterado_mineria&anio=2024"},
 
-{tipo:"bosque",nombre:"Rehabilitación de microcuencas de alto valor ambiental",lugar:"Pueblo Bello, Cesar (Sierra Nevada de Santa Marta)",contrato:"CO1.PCCNTR.9356561",contratista:"Consorcio Rehabilitación Microcuencas 2026",valor:"$1.759 M",firma:"abril de 2026 · en ejecución",
+{tipo:"bosque",municipios:["20570"],nombre:"Rehabilitación de microcuencas de alto valor ambiental",lugar:"Pueblo Bello, Cesar (Sierra Nevada de Santa Marta)",contrato:"CO1.PCCNTR.9356561",contratista:"Consorcio Rehabilitación Microcuencas 2026",valor:"$1.759 M",firma:"abril de 2026 · en ejecución",
  objeto:"Implementación de acciones de rehabilitación y manejo sostenible en microcuencas de alto valor ambiental y estratégico para la gestión integral del recurso hídrico en el municipio de Pueblo Bello.",
  hallazgo:"Pueblo Bello es el único de los municipios con contrato de restauración donde no detectamos minería: la presión ahí es de otro tipo.",
  analisis:["2.577 ha de pérdida de cobertura arbórea acumulada entre 2001 y 2024, en 2.032 polígonos, dentro de territorio en su mayoría indígena de la Sierra Nevada.",
@@ -187,7 +207,7 @@ var OBRAS = [
  caveat:"No cruzamos estos polígonos con los límites exactos de los resguardos de la Sierra Nevada; falta esa capa para precisar dentro o fuera de territorio indígena.",
  iframe:"visor/dano.html?depto=20&mun=20570&tipos=perdida_bosque&anio=2024"},
 
-{tipo:"agua",nombre:"Control de erosión e inundación · corriente Anime, fase III",lugar:"Chiriguaná y Curumaní, Cesar",contrato:"CO1.PCCNTR.8406466",contratista:"Consorcio Curumaní",interventoria:"DEFCO S.A.S. ($671 M)",valor:"$9.583 M",firma:"octubre de 2025 · en ejecución",
+{tipo:"agua",municipios:["20178","20228"],hand:"hand_anime",nombre:"Control de erosión e inundación · corriente Anime, fase III",lugar:"Chiriguaná y Curumaní, Cesar",contrato:"CO1.PCCNTR.8406466",contratista:"Consorcio Curumaní",interventoria:"DEFCO S.A.S. ($671 M)",valor:"$9.583 M",firma:"octubre de 2025 · en ejecución",
  objeto:"Implementación de medidas estructurales y no estructurales para el control de la erosión e inundación en la corriente superficial Anime, en los municipios de Chiriguaná y Curumaní — fase III (hay una fase anterior, de 2022, ya cerrada).",
  hallazgo:"Es la tercera fase del mismo problema: la corriente Anime ya había recibido $23.743 M en 2022 y sigue necesitando obra en 2025.",
  analisis:["Chiriguaná y Curumaní no están entre las ciudades donde corrimos radar de inundación. Sí tenemos pérdida de bosque: 5.141 ha en Chiriguaná (2.771 polígonos, más 4.600 ha de huella minera) y 5.195 ha en Curumaní (3.208 polígonos, sin minería).",
@@ -196,7 +216,7 @@ var OBRAS = [
  caveat:"El corredor de 772 km² es una caja amplia entre los dos municipios, no la cuenca hidrográfica exacta del Anime. El HAND es topografía, no medición de caudal ni de la causa de la erosión.",
  iframe:"visor/anime.html?terreno=1&pitch=52"},
 
-{tipo:"bosque",nombre:"Reducir la presión sobre el bosque y mitigar el cambio climático",lugar:"La Paz, Cesar",contrato:"CO1.PCCNTR.9159652",contratista:"Consorcio Barak",interventoria:"Consorcio Thermocontrol ($146 M)",valor:"$851 M",firma:"febrero de 2026 · en ejecución",
+{tipo:"bosque",municipios:["20621"],nombre:"Reducir la presión sobre el bosque y mitigar el cambio climático",lugar:"La Paz, Cesar",contrato:"CO1.PCCNTR.9159652",contratista:"Consorcio Barak",interventoria:"Consorcio Thermocontrol ($146 M)",valor:"$851 M",firma:"febrero de 2026 · en ejecución",
  objeto:"Implementación de estrategias para disminuir la presión sobre el recurso forestal e implementación de medidas para la mitigación del cambio climático en zonas rurales del municipio de La Paz.",
  hallazgo:"Es el contrato que más literalmente pide lo que hacemos: bajar la presión sobre el bosque. La Paz no tenía, hasta este corte, ningún contrato de restauración.",
  analisis:["La Paz acumula 4.128 ha de pérdida de cobertura arbórea entre 2001 y 2024 (2.111 polígonos), sin huella de minería detectada — la presión aquí es agrícola o de leña, no minera.",
@@ -204,7 +224,7 @@ var OBRAS = [
  caveat:"Sin un polígono oficial de las 'zonas rurales' que cubre el contrato, mostramos todo el municipio.",
  iframe:"visor/dano.html?depto=20&mun=20621&tipos=perdida_bosque&anio=2024"},
 
-{tipo:"bosque",nombre:"Biodiversidad del arroyo Maquencal, territorio de Coafropal",lugar:"La Jagua de Ibirico, Cesar",contrato:"CO1.PCCNTR.9691595",contratista:"Consorcio Biomaquencal 2026",valor:"$197 M",firma:"agosto de 2026 · en ejecución",
+{tipo:"bosque",municipios:["20400"],nombre:"Biodiversidad del arroyo Maquencal, territorio de Coafropal",lugar:"La Jagua de Ibirico, Cesar",contrato:"CO1.PCCNTR.9691595",contratista:"Consorcio Biomaquencal 2026",valor:"$197 M",firma:"agosto de 2026 · en ejecución",
  objeto:"Implementación de medidas para la conservación de la biodiversidad y sus servicios ecosistémicos en el arroyo Maquencal, territorio de interés del Consejo Comunitario de Comunidades Afrodescendientes La Palmita (Coafropal), municipio de La Jagua de Ibirico.",
  hallazgo:"Es el contrato más pequeño del grupo, pero el único con un territorio étnico nombrado explícitamente.",
  analisis:["Usa la misma capa que Sokorpa: La Jagua de Ibirico es el municipio con más huella minera de Cesar. No aislamos el arroyo Maquencal en particular — no está trazado en OpenStreetMap ni en nuestra capa de ríos.",
@@ -214,41 +234,117 @@ var OBRAS = [
 ];
 
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function J(u){return fetch(API+u).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();});}
+var DTIPOS={perdida_bosque:["Pérdida de bosque (Hansen)","#c0362c"],suelo_alterado_mineria:["Huella de minería (Sentinel-2)","#8a5a2b"]};
+var HANDCOL={muy_alta:"#2563eb",cauce_modelado:"#1d4ed8"};
+
+/* ---- lista ---- */
 var host = document.getElementById("lista");
 OBRAS.forEach(function(o, i){
   var card = document.createElement("div");
-  card.className = "ocard reveal";
-  card.style.transitionDelay = (Math.min(i,5)*0.05)+"s";
+  card.className = "ocard"; card.dataset.i = i;
   card.innerHTML =
-    '<div class="ohead">'
-    +'<div class="tags"><span class="tag '+o.tipo+'">'+(o.tipo==="agua"?"Inundación":"Restauración")+'</span></div>'
+    '<div class="tags"><span class="tag '+o.tipo+'">'+(o.tipo==="agua"?"Inundación":"Restauración")+'</span></div>'
     +'<h3>'+esc(o.nombre)+'</h3>'
-    +'<div class="meta"><span>'+esc(o.lugar)+'</span><span>·</span><span><b>'+esc(o.valor)+'</b></span><span>·</span><span>'+esc(o.firma)+'</span></div>'
-    +'<span class="chev"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5a5f6b" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>'
-    +'</div>'
-    +'<div class="orow"><div class="oinner"><div class="obody">'
+    +'<div class="meta"><span>'+esc(o.lugar)+'</span><span>·</span><span><b>'+esc(o.valor)+'</b></span></div>';
+  card.addEventListener("click", function(){ selectObra(i); });
+  host.appendChild(card);
+});
+
+/* ---- mapa unico, siempre visible ---- */
+var map = new maplibregl.Map({container:"obrasMap", style:"https://tiles.openfreemap.org/styles/liberty", center:[-73.55,9.6], zoom:7, attributionControl:{compact:true}});
+map.addControl(new maplibregl.NavigationControl(), "top-right");
+var markers = [], munIndex = {}, SEL = -1;
+
+map.on("load", function(){
+  Promise.all([J("/api/geo/municipios?depto=20&tol=0.0015"), J("/api/geo/departamentos?tol=0.004")]).then(function(v){
+    var munGeo = v[0], depGeo = v[1];
+    munGeo.features.forEach(function(f){ munIndex[f.properties.codigo] = f; });
+    var lbl = map.getStyle().layers.filter(function(l){ return l.type==="symbol"; })[0]; lbl = lbl && lbl.id;
+
+    map.addSource("dep", {type:"geojson", data:{type:"FeatureCollection", features: depGeo.features.filter(function(f){return f.properties.codigo==="20";})}});
+    map.addLayer({id:"dep_l", type:"line", source:"dep", paint:{"line-color":"#12141a", "line-width":1.6, "line-opacity":.35}}, lbl);
+    map.addSource("mun", {type:"geojson", data: munGeo});
+    map.addLayer({id:"mun_l", type:"line", source:"mun", paint:{"line-color":"#8a8f99", "line-width":.6, "line-opacity":.5}}, lbl);
+
+    map.addSource("hi", {type:"geojson", data:{type:"FeatureCollection", features:[]}});
+    map.addLayer({id:"hi_f", type:"fill", source:"hi", paint:{"fill-color":"#2563eb", "fill-opacity":.10}}, lbl);
+    map.addLayer({id:"hi_l", type:"line", source:"hi", paint:{"line-color":"#2563eb", "line-width":2.4}}, lbl);
+
+    map.addSource("dano", {type:"vector", tiles:[API+"/tiles/dano/{z}/{x}/{y}.pbf?depto=20"], minzoom:0, maxzoom:14});
+    var col = ["match", ["get","tipo"]]; Object.keys(DTIPOS).forEach(function(t){ col.push(t, DTIPOS[t][1]); }); col.push("#999");
+    map.addLayer({id:"dano_f", type:"fill", source:"dano", "source-layer":"dano", filter:["==",1,0], paint:{"fill-color":col, "fill-opacity":.55}}, lbl);
+
+    OBRAS.forEach(function(o, i){
+      var feats = o.municipios.map(function(c){ return munIndex[c]; }).filter(Boolean);
+      var mb = boundsOf(feats); if(!mb) return;
+      var c = mb.getCenter();
+      var el = document.createElement("div"); el.className = "marker-dot"; el.style.background = o.tipo==="agua" ? "#2563eb" : "#16a34a";
+      var mk = new maplibregl.Marker({element: el}).setLngLat(c).addTo(map);
+      el.addEventListener("click", function(ev){ ev.stopPropagation(); selectObra(i); });
+      markers.push(mk);
+    });
+    selectObra(0);
+  }).catch(function(e){ document.getElementById("detail").innerHTML = "<p class='caveat'>No se pudo cargar el mapa (" + e.message + ").</p>"; });
+});
+
+function boundsOf(feats){
+  if(!feats.length) return null;
+  var b = new maplibregl.LngLatBounds();
+  feats.forEach(function(f){
+    var g = f.geometry, polys = g.type==="Polygon" ? [g.coordinates] : g.coordinates;
+    polys.forEach(function(p){ p[0].forEach(function(c){ b.extend(c); }); });
+  });
+  return b;
+}
+
+function selectObra(i){
+  var o = OBRAS[i];
+  SEL = i;
+  document.querySelectorAll(".ocard").forEach(function(c){ c.classList.toggle("sel", +c.dataset.i===i); });
+  markers.forEach(function(mk,k){ mk.getElement().classList.toggle("sel", k===i); });
+  document.getElementById("mapTag").innerHTML = esc(o.lugar) + " · <b>" + esc(o.valor) + "</b>";
+
+  var feats = o.municipios.map(function(c){ return munIndex[c]; }).filter(Boolean);
+  if(map.getSource("hi")) map.getSource("hi").setData({type:"FeatureCollection", features: feats});
+  var b = boundsOf(feats); if(b) map.fitBounds(b, {padding: 70, duration: 900});
+  if(map.getLayer("dano_f")) map.setFilter("dano_f", ["in", ["get","municipio"], ["literal", o.municipios]]);
+
+  var handCol = o.hand || (o.municipios[0]==="20001" ? "hand_valledupar" : "hand_"+o.municipios[0]);
+  ["muy_alta","cauce_modelado"].forEach(function(cl){
+    var id = "hand_"+cl;
+    if(!map.getSource(id)){
+      map.addSource(id, {type:"vector", tiles:[API+"/tiles/capa/"+handCol+"/"+cl+"/{z}/{x}/{y}.pbf"], minzoom:0, maxzoom:14});
+      var lbl = map.getStyle().layers.filter(function(l){ return l.type==="symbol"; })[0]; lbl = lbl && lbl.id;
+      if(cl==="muy_alta") map.addLayer({id:id, type:"fill", source:id, "source-layer":"capa", paint:{"fill-color":HANDCOL[cl], "fill-opacity":.28}}, lbl);
+      else map.addLayer({id:id, type:"line", source:id, "source-layer":"capa", paint:{"line-color":HANDCOL[cl], "line-width":1.6}}, lbl);
+    } else {
+      var src = map.getSource(id);
+      if(src.setTiles) src.setTiles([API+"/tiles/capa/"+handCol+"/"+cl+"/{z}/{x}/{y}.pbf"]);
+      map.setLayoutProperty(id, "visibility", "visible");
+    }
+  });
+
+  renderDetail(o);
+  document.getElementById("detail").scrollIntoView({behavior:"smooth", block:"nearest"});
+}
+
+function renderDetail(o){
+  var legend = '<div class="legend2">'
+    + Object.keys(DTIPOS).map(function(t){ return '<span><i style="background:'+DTIPOS[t][1]+'"></i>'+DTIPOS[t][0]+'</span>'; }).join("")
+    + '<span><i style="background:'+HANDCOL.muy_alta+'"></i>Zona inundable (modelo HAND)</span></div>';
+  document.getElementById("detail").innerHTML =
+    '<span class="tag '+o.tipo+'">'+(o.tipo==="agua"?"Inundación":"Restauración")+'</span>'
+    +'<h3 style="margin-top:10px">'+esc(o.nombre)+'</h3>'
+    +'<div class="dmeta">'+esc(o.contratista)+' · <b>'+esc(o.valor)+'</b> · '+esc(o.firma)+'</div>'
     +'<p class="objeto"><b>Objeto · '+esc(o.contrato)+'</b>'+esc(o.objeto)+'</p>'
     +'<div class="finding"><b>Lo que llama la atención</b>'+esc(o.hallazgo)+'</div>'
     +'<span class="label">Nuestra solución</span><ul class="sol">'+o.analisis.map(function(t){return "<li>"+esc(t)+"</li>";}).join("")+'</ul>'
-    +'<div class="mapbox"><div class="mapbar"><span>Nuestro mapa de esta zona</span><a href="'+o.iframe+'" target="_blank" rel="noreferrer">Pantalla completa ↗</a></div><div class="map-slot" data-src="'+o.iframe+'" data-title="'+esc(o.nombre)+'"><div class="map-ph">Se carga al abrir esta obra…</div></div></div>'
+    +legend
     +(o.interventoria?'<p class="interv">Interventoría: '+esc(o.interventoria)+'.</p>':'')
     +'<p class="caveat"><b>Nota ·</b> '+esc(o.caveat)+'</p>'
-    +'</div></div></div>';
-  host.appendChild(card);
-  card.querySelector(".ohead").addEventListener("click", function(){
-    var wasOpen = card.classList.contains("open");
-    document.querySelectorAll(".ocard.open").forEach(function(c){ if(c!==card) c.classList.remove("open"); });
-    card.classList.toggle("open", !wasOpen);
-    if(!wasOpen){
-      var slot = card.querySelector(".map-slot");
-      if(slot && !slot.querySelector("iframe")){
-        var f = document.createElement("iframe"); f.className = "map"; f.loading = "lazy"; f.title = slot.dataset.title; f.src = slot.dataset.src;
-        slot.innerHTML = ""; slot.appendChild(f);
-      }
-      setTimeout(function(){ card.scrollIntoView({behavior:"smooth", block:"nearest"}); }, 200);
-    }
-  });
-});
+    +'<a class="fullscreen-link" href="'+o.iframe+'" target="_blank" rel="noreferrer">Abrir el visor completo de esta obra ↗</a>';
+}
 
 /* nav con sombra al bajar */
 var nav = document.getElementById("navbar");
