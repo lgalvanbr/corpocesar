@@ -20,6 +20,10 @@
 .tl-stat.up{color:#c0362c}
 .tl-stat.down{color:#16a34a}
 .tl-spacer{flex:1}
+.tl-modo{display:flex;gap:2px;background:var(--bg-alt,#f6f7f9);border:1px solid var(--border);border-radius:8px;padding:2px}
+.tl-modo button{border:0;background:transparent;font:600 11.5px var(--sans);color:var(--ink2);padding:5px 10px;border-radius:6px;cursor:pointer;transition:background .15s,color .15s}
+.tl-modo button.on{background:var(--accent);color:#fff}
+.tl-modo button:not(.on):hover{background:var(--border)}
 .tl-layers{display:flex;gap:4px}
 input[type=range]#tlRange{width:100%;accent-color:var(--accent);height:22px}
 .tl-ticks{display:flex;justify-content:space-between;font:600 10.5px var(--mono);color:var(--ink3);margin-top:2px;padding:0 2px}
@@ -49,9 +53,9 @@ input[type=range]#tlRange{width:100%;accent-color:var(--accent);height:22px}
     <div class="hud-panel-scroll">
       <div class="hud-sec"><h3>Este tramo del río</h3><div class="kpis" id="kpis"></div></div>
       <div class="hud-sec"><h3>Capas</h3><div id="layers"></div></div>
-      <div class="hud-sec"><h3>Lo que muestra el cambio 2018→2025</h3><div class="nota" id="riesgo">Calculando…</div></div>
+      <div class="hud-sec"><h3 id="riesgoT">Lo que muestra el cambio 2018→2025</h3><div class="nota" id="riesgo">Calculando…</div></div>
       <div class="hud-sec"><h3 id="infoT">Detalle</h3><div id="info">Pulse un polígono de cauce o de sedimento para ver su año.</div></div>
-      <div class="hud-sec nota"><b>Método</b><br>Compuestos de Sentinel-2 (promedio de los píxeles sin nube de cada escena, con menos de 50% de nubes por escena, enero-marzo de cada año, para comparar la misma temporada seca). Cauce: máscara de agua por MNDWI (verde/infrarrojo de onda corta) mayor a -0,15, más robusto que el NDWI clásico para un río con sedimento. Sedimento: el 25% de píxeles de agua con más NDTI (rojo-verde) DENTRO de cada año — un umbral relativo a ese mismo compuesto, no una medición de concentración real ni comparable en valor absoluto entre años. No encontramos una serie histórica de caudal descargable por API — la estación activa más cercana (Puente Salguero, IDEAM) solo publica el nivel de hoy, no un histórico.</div>
+      <div class="hud-sec nota"><b>Método</b><br>Compuestos de Sentinel-2 (promedio de los píxeles sin nube de cada escena, con menos de 50-70% de nubes por escena). Vista <b>por año</b>: una ventana enero-marzo de cada año, para comparar siempre la misma temporada seca. Vista <b>2025 mes a mes</b>: una ventana de un mes calendario, para ver la estacionalidad dentro del año — algunos meses de lluvias pueden salir con poca o ninguna escena utilizable por nubes, y eso se avisa en el panel. Cauce: máscara de agua por MNDWI (verde/infrarrojo de onda corta) mayor a -0,15, más robusto que el NDWI clásico para un río con sedimento. Sedimento: el 25% de píxeles de agua con más NDTI (rojo-verde) DENTRO de cada compuesto — un umbral relativo a ese mismo compuesto, no una medición de concentración real ni comparable en valor absoluto entre compuestos. No encontramos una serie histórica de caudal descargable por API — la estación activa más cercana (Puente Salguero, IDEAM) solo publica el nivel de hoy, no un histórico.</div>
     </div>
   </aside>
 
@@ -61,7 +65,6 @@ input[type=range]#tlRange{width:100%;accent-color:var(--accent);height:22px}
       <div class="tl-year" id="tlYear">—</div>
       <div class="tl-stat" id="tlStat">—</div>
       <div class="tl-spacer"></div>
-      <span class="nota">Temporada seca (ene-mar) de cada año</span>
     </div>
     <input type="range" id="tlRange" min="0" max="7" step="1" value="7">
     <div class="tl-ticks" id="tlTicks"></div>
